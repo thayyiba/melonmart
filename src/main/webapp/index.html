@@ -2,39 +2,65 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Melon Mart - Instant Grocery & Aesthetic Curation</title>
+    <title>Melon Mart — Never a Dull Moment</title>
 
     <style>
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-                Roboto, Helvetica, Arial, sans-serif;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
+        }
+
+        :root {
+            --cream: #fbf8f1;
+            --cream-dark: #f2eee4;
+            --white: #ffffff;
+
+            --melon: #7b3fb4;
+            --melon-dark: #54217f;
+            --melon-light: #eee2f8;
+
+            --ink: #241d29;
+            --muted: #777078;
+
+            --border: #e9e1d7;
         }
 
         body {
-            background: #f8f6fb;
-            color: #1c1c1c;
+            background: var(--cream);
+            color: var(--ink);
             min-height: 100vh;
-            padding-bottom: 60px;
+            padding-bottom: 70px;
         }
 
-        /* Aesthetic Purple Header */
+        /* =====================================================
+           HEADER
+        ===================================================== */
 
         header {
-            background: #ffffff;
-            padding: 12px 6%;
+            background: rgba(251, 248, 241, 0.94);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+
+            padding: 15px 5%;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
-            border-bottom: 1px solid #efe8f8;
+            gap: 24px;
+
+            border-bottom: 1px solid var(--border);
+
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -44,42 +70,51 @@
             display: flex;
             align-items: center;
             gap: 20px;
+            flex-shrink: 0;
         }
 
         .logo {
             font-size: 24px;
-            font-weight: 900;
-            color: #6b21a8;
+            font-weight: 950;
+            color: var(--melon-dark);
             text-decoration: none;
-            letter-spacing: -0.5px;
+            letter-spacing: -1.4px;
         }
 
         .logo span {
-            color: #a855f7;
+            color: var(--melon);
         }
 
         .delivery-pill {
             display: flex;
             flex-direction: column;
-            background: #f3e8ff;
-            padding: 6px 12px;
-            border-radius: 8px;
-            border: 1px solid #e9d5ff;
+            gap: 2px;
+
+            background: var(--melon-light);
+
+            padding: 7px 12px;
+
+            border-radius: 10px;
+
+            border: 1px solid #dfccef;
         }
 
         .delivery-time {
-            font-weight: 800;
-            font-size: 12px;
-            color: #7e22ce;
+            font-weight: 850;
+            font-size: 10px;
+            color: var(--melon-dark);
+
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
         }
 
         .address {
-            font-size: 11px;
-            color: #6b21a8;
-            font-weight: 600;
+            font-size: 10px;
+            color: var(--melon);
+            font-weight: 650;
+
             max-width: 140px;
+
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -87,89 +122,371 @@
 
         .search-container {
             flex: 1;
-            max-width: 550px;
+            max-width: 570px;
             position: relative;
         }
 
         .search-container input {
             width: 100%;
-            padding: 12px 16px 12px 42px;
-            border: 1px solid #e9d5ff;
-            border-radius: 10px;
-            background: #faf5ff;
-            font-size: 13.5px;
+
+            padding: 12px 18px 12px 43px;
+
+            border: 1px solid var(--border);
+            border-radius: 12px;
+
+            background: #fffdf9;
+
+            font-size: 13px;
+
             outline: none;
-            transition: all 0.2s ease;
+
+            color: var(--ink);
+
+            transition: 0.2s ease;
         }
 
         .search-container input:focus {
-            background: #ffffff;
-            border-color: #9333ea;
-            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.15);
+            background: white;
+            border-color: #c9a7df;
+
+            box-shadow:
+                0 0 0 4px rgba(123, 63, 180, 0.08);
+        }
+
+        .search-container input::placeholder {
+            color: #a39ba3;
         }
 
         .search-icon {
             position: absolute;
-            left: 14px;
+
+            left: 15px;
             top: 50%;
+
             transform: translateY(-50%);
+
             opacity: 0.5;
+
             font-size: 14px;
-            color: #6b21a8;
         }
 
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
         }
 
         .login-btn {
             background: transparent;
             border: none;
-            font-weight: 700;
-            font-size: 14px;
-            color: #581c87;
+
+            font-weight: 750;
+            font-size: 13px;
+
+            color: var(--melon-dark);
+
             cursor: pointer;
-            padding: 8px 10px;
+
+            padding: 9px 12px;
+
+            border-radius: 9px;
+
+            transition: 0.2s ease;
+        }
+
+        .login-btn:hover {
+            background: var(--melon-light);
         }
 
         .cart-btn {
-            background: #7e22ce;
+            background: var(--melon-dark);
             color: white;
+
             border: none;
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 13px;
+
+            padding: 11px 17px;
+
+            border-radius: 10px;
+
+            font-weight: 800;
+            font-size: 12px;
+
             cursor: pointer;
+
             display: flex;
             align-items: center;
-            gap: 8px;
-            transition: background 0.2s;
+            gap: 7px;
+
+            transition: 0.2s ease;
         }
 
         .cart-btn:hover {
-            background: #6b21a8;
+            background: var(--melon);
+            transform: translateY(-1px);
         }
 
-        /* Main Container */
+        /* =====================================================
+           MAIN
+        ===================================================== */
 
         .container {
-            width: 92%;
+            width: 91%;
             max-width: 1280px;
-            margin: 20px auto;
+
+            margin: 0 auto;
         }
 
-        /* Category Filter */
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+            margin-top: 28px;
+            margin-bottom: 34px;
+
+            min-height: 390px;
+
+            border-radius: 30px;
+
+            position: relative;
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 82% 18%,
+                    rgba(203, 168, 229, 0.75),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 12% 100%,
+                    rgba(230, 204, 242, 0.7),
+                    transparent 35%
+                ),
+                #f4eadf;
+
+            border: 1px solid #e8ddd2;
+
+            display: flex;
+            align-items: center;
+
+            padding: 55px 7%;
+        }
+
+        .hero::before {
+            content: "";
+
+            position: absolute;
+
+            width: 330px;
+            height: 330px;
+
+            border-radius: 50%;
+
+            background: rgba(255, 255, 255, 0.34);
+
+            right: 8%;
+            bottom: -170px;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+
+            max-width: 680px;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            background: rgba(255, 255, 255, 0.65);
+
+            border: 1px solid rgba(123, 63, 180, 0.13);
+
+            padding: 8px 13px;
+
+            border-radius: 999px;
+
+            font-size: 10px;
+            font-weight: 850;
+
+            letter-spacing: 1px;
+
+            color: var(--melon-dark);
+
+            text-transform: uppercase;
+
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(48px, 7vw, 88px);
+
+            line-height: 0.91;
+
+            letter-spacing: -5px;
+
+            font-weight: 950;
+
+            color: var(--ink);
+
+            margin-bottom: 23px;
+        }
+
+        .hero h1 .accent {
+            color: var(--melon);
+
+            font-style: italic;
+
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-weight: 600;
+
+            letter-spacing: -4px;
+        }
+
+        .hero-copy {
+            max-width: 520px;
+
+            font-size: 15px;
+
+            line-height: 1.65;
+
+            color: #675f67;
+
+            font-weight: 500;
+
+            margin-bottom: 25px;
+        }
+
+        .hero-meta {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            font-size: 10px;
+
+            color: var(--melon-dark);
+
+            font-weight: 850;
+
+            letter-spacing: 0.7px;
+        }
+
+        .hero-meta span {
+            background: rgba(255, 255, 255, 0.62);
+
+            padding: 8px 11px;
+
+            border-radius: 8px;
+
+            border: 1px solid rgba(123, 63, 180, 0.1);
+        }
+
+        .hero-art {
+            position: absolute;
+
+            right: 7%;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            width: 235px;
+            height: 235px;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #d9b9eb,
+                    #b982d0
+                );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 105px;
+
+            box-shadow:
+                0 25px 50px rgba(84, 33, 127, 0.15);
+
+            transform-origin: center;
+        }
+
+        .hero-art::after {
+            content: "good finds ✦";
+
+            position: absolute;
+
+            right: -22px;
+            bottom: 12px;
+
+            background: var(--ink);
+            color: white;
+
+            padding: 9px 14px;
+
+            border-radius: 999px;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.4px;
+
+            transform: rotate(-5deg);
+        }
+
+        /* =====================================================
+           SECTION HEADER
+        ===================================================== */
+
+        .section-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+
+            margin-bottom: 15px;
+
+            gap: 20px;
+        }
+
+        .section-title {
+            font-size: 25px;
+
+            font-weight: 900;
+
+            letter-spacing: -1px;
+
+            color: var(--ink);
+        }
+
+        .section-subtitle {
+            font-size: 11px;
+
+            color: var(--muted);
+
+            font-weight: 600;
+        }
+
+        /* =====================================================
+           CATEGORY BAR
+        ===================================================== */
 
         .category-bar {
             display: flex;
-            gap: 10px;
+            gap: 9px;
+
             overflow-x: auto;
-            padding-bottom: 12px;
+
+            padding-bottom: 15px;
+
             scrollbar-width: none;
-            margin-bottom: 20px;
+
+            margin-bottom: 25px;
         }
 
         .category-bar::-webkit-scrollbar {
@@ -177,191 +494,369 @@
         }
 
         .cat-chip {
-            background: #ffffff;
-            border: 1px solid #e9d5ff;
-            border-radius: 20px;
-            padding: 8px 16px;
-            font-size: 13px;
-            font-weight: 700;
-            color: #6b21a8;
+            background: #fffdf9;
+
+            border: 1px solid var(--border);
+
+            border-radius: 999px;
+
+            padding: 9px 15px;
+
+            font-size: 11.5px;
+
+            font-weight: 750;
+
+            color: #665e67;
+
             white-space: nowrap;
+
             cursor: pointer;
+
             transition: all 0.2s;
+
             display: flex;
             align-items: center;
+
             gap: 6px;
         }
 
-        .cat-chip:hover,
-        .cat-chip.active {
-            background: #7e22ce;
-            color: #ffffff;
-            border-color: #7e22ce;
-            box-shadow: 0 4px 12px rgba(126, 34, 206, 0.25);
+        .cat-chip:hover {
+            border-color: #cdb0dd;
+            color: var(--melon-dark);
         }
 
-        /* Pinterest Columns Layout */
+        .cat-chip.active {
+            background: var(--melon-dark);
+
+            color: white;
+
+            border-color: var(--melon-dark);
+
+            box-shadow:
+                0 7px 18px rgba(84, 33, 127, 0.16);
+        }
+
+        /* =====================================================
+           PRODUCT GRID
+        ===================================================== */
 
         .masonry-grid {
             column-count: 4;
-            column-gap: 16px;
+            column-gap: 18px;
         }
 
         @media (max-width: 1100px) {
-
             .masonry-grid {
                 column-count: 3;
             }
-
         }
 
         @media (max-width: 768px) {
-
             .masonry-grid {
                 column-count: 2;
             }
 
+            .hero {
+                min-height: 470px;
+                padding: 40px 28px;
+                align-items: flex-start;
+            }
+
+            .hero-art {
+                width: 145px;
+                height: 145px;
+                font-size: 65px;
+
+                right: 25px;
+                bottom: 22px;
+                top: auto;
+
+                transform: none;
+            }
+
+            .hero h1 {
+                font-size: 52px;
+                letter-spacing: -3px;
+            }
+
+            .hero-copy {
+                max-width: 90%;
+            }
+
+            .delivery-pill {
+                display: none;
+            }
+
+            header {
+                gap: 10px;
+                padding: 12px 4%;
+            }
+
+            .search-container {
+                max-width: none;
+            }
+
+            .login-btn {
+                display: none;
+            }
         }
 
-        /* Product Cards */
+        @media (max-width: 560px) {
+            .masonry-grid {
+                column-count: 1;
+            }
+
+            .logo {
+                font-size: 21px;
+            }
+
+            .cart-btn {
+                padding: 10px 12px;
+            }
+
+            .hero {
+                border-radius: 24px;
+            }
+
+            .hero h1 {
+                font-size: 45px;
+            }
+
+            .hero-art {
+                width: 125px;
+                height: 125px;
+                font-size: 55px;
+            }
+
+            .hero-meta {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* =====================================================
+           PRODUCT CARD
+        ===================================================== */
 
         .pin-card {
             break-inside: avoid;
-            background: #ffffff;
-            border-radius: 16px;
-            margin-bottom: 16px;
-            border: 1px solid #f3e8ff;
+
+            background: #fffdf9;
+
+            border-radius: 18px;
+
+            margin-bottom: 18px;
+
+            border: 1px solid var(--border);
+
             overflow: hidden;
+
             display: flex;
             flex-direction: column;
+
             transition:
-                transform 0.2s ease,
-                box-shadow 0.2s ease;
+                transform 0.25s ease,
+                box-shadow 0.25s ease;
+
             position: relative;
         }
 
         .pin-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 24px rgba(126, 34, 206, 0.12);
+            transform: translateY(-5px);
+
+            box-shadow:
+                0 15px 35px rgba(63, 45, 67, 0.09);
         }
 
         .image-container {
             width: 100%;
+
             position: relative;
+
             overflow: hidden;
-            background: #faf5ff;
+
+            background: var(--cream-dark);
         }
 
         .pin-img {
             width: 100%;
             height: auto;
+
+            min-height: 170px;
+
+            object-fit: cover;
+
             display: block;
-            border-top-left-radius: 16px;
-            border-top-right-radius: 16px;
-            transition: transform 0.4s ease;
+
+            transition: transform 0.45s ease;
         }
 
         .pin-card:hover .pin-img {
-            transform: scale(1.03);
+            transform: scale(1.045);
         }
 
         .time-badge {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(6px);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: 800;
-            color: #581c87;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            letter-spacing: 0.3px;
+
+            top: 11px;
+            left: 11px;
+
+            background: rgba(255, 255, 255, 0.91);
+
+            backdrop-filter: blur(8px);
+
+            padding: 5px 9px;
+
+            border-radius: 999px;
+
+            font-size: 9px;
+
+            font-weight: 850;
+
+            color: var(--melon-dark);
+
+            box-shadow:
+                0 3px 12px rgba(0, 0, 0, 0.07);
+
+            letter-spacing: 0.5px;
         }
 
         .card-details {
-            padding: 12px 14px 14px;
+            padding: 14px 15px 16px;
+
             display: flex;
             flex-direction: column;
+
             flex-grow: 1;
         }
 
         .item-name {
             font-size: 13.5px;
-            font-weight: 700;
-            color: #2e1065;
-            margin-bottom: 4px;
+
+            font-weight: 800;
+
+            color: var(--ink);
+
+            margin-bottom: 5px;
+
             line-height: 1.35;
         }
 
         .item-subtext {
-            font-size: 11.5px;
-            color: #7e22ce;
-            opacity: 0.7;
+            font-size: 10.5px;
+
+            color: var(--muted);
+
             font-weight: 500;
-            margin-bottom: 12px;
+
+            margin-bottom: 14px;
+
+            line-height: 1.4;
         }
 
         .card-footer {
             margin-top: auto;
+
             display: flex;
+
             justify-content: space-between;
+
             align-items: center;
         }
 
         .price {
             font-size: 15px;
-            font-weight: 800;
-            color: #3b0764;
+
+            font-weight: 900;
+
+            color: var(--ink);
         }
 
         .blinkit-add-btn {
-            background: #faf5ff;
-            border: 1px solid #7e22ce;
-            color: #7e22ce;
-            font-weight: 800;
-            font-size: 12px;
-            padding: 6px 18px;
-            border-radius: 6px;
+            background: var(--melon-light);
+
+            border: 1px solid #d7bde8;
+
+            color: var(--melon-dark);
+
+            font-weight: 850;
+
+            font-size: 10px;
+
+            padding: 7px 17px;
+
+            border-radius: 8px;
+
             cursor: pointer;
+
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.15s ease;
+
+            letter-spacing: 0.7px;
+
+            transition: all 0.18s ease;
         }
 
         .blinkit-add-btn:hover {
-            background: #7e22ce;
-            color: #ffffff;
+            background: var(--melon-dark);
+
+            color: white;
+
+            border-color: var(--melon-dark);
+
+            transform: translateY(-1px);
         }
 
-        /* Cart Overlay */
+        /* =====================================================
+           CART OVERLAY
+        ===================================================== */
 
         .cart-overlay {
             position: fixed;
+
             top: 0;
             left: 0;
+
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.4);
+
+            background: rgba(28, 20, 32, 0.42);
+
             display: none;
+
             z-index: 2000;
-            backdrop-filter: blur(2px);
+
+            backdrop-filter: blur(4px);
         }
+
+        /* =====================================================
+           CART DRAWER
+        ===================================================== */
 
         .cart-drawer {
             position: fixed;
+
             top: 0;
+
             right: -420px;
+
             width: 100%;
-            max-width: 400px;
+
+            max-width: 410px;
+
             height: 100vh;
-            background: #ffffff;
+
+            background: var(--cream);
+
             z-index: 2001;
-            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+            transition:
+                right 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+
             display: flex;
+
             flex-direction: column;
-            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15);
+
+            box-shadow:
+                -15px 0 45px rgba(0, 0, 0, 0.14);
         }
 
         .cart-drawer.open {
@@ -369,52 +864,90 @@
         }
 
         .cart-header {
-            padding: 18px 20px;
-            border-bottom: 1px solid #efe8f8;
+            padding: 20px;
+
+            border-bottom: 1px solid var(--border);
+
             display: flex;
+
             justify-content: space-between;
+
             align-items: center;
-            background: #faf5ff;
+
+            background: #fffdf9;
         }
 
         .cart-title {
-            font-size: 17px;
-            font-weight: 800;
-            color: #581c87;
+            font-size: 18px;
+
+            font-weight: 900;
+
+            color: var(--ink);
+
+            letter-spacing: -0.4px;
         }
 
         .close-cart {
-            background: none;
+            background: var(--cream-dark);
+
             border: none;
-            font-size: 22px;
-            color: #7e22ce;
+
+            width: 34px;
+            height: 34px;
+
+            border-radius: 50%;
+
+            font-size: 17px;
+
+            color: var(--ink);
+
             cursor: pointer;
+
             line-height: 1;
+
+            transition: 0.2s;
+        }
+
+        .close-cart:hover {
+            background: var(--melon-light);
+            color: var(--melon-dark);
         }
 
         .cart-body {
             flex: 1;
+
             overflow-y: auto;
+
             padding: 20px;
+
             display: flex;
+
             flex-direction: column;
+
             gap: 16px;
         }
 
         .cart-item {
             display: flex;
+
             gap: 12px;
+
             align-items: center;
-            border-bottom: 1px solid #f3e8ff;
-            padding-bottom: 12px;
+
+            border-bottom: 1px solid var(--border);
+
+            padding-bottom: 14px;
         }
 
         .cart-item-img {
-            width: 56px;
-            height: 56px;
-            border-radius: 8px;
+            width: 58px;
+            height: 58px;
+
+            border-radius: 10px;
+
             object-fit: cover;
-            background: #faf5ff;
+
+            background: var(--cream-dark);
         }
 
         .cart-item-info {
@@ -422,87 +955,141 @@
         }
 
         .cart-item-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: #2e1065;
+            font-size: 12.5px;
+
+            font-weight: 800;
+
+            color: var(--ink);
+
+            line-height: 1.3;
         }
 
         .cart-item-price {
-            font-size: 13px;
-            font-weight: 800;
-            color: #7e22ce;
-            margin-top: 2px;
+            font-size: 12px;
+
+            font-weight: 850;
+
+            color: var(--melon-dark);
+
+            margin-top: 3px;
         }
 
         .qty-controls {
             display: flex;
+
             align-items: center;
-            border: 1px solid #e9d5ff;
-            border-radius: 6px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 8px;
+
             overflow: hidden;
-            background: #faf5ff;
+
+            background: #fffdf9;
         }
 
         .qty-btn {
             border: none;
+
             background: transparent;
-            padding: 4px 10px;
-            font-weight: 800;
-            color: #7e22ce;
+
+            padding: 5px 10px;
+
+            font-weight: 850;
+
+            color: var(--melon-dark);
+
             cursor: pointer;
         }
 
         .qty-btn:hover {
-            background: #f3e8ff;
+            background: var(--melon-light);
         }
 
         .qty-num {
-            font-size: 12px;
-            font-weight: 800;
+            font-size: 11px;
+
+            font-weight: 850;
+
             padding: 0 4px;
-            color: #3b0764;
+
+            color: var(--ink);
         }
 
         .cart-footer {
             padding: 20px;
-            border-top: 1px solid #efe8f8;
-            background: #ffffff;
+
+            border-top: 1px solid var(--border);
+
+            background: #fffdf9;
         }
 
         .cart-total-row {
             display: flex;
+
             justify-content: space-between;
+
             font-size: 16px;
-            font-weight: 800;
-            color: #2e1065;
-            margin-bottom: 14px;
+
+            font-weight: 900;
+
+            color: var(--ink);
+
+            margin-bottom: 15px;
         }
 
         .checkout-btn {
             width: 100%;
-            background: #7e22ce;
+
+            background: var(--melon-dark);
+
             color: #ffffff;
+
             border: none;
+
             padding: 14px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 800;
+
+            border-radius: 11px;
+
+            font-size: 13px;
+
+            font-weight: 850;
+
             cursor: pointer;
-            transition: background 0.2s;
+
+            transition: 0.2s;
         }
 
         .checkout-btn:hover {
-            background: #6b21a8;
+            background: var(--melon);
+
+            transform: translateY(-1px);
         }
 
-    </style>
+        /* =====================================================
+           EMPTY / ERROR
+        ===================================================== */
 
+        .empty-message {
+            text-align: center;
+
+            color: var(--muted);
+
+            padding: 55px 20px;
+
+            font-weight: 600;
+
+            font-size: 13px;
+        }
+    </style>
 </head>
 
 
 <body>
 
-    <!-- Header -->
+    <!-- =====================================================
+         HEADER
+    ===================================================== -->
 
     <header>
 
@@ -536,7 +1123,7 @@
             <input
                 type="text"
                 id="searchInput"
-                placeholder='Search "aesthetic smoothie", "matcha", "fresh fruits"'
+                placeholder='Search "matcha", "fresh fruits", "snacks"...'
                 onkeyup="renderItems()"
             >
 
@@ -565,11 +1152,86 @@
     </header>
 
 
-    <!-- Main Content -->
 
-    <div class="container">
+    <!-- =====================================================
+         MAIN
+    ===================================================== -->
 
-        <!-- Category Filter -->
+    <main class="container">
+
+
+        <!-- =================================================
+             HERO
+        ================================================= -->
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="hero-eyebrow">
+                    ✦ CURATED FOR YOUR EVERYDAY
+                </div>
+
+                <h1>
+                    Never a dull<br>
+                    <span class="accent">moment.</span>
+                </h1>
+
+                <p class="hero-copy">
+                    Not when you're with us.
+                    Fresh finds, everyday essentials
+                    and little things worth adding to your day —
+                    all in one place.
+                </p>
+
+                <div class="hero-meta">
+
+                    <span>
+                        ⚡ 10 MIN DELIVERY
+                    </span>
+
+                    <span>
+                        ✦ ALWAYS SOMETHING GOOD
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="hero-art">
+                🍒
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             SHOP HEADING
+        ================================================= -->
+
+        <div class="section-heading">
+
+            <div>
+
+                <div class="section-title">
+                    Pick your mood.
+                </div>
+
+                <div class="section-subtitle">
+                    Whatever you're craving, we've got a find for it.
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             CATEGORY FILTER
+        ================================================= -->
 
         <div class="category-bar">
 
@@ -618,17 +1280,24 @@
         </div>
 
 
-        <!-- Product Grid -->
+
+        <!-- =================================================
+             PRODUCT GRID
+        ================================================= -->
 
         <div
             class="masonry-grid"
             id="masonryGrid"
         ></div>
 
-    </div>
+
+    </main>
 
 
-    <!-- Cart Overlay -->
+
+    <!-- =====================================================
+         CART OVERLAY
+    ===================================================== -->
 
     <div
         class="cart-overlay"
@@ -637,7 +1306,10 @@
     ></div>
 
 
-    <!-- Cart Drawer -->
+
+    <!-- =====================================================
+         CART DRAWER
+    ===================================================== -->
 
     <div
         class="cart-drawer"
@@ -665,9 +1337,7 @@
             id="cartBody"
         >
 
-            <p
-                style="text-align: center; color: #7e22ce; padding-top: 40px; font-weight: 600;"
-            >
+            <p class="empty-message">
                 Your cart is empty.
             </p>
 
@@ -692,7 +1362,7 @@
                 class="checkout-btn"
                 onclick="alert('Proceeding to checkout!')"
             >
-                Proceed to Pay
+                Proceed to Pay →
             </button>
 
         </div>
@@ -700,34 +1370,33 @@
     </div>
 
 
+
+    <!-- =====================================================
+         JAVASCRIPT
+         BACKEND CONNECTIONS UNCHANGED
+    ===================================================== -->
+
     <script>
 
         let catalog = [];
-
         let cart = [];
-
         let selectedCategory = "ALL";
 
 
-        /*
-         * Gets the MelonMart application path.
-         *
-         * Example:
-         * /melonmart/index.html
-         *
-         * API becomes:
-         * /melonmart/api/products
-         */
+        /* =====================================================
+           API BASE
+        ===================================================== */
 
-        const API_BASE = window.location.pathname.substring(
-            0,
-            window.location.pathname.lastIndexOf("/")
-        );
+        const API_BASE =
+            window.location.pathname.substring(
+                0,
+                window.location.pathname.lastIndexOf("/")
+            );
 
 
-        // --------------------------------------------------
-        // FETCH PRODUCTS
-        // --------------------------------------------------
+        /* =====================================================
+           FETCH PRODUCTS
+        ===================================================== */
 
         async function fetchProducts() {
 
@@ -744,6 +1413,7 @@
                         encodeURIComponent(
                             selectedCategory
                         );
+
                 }
 
 
@@ -756,16 +1426,9 @@
                     throw new Error(
                         "Failed to load products."
                     );
+
                 }
 
-
-                /*
-                 * ProductServlet returns a raw array:
-                 *
-                 * [
-                 *   { id, name, price, ... }
-                 * ]
-                 */
 
                 const products =
                     await res.json();
@@ -812,25 +1475,28 @@
                     e
                 );
 
+
                 document.getElementById(
                     "masonryGrid"
                 ).innerHTML = `
-                    <p style="
-                        text-align:center;
-                        color:#7e22ce;
-                        font-weight:600;
-                        padding:40px 0;
-                    ">
+
+                    <p class="empty-message"
+                       style="column-span:all;">
+
                         Unable to load products.
+
                     </p>
+
                 `;
+
             }
+
         }
 
 
-        // --------------------------------------------------
-        // FETCH CART
-        // --------------------------------------------------
+        /* =====================================================
+           FETCH CART
+        ===================================================== */
 
         async function fetchCart() {
 
@@ -844,22 +1510,14 @@
 
                 if (!res.ok) {
 
-                    /*
-                     * Not logged in.
-                     * CartServlet can return 401.
-                     */
-
                     cart = [];
 
                     renderCart();
 
                     return;
+
                 }
 
-
-                /*
-                 * CartServlet returns a raw array.
-                 */
 
                 const data =
                     await res.json();
@@ -876,6 +1534,7 @@
                     cart = [];
 
                     renderCart();
+
                 }
 
 
@@ -889,13 +1548,15 @@
                 cart = [];
 
                 renderCart();
+
             }
+
         }
 
 
-        // --------------------------------------------------
-        // ADD TO CART
-        // --------------------------------------------------
+        /* =====================================================
+           ADD TO CART
+        ===================================================== */
 
         async function addToCart(productId) {
 
@@ -915,10 +1576,13 @@
 
                             body:
                                 JSON.stringify({
+
                                     productId:
                                         productId,
+
                                     quantity:
                                         1
+
                                 })
 
                         }
@@ -933,13 +1597,13 @@
 
                     await fetchCart();
 
-
                 } else {
 
                     alert(
                         data.message ||
                         "Please login to add items to your cart."
                     );
+
                 }
 
 
@@ -953,13 +1617,15 @@
                 alert(
                     "Unable to add item to cart."
                 );
+
             }
+
         }
 
 
-        // --------------------------------------------------
-        // UPDATE CART QUANTITY
-        // --------------------------------------------------
+        /* =====================================================
+           UPDATE CART QUANTITY
+        ===================================================== */
 
         async function updateQty(
             productId,
@@ -987,17 +1653,22 @@
                 if (newQty <= 0) {
 
                     await fetch(
+
                         API_BASE +
                         `/api/cart?productId=${productId}`,
+
                         {
                             method: "DELETE"
                         }
+
                     );
 
                 } else {
 
                     await fetch(
+
                         API_BASE + "/api/cart",
+
                         {
 
                             method: "POST",
@@ -1009,14 +1680,19 @@
 
                             body:
                                 JSON.stringify({
+
                                     productId:
                                         productId,
+
                                     quantity:
                                         newQty
+
                                 })
 
                         }
+
                     );
+
                 }
 
 
@@ -1029,13 +1705,15 @@
                     "Error updating cart quantity:",
                     e
                 );
+
             }
+
         }
 
 
-        // --------------------------------------------------
-        // RENDER CART
-        // --------------------------------------------------
+        /* =====================================================
+           RENDER CART
+        ===================================================== */
 
         function renderCart() {
 
@@ -1044,10 +1722,12 @@
                     "cartBody"
                 );
 
+
             const cartBadge =
                 document.getElementById(
                     "cartBadge"
                 );
+
 
             const cartTotal =
                 document.getElementById(
@@ -1063,21 +1743,29 @@
             if (cart.length === 0) {
 
                 cartBody.innerHTML = `
-                    <p style="
-                        text-align:center;
-                        color:#7e22ce;
-                        padding-top:40px;
-                        font-weight:600;
-                    ">
-                        Your cart is empty.
+
+                    <p class="empty-message">
+
+                        Your cart is empty.<br>
+
+                        <span style="
+                            font-size:11px;
+                            opacity:.7;
+                        ">
+                            Find something good. ✦
+                        </span>
+
                     </p>
+
                 `;
+
 
                 cartBadge.innerText = "0";
 
                 cartTotal.innerText = "₹0";
 
                 return;
+
             }
 
 
@@ -1114,6 +1802,7 @@
                             alt="${item.name || "Product"}"
                         >
 
+
                         <div class="cart-item-info">
 
                             <div class="cart-item-title">
@@ -1126,13 +1815,14 @@
 
                         </div>
 
+
                         <div class="qty-controls">
 
                             <button
                                 class="qty-btn"
                                 onclick="updateQty(${item.productId}, -1)"
                             >
-                                -
+                                −
                             </button>
 
                             <span class="qty-num">
@@ -1151,6 +1841,7 @@
                     </div>
 
                 `;
+
             });
 
 
@@ -1160,12 +1851,13 @@
 
             cartTotal.innerText =
                 `₹${totalPrice.toFixed(2)}`;
+
         }
 
 
-        // --------------------------------------------------
-        // OPEN CART
-        // --------------------------------------------------
+        /* =====================================================
+           OPEN CART
+        ===================================================== */
 
         function openCart() {
 
@@ -1177,12 +1869,13 @@
             document.getElementById(
                 "cartDrawer"
             ).classList.add("open");
+
         }
 
 
-        // --------------------------------------------------
-        // CLOSE CART
-        // --------------------------------------------------
+        /* =====================================================
+           CLOSE CART
+        ===================================================== */
 
         function closeCart() {
 
@@ -1194,12 +1887,13 @@
             document.getElementById(
                 "cartDrawer"
             ).classList.remove("open");
+
         }
 
 
-        // --------------------------------------------------
-        // CHECK AUTH
-        // --------------------------------------------------
+        /* =====================================================
+           CHECK AUTH
+        ===================================================== */
 
         async function checkAuth() {
 
@@ -1221,14 +1915,6 @@
                     await res.json();
 
 
-                /*
-                 * AuthServlet /me returns:
-                 *
-                 * authenticated
-                 * user
-                 * role
-                 */
-
                 if (
                     data.authenticated &&
                     data.user
@@ -1249,14 +1935,11 @@
                         `Account (${firstName})`;
 
 
-                    /*
-                     * Keep logout behaviour.
-                     */
-
                     document.getElementById(
                         "userBtn"
                     ).onclick =
                         logout;
+
                 }
 
 
@@ -1266,24 +1949,29 @@
                     "Auth check failed:",
                     e
                 );
+
             }
+
         }
 
 
-        // --------------------------------------------------
-        // LOGOUT
-        // --------------------------------------------------
+        /* =====================================================
+           LOGOUT
+        ===================================================== */
 
         async function logout() {
 
             try {
 
                 await fetch(
+
                     API_BASE +
                     "/api/auth/logout",
+
                     {
                         method: "POST"
                     }
+
                 );
 
             } catch (e) {
@@ -1296,13 +1984,15 @@
             } finally {
 
                 window.location.reload();
+
             }
+
         }
 
 
-        // --------------------------------------------------
-        // SET CATEGORY
-        // --------------------------------------------------
+        /* =====================================================
+           SET CATEGORY
+        ===================================================== */
 
         function setCategory(
             category,
@@ -1331,12 +2021,13 @@
 
 
             fetchProducts();
+
         }
 
 
-        // --------------------------------------------------
-        // SEARCH + RENDER PRODUCTS
-        // --------------------------------------------------
+        /* =====================================================
+           SEARCH + RENDER PRODUCTS
+        ===================================================== */
 
         function renderItems() {
 
@@ -1384,19 +2075,19 @@
 
                 grid.innerHTML = `
 
-                    <p style="
-                        text-align:center;
-                        color:#7e22ce;
-                        font-weight:600;
-                        padding:40px 0;
-                        column-span:all;
-                    ">
-                        No aesthetic finds found.
+                    <p
+                        class="empty-message"
+                        style="column-span:all;"
+                    >
+
+                        No good finds here yet. ✦
+
                     </p>
 
                 `;
 
                 return;
+
             }
 
 
@@ -1409,7 +2100,7 @@
                         <div class="image-container">
 
                             <span class="time-badge">
-                                ⏱️ ${item.time}
+                                ⏱ ${item.time}
                             </span>
 
                             <img
@@ -1436,9 +2127,11 @@
                             <div class="card-footer">
 
                                 <span class="price">
+
                                     ₹${Number(
                                         item.price || 0
                                     ).toFixed(2)}
+
                                 </span>
 
 
@@ -1458,12 +2151,13 @@
                 `;
 
             });
+
         }
 
 
-        // --------------------------------------------------
-        // START PAGE
-        // --------------------------------------------------
+        /* =====================================================
+           START PAGE
+        ===================================================== */
 
         checkAuth();
 
