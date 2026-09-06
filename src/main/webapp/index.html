@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Melon Mart - Instant Grocery & Aesthetic Curation</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #f8f6fb;
+            color: #1c1c1c;
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        /* Aesthetic Purple Header */
+
+        header {
+            background: #ffffff;
+            padding: 12px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            border-bottom: 1px solid #efe8f8;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            color: #6b21a8;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: #a855f7;
+        }
+
+        .delivery-pill {
+            display: flex;
+            flex-direction: column;
+            background: #f3e8ff;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid #e9d5ff;
+        }
+
+        .delivery-time {
+            font-weight: 800;
+            font-size: 12px;
+            color: #7e22ce;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .address {
+            font-size: 11px;
+            color: #6b21a8;
+            font-weight: 600;
+            max-width: 140px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 550px;
+            position: relative;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 12px 16px 12px 42px;
+            border: 1px solid #e9d5ff;
+            border-radius: 10px;
+            background: #faf5ff;
+            font-size: 13.5px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .search-container input:focus {
+            background: #ffffff;
+            border-color: #9333ea;
+            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.5;
+            font-size: 14px;
+            color: #6b21a8;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .login-btn {
+            background: transparent;
+            border: none;
+            font-weight: 700;
+            font-size: 14px;
+            color: #581c87;
+            cursor: pointer;
+            padding: 8px 10px;
+        }
+
+        .cart-btn {
+            background: #7e22ce;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .cart-btn:hover {
+            background: #6b21a8;
+        }
+
+        /* Main Container */
+
+        .container {
+            width: 92%;
+            max-width: 1280px;
+            margin: 20px auto;
+        }
+
+        /* Category Filter */
+
+        .category-bar {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            scrollbar-width: none;
+            margin-bottom: 20px;
+        }
+
+        .category-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .cat-chip {
+            background: #ffffff;
+            border: 1px solid #e9d5ff;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #6b21a8;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cat-chip:hover,
+        .cat-chip.active {
+            background: #7e22ce;
+            color: #ffffff;
+            border-color: #7e22ce;
+            box-shadow: 0 4px 12px rgba(126, 34, 206, 0.25);
+        }
+
+        /* Pinterest Columns Layout */
+
+        .masonry-grid {
+            column-count: 4;
+            column-gap: 16px;
+        }
+
+        @media (max-width: 1100px) {
+
+            .masonry-grid {
+                column-count: 3;
+            }
+
+        }
+
+        @media (max-width: 768px) {
+
+            .masonry-grid {
+                column-count: 2;
+            }
+
+        }
+
+        /* Product Cards */
+
+        .pin-card {
+            break-inside: avoid;
+            background: #ffffff;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            border: 1px solid #f3e8ff;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+            position: relative;
+        }
+
+        .pin-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 24px rgba(126, 34, 206, 0.12);
+        }
+
+        .image-container {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            background: #faf5ff;
+        }
+
+        .pin-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            transition: transform 0.4s ease;
+        }
+
+        .pin-card:hover .pin-img {
+            transform: scale(1.03);
+        }
+
+        .time-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(6px);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 800;
+            color: #581c87;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            letter-spacing: 0.3px;
+        }
+
+        .card-details {
+            padding: 12px 14px 14px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .item-name {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #2e1065;
+            margin-bottom: 4px;
+            line-height: 1.35;
+        }
+
+        .item-subtext {
+            font-size: 11.5px;
+            color: #7e22ce;
+            opacity: 0.7;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .card-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price {
+            font-size: 15px;
+            font-weight: 800;
+            color: #3b0764;
+        }
+
+        .blinkit-add-btn {
+            background: #faf5ff;
+            border: 1px solid #7e22ce;
+            color: #7e22ce;
+            font-weight: 800;
+            font-size: 12px;
+            padding: 6px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.15s ease;
+        }
+
+        .blinkit-add-btn:hover {
+            background: #7e22ce;
+            color: #ffffff;
+        }
+
+        /* Cart Overlay */
+
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            z-index: 2000;
+            backdrop-filter: blur(2px);
+        }
+
+        .cart-drawer {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background: #ffffff;
+            z-index: 2001;
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .cart-drawer.open {
+            right: 0;
+        }
+
+        .cart-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid #efe8f8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #faf5ff;
+        }
+
+        .cart-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: #581c87;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            font-size: 22px;
+            color: #7e22ce;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .cart-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            border-bottom: 1px solid #f3e8ff;
+            padding-bottom: 12px;
+        }
+
+        .cart-item-img {
+            width: 56px;
+            height: 56px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #faf5ff;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #2e1065;
+        }
+
+        .cart-item-price {
+            font-size: 13px;
+            font-weight: 800;
+            color: #7e22ce;
+            margin-top: 2px;
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            border: 1px solid #e9d5ff;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #faf5ff;
+        }
+
+        .qty-btn {
+            border: none;
+            background: transparent;
+            padding: 4px 10px;
+            font-weight: 800;
+            color: #7e22ce;
+            cursor: pointer;
+        }
+
+        .qty-btn:hover {
+            background: #f3e8ff;
+        }
+
+        .qty-num {
+            font-size: 12px;
+            font-weight: 800;
+            padding: 0 4px;
+            color: #3b0764;
+        }
+
+        .cart-footer {
+            padding: 20px;
+            border-top: 1px solid #efe8f8;
+            background: #ffffff;
+        }
+
+        .cart-total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 16px;
+            font-weight: 800;
+            color: #2e1065;
+            margin-bottom: 14px;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: #7e22ce;
+            color: #ffffff;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .checkout-btn:hover {
+            background: #6b21a8;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <!-- Header -->
+
+    <header>
+
+        <div class="header-left">
+
+            <a href="index.html" class="logo">
+                melon<span>mart</span>
+            </a>
+
+            <div class="delivery-pill">
+
+                <span class="delivery-time">
+                    ⚡ 10 mins delivery
+                </span>
+
+                <span class="address">
+                    Hostel 4, Main Campus
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="search-container">
+
+            <span class="search-icon">
+                🔍
+            </span>
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder='Search "aesthetic smoothie", "matcha", "fresh fruits"'
+                onkeyup="renderItems()"
+            >
+
+        </div>
+
+
+        <div class="header-actions">
+
+            <button
+                class="login-btn"
+                id="userBtn"
+                onclick="window.location.href='login.html'"
+            >
+                Login
+            </button>
+
+            <button
+                class="cart-btn"
+                onclick="openCart()"
+            >
+                🛒 Cart (<span id="cartBadge">0</span>)
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- Main Content -->
+
+    <div class="container">
+
+        <!-- Category Filter -->
+
+        <div class="category-bar">
+
+            <button
+                class="cat-chip active"
+                onclick="setCategory('ALL', this)"
+            >
+                ✨ Everything
+            </button>
+
+            <button
+                class="cat-chip"
+                onclick="setCategory('FRUITS', this)"
+            >
+                🍓 Aesthetic Fruits
+            </button>
+
+            <button
+                class="cat-chip"
+                onclick="setCategory('JUICES', this)"
+            >
+                🧃 Cold-Pressed Juices
+            </button>
+
+            <button
+                class="cat-chip"
+                onclick="setCategory('SNACKS', this)"
+            >
+                🥨 Artisan Snacks
+            </button>
+
+            <button
+                class="cat-chip"
+                onclick="setCategory('RECIPES', this)"
+            >
+                📖 Recipe Kits
+            </button>
+
+            <button
+                class="cat-chip"
+                onclick="setCategory('CREATIVE', this)"
+            >
+                🎨 Creative & Cafe
+            </button>
+
+        </div>
+
+
+        <!-- Product Grid -->
+
+        <div
+            class="masonry-grid"
+            id="masonryGrid"
+        ></div>
+
+    </div>
+
+
+    <!-- Cart Overlay -->
+
+    <div
+        class="cart-overlay"
+        id="cartOverlay"
+        onclick="closeCart()"
+    ></div>
+
+
+    <!-- Cart Drawer -->
+
+    <div
+        class="cart-drawer"
+        id="cartDrawer"
+    >
+
+        <div class="cart-header">
+
+            <span class="cart-title">
+                Your Cart 🛒
+            </span>
+
+            <button
+                class="close-cart"
+                onclick="closeCart()"
+            >
+                ✕
+            </button>
+
+        </div>
+
+
+        <div
+            class="cart-body"
+            id="cartBody"
+        >
+
+            <p
+                style="text-align: center; color: #7e22ce; padding-top: 40px; font-weight: 600;"
+            >
+                Your cart is empty.
+            </p>
+
+        </div>
+
+
+        <div class="cart-footer">
+
+            <div class="cart-total-row">
+
+                <span>
+                    Total Amount
+                </span>
+
+                <span id="cartTotal">
+                    ₹0
+                </span>
+
+            </div>
+
+            <button
+                class="checkout-btn"
+                onclick="alert('Proceeding to checkout!')"
+            >
+                Proceed to Pay
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        let catalog = [];
+
+        let cart = [];
+
+        let selectedCategory = "ALL";
+
+
+        /*
+         * Gets the MelonMart application path.
+         *
+         * Example:
+         * /melonmart/index.html
+         *
+         * API becomes:
+         * /melonmart/api/products
+         */
+
+        const API_BASE = window.location.pathname.substring(
+            0,
+            window.location.pathname.lastIndexOf("/")
+        );
+
+
+        // --------------------------------------------------
+        // FETCH PRODUCTS
+        // --------------------------------------------------
+
+        async function fetchProducts() {
+
+            try {
+
+                let url =
+                    API_BASE + "/api/products";
+
+
+                if (selectedCategory !== "ALL") {
+
+                    url +=
+                        "?category=" +
+                        encodeURIComponent(
+                            selectedCategory
+                        );
+                }
+
+
+                const res =
+                    await fetch(url);
+
+
+                if (!res.ok) {
+
+                    throw new Error(
+                        "Failed to load products."
+                    );
+                }
+
+
+                /*
+                 * ProductServlet returns a raw array:
+                 *
+                 * [
+                 *   { id, name, price, ... }
+                 * ]
+                 */
+
+                const products =
+                    await res.json();
+
+
+                if (Array.isArray(products)) {
+
+                    catalog =
+                        products.map(p => ({
+
+                            id: p.id,
+
+                            name:
+                                p.name,
+
+                            sub:
+                                p.description ||
+                                `${p.stockQty || 10} in stock`,
+
+                            price:
+                                p.price,
+
+                            category:
+                                p.category,
+
+                            img:
+                                p.imageUrl ||
+                                "https://images.unsplash.com/photo-1587049352847-4a222e784d38?w=600&q=80",
+
+                            time:
+                                "10 MINS"
+
+                        }));
+
+
+                    renderItems();
+
+                }
+
+            } catch (e) {
+
+                console.error(
+                    "Error fetching products:",
+                    e
+                );
+
+                document.getElementById(
+                    "masonryGrid"
+                ).innerHTML = `
+                    <p style="
+                        text-align:center;
+                        color:#7e22ce;
+                        font-weight:600;
+                        padding:40px 0;
+                    ">
+                        Unable to load products.
+                    </p>
+                `;
+            }
+        }
+
+
+        // --------------------------------------------------
+        // FETCH CART
+        // --------------------------------------------------
+
+        async function fetchCart() {
+
+            try {
+
+                const res =
+                    await fetch(
+                        API_BASE + "/api/cart"
+                    );
+
+
+                if (!res.ok) {
+
+                    /*
+                     * Not logged in.
+                     * CartServlet can return 401.
+                     */
+
+                    cart = [];
+
+                    renderCart();
+
+                    return;
+                }
+
+
+                /*
+                 * CartServlet returns a raw array.
+                 */
+
+                const data =
+                    await res.json();
+
+
+                if (Array.isArray(data)) {
+
+                    cart = data;
+
+                    renderCart();
+
+                } else {
+
+                    cart = [];
+
+                    renderCart();
+                }
+
+
+            } catch (e) {
+
+                console.error(
+                    "Error fetching cart:",
+                    e
+                );
+
+                cart = [];
+
+                renderCart();
+            }
+        }
+
+
+        // --------------------------------------------------
+        // ADD TO CART
+        // --------------------------------------------------
+
+        async function addToCart(productId) {
+
+            try {
+
+                const res =
+                    await fetch(
+                        API_BASE + "/api/cart",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    productId:
+                                        productId,
+                                    quantity:
+                                        1
+                                })
+
+                        }
+                    );
+
+
+                const data =
+                    await res.json();
+
+
+                if (res.ok && data.success) {
+
+                    await fetchCart();
+
+
+                } else {
+
+                    alert(
+                        data.message ||
+                        "Please login to add items to your cart."
+                    );
+                }
+
+
+            } catch (e) {
+
+                console.error(
+                    "Error adding item to cart:",
+                    e
+                );
+
+                alert(
+                    "Unable to add item to cart."
+                );
+            }
+        }
+
+
+        // --------------------------------------------------
+        // UPDATE CART QUANTITY
+        // --------------------------------------------------
+
+        async function updateQty(
+            productId,
+            delta
+        ) {
+
+            const item =
+                cart.find(
+                    i =>
+                        i.productId === productId
+                );
+
+
+            if (!item) {
+                return;
+            }
+
+
+            const newQty =
+                item.quantity + delta;
+
+
+            try {
+
+                if (newQty <= 0) {
+
+                    await fetch(
+                        API_BASE +
+                        `/api/cart?productId=${productId}`,
+                        {
+                            method: "DELETE"
+                        }
+                    );
+
+                } else {
+
+                    await fetch(
+                        API_BASE + "/api/cart",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    productId:
+                                        productId,
+                                    quantity:
+                                        newQty
+                                })
+
+                        }
+                    );
+                }
+
+
+                await fetchCart();
+
+
+            } catch (e) {
+
+                console.error(
+                    "Error updating cart quantity:",
+                    e
+                );
+            }
+        }
+
+
+        // --------------------------------------------------
+        // RENDER CART
+        // --------------------------------------------------
+
+        function renderCart() {
+
+            const cartBody =
+                document.getElementById(
+                    "cartBody"
+                );
+
+            const cartBadge =
+                document.getElementById(
+                    "cartBadge"
+                );
+
+            const cartTotal =
+                document.getElementById(
+                    "cartTotal"
+                );
+
+
+            let totalCount = 0;
+
+            let totalPrice = 0;
+
+
+            if (cart.length === 0) {
+
+                cartBody.innerHTML = `
+                    <p style="
+                        text-align:center;
+                        color:#7e22ce;
+                        padding-top:40px;
+                        font-weight:600;
+                    ">
+                        Your cart is empty.
+                    </p>
+                `;
+
+                cartBadge.innerText = "0";
+
+                cartTotal.innerText = "₹0";
+
+                return;
+            }
+
+
+            cartBody.innerHTML = "";
+
+
+            cart.forEach(item => {
+
+                totalCount +=
+                    item.quantity;
+
+
+                const price =
+                    Number(
+                        item.price || 0
+                    );
+
+
+                totalPrice +=
+                    price *
+                    item.quantity;
+
+
+                cartBody.innerHTML += `
+
+                    <div class="cart-item">
+
+                        <img
+                            src="${
+                                item.imageUrl ||
+                                "https://images.unsplash.com/photo-1587049352847-4a222e784d38?w=600&q=80"
+                            }"
+                            class="cart-item-img"
+                            alt="${item.name || "Product"}"
+                        >
+
+                        <div class="cart-item-info">
+
+                            <div class="cart-item-title">
+                                ${item.name || "Product"}
+                            </div>
+
+                            <div class="cart-item-price">
+                                ₹${price.toFixed(2)}
+                            </div>
+
+                        </div>
+
+                        <div class="qty-controls">
+
+                            <button
+                                class="qty-btn"
+                                onclick="updateQty(${item.productId}, -1)"
+                            >
+                                -
+                            </button>
+
+                            <span class="qty-num">
+                                ${item.quantity}
+                            </span>
+
+                            <button
+                                class="qty-btn"
+                                onclick="updateQty(${item.productId}, 1)"
+                            >
+                                +
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                `;
+            });
+
+
+            cartBadge.innerText =
+                totalCount;
+
+
+            cartTotal.innerText =
+                `₹${totalPrice.toFixed(2)}`;
+        }
+
+
+        // --------------------------------------------------
+        // OPEN CART
+        // --------------------------------------------------
+
+        function openCart() {
+
+            document.getElementById(
+                "cartOverlay"
+            ).style.display = "block";
+
+
+            document.getElementById(
+                "cartDrawer"
+            ).classList.add("open");
+        }
+
+
+        // --------------------------------------------------
+        // CLOSE CART
+        // --------------------------------------------------
+
+        function closeCart() {
+
+            document.getElementById(
+                "cartOverlay"
+            ).style.display = "none";
+
+
+            document.getElementById(
+                "cartDrawer"
+            ).classList.remove("open");
+        }
+
+
+        // --------------------------------------------------
+        // CHECK AUTH
+        // --------------------------------------------------
+
+        async function checkAuth() {
+
+            try {
+
+                const res =
+                    await fetch(
+                        API_BASE +
+                        "/api/auth/me"
+                    );
+
+
+                if (!res.ok) {
+                    return;
+                }
+
+
+                const data =
+                    await res.json();
+
+
+                /*
+                 * AuthServlet /me returns:
+                 *
+                 * authenticated
+                 * user
+                 * role
+                 */
+
+                if (
+                    data.authenticated &&
+                    data.user
+                ) {
+
+                    const firstName =
+                        (
+                            data.user.name ||
+                            data.user.username ||
+                            "Account"
+                        )
+                        .split(" ")[0];
+
+
+                    document.getElementById(
+                        "userBtn"
+                    ).innerText =
+                        `Account (${firstName})`;
+
+
+                    /*
+                     * Keep logout behaviour.
+                     */
+
+                    document.getElementById(
+                        "userBtn"
+                    ).onclick =
+                        logout;
+                }
+
+
+            } catch (e) {
+
+                console.error(
+                    "Auth check failed:",
+                    e
+                );
+            }
+        }
+
+
+        // --------------------------------------------------
+        // LOGOUT
+        // --------------------------------------------------
+
+        async function logout() {
+
+            try {
+
+                await fetch(
+                    API_BASE +
+                    "/api/auth/logout",
+                    {
+                        method: "POST"
+                    }
+                );
+
+            } catch (e) {
+
+                console.error(
+                    "Logout error:",
+                    e
+                );
+
+            } finally {
+
+                window.location.reload();
+            }
+        }
+
+
+        // --------------------------------------------------
+        // SET CATEGORY
+        // --------------------------------------------------
+
+        function setCategory(
+            category,
+            element
+        ) {
+
+            selectedCategory =
+                category;
+
+
+            document
+                .querySelectorAll(
+                    ".cat-chip"
+                )
+                .forEach(
+                    btn =>
+                        btn.classList.remove(
+                            "active"
+                        )
+                );
+
+
+            element.classList.add(
+                "active"
+            );
+
+
+            fetchProducts();
+        }
+
+
+        // --------------------------------------------------
+        // SEARCH + RENDER PRODUCTS
+        // --------------------------------------------------
+
+        function renderItems() {
+
+            const query =
+                document.getElementById(
+                    "searchInput"
+                )
+                .value
+                .toLowerCase()
+                .trim();
+
+
+            const grid =
+                document.getElementById(
+                    "masonryGrid"
+                );
+
+
+            grid.innerHTML = "";
+
+
+            const filtered =
+                catalog.filter(item => {
+
+                    return (
+
+                        item.name
+                            .toLowerCase()
+                            .includes(query)
+
+                        ||
+
+                        item.sub
+                            .toLowerCase()
+                            .includes(query)
+
+                    );
+
+                });
+
+
+            if (
+                filtered.length === 0
+            ) {
+
+                grid.innerHTML = `
+
+                    <p style="
+                        text-align:center;
+                        color:#7e22ce;
+                        font-weight:600;
+                        padding:40px 0;
+                        column-span:all;
+                    ">
+                        No aesthetic finds found.
+                    </p>
+
+                `;
+
+                return;
+            }
+
+
+            filtered.forEach(item => {
+
+                grid.innerHTML += `
+
+                    <div class="pin-card">
+
+                        <div class="image-container">
+
+                            <span class="time-badge">
+                                ⏱️ ${item.time}
+                            </span>
+
+                            <img
+                                src="${item.img}"
+                                alt="${item.name}"
+                                class="pin-img"
+                                loading="lazy"
+                            >
+
+                        </div>
+
+
+                        <div class="card-details">
+
+                            <div class="item-name">
+                                ${item.name}
+                            </div>
+
+                            <div class="item-subtext">
+                                ${item.sub}
+                            </div>
+
+
+                            <div class="card-footer">
+
+                                <span class="price">
+                                    ₹${Number(
+                                        item.price || 0
+                                    ).toFixed(2)}
+                                </span>
+
+
+                                <button
+                                    class="blinkit-add-btn"
+                                    onclick="addToCart(${item.id})"
+                                >
+                                    ADD
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            });
+        }
+
+
+        // --------------------------------------------------
+        // START PAGE
+        // --------------------------------------------------
+
+        checkAuth();
+
+        fetchProducts();
+
+        fetchCart();
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Melon Mart - Seller Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #fff0f5;
+            color: #1c1c1c;
+            min-height: 100vh;
+            padding: 30px 6%;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 900;
+            color: #be185d;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: #f43f5e;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 850px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #fce7f3;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(225, 29, 72, 0.05);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #831843;
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            color: #831843;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #fbcfe8;
+            border-radius: 8px;
+            background: #fff5f7;
+            font-size: 13.5px;
+            outline: none;
+            color: #831843;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            background: #fff;
+            border-color: #f43f5e;
+            box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.15);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #e11d48;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 13.5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #be185d;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px;
+            font-size: 12px;
+            font-weight: 800;
+            color: #831843;
+            border-bottom: 2px solid #fce7f3;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 12px;
+            font-size: 13.5px;
+            border-bottom: 1px solid #fce7f3;
+            color: #831843;
+        }
+
+        .product-img {
+            width: 42px;
+            height: 42px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #9f1239;
+            padding: 20px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <a href="index.html" class="logo">
+        melon<span>mart</span>
+    </a>
+
+    <span style="font-weight: 800; color: #e11d48;">
+        Seller Portal
+    </span>
+
+</header>
+
+
+<div class="dashboard-grid">
+
+    <!-- ADD PRODUCT -->
+
+    <div class="card">
+
+        <h2 class="card-title">
+            Add New Product
+        </h2>
+
+        <form id="productForm" onsubmit="handleAddProduct(event)">
+
+            <div class="form-group">
+
+                <label>Title</label>
+
+                <input
+                    type="text"
+                    id="pName"
+                    placeholder="Product name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Category</label>
+
+                <select id="pCategory" required>
+
+                    <option value="FRUITS">
+                        Aesthetic Fruits
+                    </option>
+
+                    <option value="JUICES">
+                        Cold-Pressed Juices
+                    </option>
+
+                    <option value="SNACKS">
+                        Artisan Snacks
+                    </option>
+
+                    <option value="RECIPES">
+                        Recipe Kits
+                    </option>
+
+                    <option value="CREATIVE">
+                        Creative & Cafe
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Price (₹)</label>
+
+                <input
+                    type="number"
+                    step="0.01"
+                    id="pPrice"
+                    placeholder="299.00"
+                    min="0.01"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Stock Qty</label>
+
+                <input
+                    type="number"
+                    id="pStock"
+                    value="20"
+                    min="0"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Image URL</label>
+
+                <input
+                    type="url"
+                    id="pImg"
+                    placeholder="https://..."
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Description</label>
+
+                <textarea
+                    id="pDesc"
+                    rows="2"
+                    placeholder="Brief product description"
+                ></textarea>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="submit-btn"
+            >
+                List Item
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- INVENTORY -->
+
+    <div class="card">
+
+        <h2 class="card-title">
+            Active Listings
+        </h2>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Item</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="inventoryList"></tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /*
+     * API base path
+     *
+     * Example:
+     * http://localhost:8080/melonmart/seller.html
+     *
+     * API calls become:
+     * http://localhost:8080/melonmart/api/...
+     */
+
+    const API_BASE = window.location.pathname.substring(
+        0,
+        window.location.pathname.lastIndexOf("/")
+    );
+
+
+    // --------------------------------------------------
+    // CHECK AUTHENTICATION
+    // --------------------------------------------------
+
+    async function checkAuth() {
+
+        try {
+
+            const res = await fetch(
+                API_BASE + "/api/auth/me"
+            );
+
+            if (!res.ok) {
+
+                window.location.href = "login.html";
+
+                return false;
+            }
+
+
+            const data = await res.json();
+
+
+            if (
+                !data.authenticated ||
+                data.role !== "SELLER"
+            ) {
+
+                window.location.href = "login.html";
+
+                return false;
+            }
+
+
+            return true;
+
+
+        } catch (e) {
+
+            console.error(
+                "Authentication check failed:",
+                e
+            );
+
+            window.location.href = "login.html";
+
+            return false;
+        }
+    }
+
+
+    // --------------------------------------------------
+    // FETCH SELLER INVENTORY
+    // --------------------------------------------------
+
+    async function fetchSellerInventory() {
+
+        try {
+
+            const res = await fetch(
+                API_BASE + "/api/products"
+            );
+
+
+            if (!res.ok) {
+
+                throw new Error(
+                    "Failed to load products"
+                );
+            }
+
+
+            const products = await res.json();
+
+
+            const tbody =
+                document.getElementById(
+                    "inventoryList"
+                );
+
+
+            if (
+                Array.isArray(products) &&
+                products.length > 0
+            ) {
+
+                tbody.innerHTML = "";
+
+
+                products.forEach(p => {
+
+                    tbody.innerHTML += `
+
+                        <tr>
+
+                            <td>
+
+                                <img
+                                    src="${p.imageUrl || ""}"
+                                    class="product-img"
+                                    alt="${p.name || "Product"}"
+                                >
+
+                            </td>
+
+
+                            <td>
+
+                                <b>
+                                    ${p.name || "Unnamed Product"}
+                                </b>
+
+                            </td>
+
+
+                            <td>
+                                ${p.category || "-"}
+                            </td>
+
+
+                            <td>
+                                ₹${Number(
+                                    p.price || 0
+                                ).toFixed(2)}
+                            </td>
+
+
+                            <td>
+                                ${p.stockQty ?? 0}
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                });
+
+
+            } else {
+
+                tbody.innerHTML = `
+
+                    <tr>
+
+                        <td
+                            colspan="5"
+                            class="empty-state"
+                        >
+                            No active listings found.
+                            Add your first item using the form.
+                        </td>
+
+                    </tr>
+
+                `;
+            }
+
+
+        } catch (e) {
+
+            console.error(
+                "Error loading inventory:",
+                e
+            );
+
+
+            document.getElementById(
+                "inventoryList"
+            ).innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="5"
+                        class="empty-state"
+                    >
+                        Unable to load listings.
+                    </td>
+
+                </tr>
+
+            `;
+        }
+    }
+
+
+    // --------------------------------------------------
+    // ADD PRODUCT
+    // --------------------------------------------------
+
+    async function handleAddProduct(e) {
+
+        e.preventDefault();
+
+
+        const payload = {
+
+            name:
+                document
+                    .getElementById("pName")
+                    .value
+                    .trim(),
+
+
+            category:
+                document
+                    .getElementById("pCategory")
+                    .value,
+
+
+            price:
+                parseFloat(
+                    document
+                        .getElementById("pPrice")
+                        .value
+                ),
+
+
+            stockQty:
+                parseInt(
+                    document
+                        .getElementById("pStock")
+                        .value,
+                    10
+                ),
+
+
+            imageUrl:
+                document
+                    .getElementById("pImg")
+                    .value
+                    .trim(),
+
+
+            description:
+                document
+                    .getElementById("pDesc")
+                    .value
+                    .trim()
+        };
+
+
+        try {
+
+            const res = await fetch(
+                API_BASE + "/api/products",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(payload)
+
+                }
+            );
+
+
+            const data =
+                await res.json();
+
+
+            /*
+             * ProductServlet returns success:true
+             * when the product is added.
+             */
+
+            if (res.ok && data.success) {
+
+                alert(
+                    "Product listed successfully!"
+                );
+
+
+                document
+                    .getElementById("productForm")
+                    .reset();
+
+
+                document
+                    .getElementById("pStock")
+                    .value = 20;
+
+
+                await fetchSellerInventory();
+
+
+            } else {
+
+                alert(
+                    data.message ||
+                    "Failed to add product."
+                );
+            }
+
+
+        } catch (err) {
+
+            console.error(
+                "Add product error:",
+                err
+            );
+
+
+            alert(
+                "Server connection error."
+            );
+        }
+    }
+
+
+    // --------------------------------------------------
+    // INITIALIZE SELLER PAGE
+    // --------------------------------------------------
+
+    async function initializeSellerPage() {
+
+        const authenticated =
+            await checkAuth();
+
+
+        if (authenticated) {
+
+            await fetchSellerInventory();
+
+        }
+    }
+
+
+    initializeSellerPage();
+
+</script>
+
+</body>
+</html>

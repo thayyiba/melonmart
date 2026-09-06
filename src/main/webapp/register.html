@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melon Mart - Register</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, Helvetica, Arial, sans-serif;
+            background: #f8f6fb;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .register-box {
+            width: 90%;
+            max-width: 380px;
+            background: white;
+            padding: 35px;
+            border-radius: 24px;
+            border: 1px solid #efe8f8;
+            box-shadow: 0 10px 30px rgba(126, 34, 206, 0.08);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 45px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #581c87;
+            margin-bottom: 5px;
+            font-weight: 800;
+        }
+
+        .welcome {
+            text-align: center;
+            color: #7e22ce;
+            opacity: 0.8;
+            margin-bottom: 20px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 800;
+            font-size: 12px;
+            color: #581c87;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px;
+            margin-top: 7px;
+            border: 1px solid #e9d5ff;
+            border-radius: 10px;
+            background: #faf5ff;
+            font-size: 14px;
+            color: #2e1065;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            background: #ffffff;
+            border-color: #9333ea;
+            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.15);
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 22px;
+            border: none;
+            border-radius: 10px;
+            background: #7e22ce;
+            color: white;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #6b21a8;
+        }
+
+        button:disabled {
+            background: #c084fc;
+            cursor: not-allowed;
+        }
+
+        .error-msg {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+            margin-bottom: 15px;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #6b21a8;
+            font-size: 13.5px;
+        }
+
+        .login-link a {
+            color: #7e22ce;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="register-box">
+
+        <div class="logo">🍉</div>
+
+        <h1>Create Account</h1>
+
+        <p class="welcome">Join Melon Mart today ♡</p>
+
+        <div id="errorMessage" class="error-msg">
+            Could not create account. Please try again!
+        </div>
+
+        <form id="registerForm" onsubmit="handleRegister(event)">
+
+            <label for="name">Full Name</label>
+
+            <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Enter your full name"
+                required
+            >
+
+            <label for="email">Email</label>
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter your email"
+                required
+            >
+
+            <label for="password">Password</label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Create a password"
+                required
+            >
+
+            <label for="role">Account Type</label>
+
+            <select id="role" name="role">
+                <option value="BUYER">Buyer (Customer)</option>
+                <option value="SELLER">Seller (Store Partner)</option>
+            </select>
+
+            <button type="submit" id="submitBtn">
+                Register
+            </button>
+
+        </form>
+
+        <div class="login-link">
+            Already have an account?
+            <a href="login.html">Login</a>
+        </div>
+
+    </div>
+
+    <script>
+
+        // Automatically detects the MelonMart application context path.
+        // Example: /melonmart
+        const API_BASE = window.location.pathname.substring(
+            0,
+            window.location.pathname.lastIndexOf("/")
+        );
+
+        async function handleRegister(event) {
+
+            event.preventDefault();
+
+            const nameInput =
+                document.getElementById("name").value.trim();
+
+            const emailInput =
+                document.getElementById("email").value.trim();
+
+            const passwordInput =
+                document.getElementById("password").value;
+
+            const roleInput =
+                document.getElementById("role").value;
+
+            const errorDiv =
+                document.getElementById("errorMessage");
+
+            const submitBtn =
+                document.getElementById("submitBtn");
+
+            errorDiv.style.display = "none";
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Creating account...";
+
+            try {
+
+                const response = await fetch(
+                    API_BASE + "/api/auth/register",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            name: nameInput,
+                            email: emailInput,
+                            password: passwordInput,
+                            role: roleInput
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                if (data.success) {
+
+                    // Registration successful
+                    window.location.href = "index.html";
+
+                } else {
+
+                    errorDiv.innerText =
+                        data.error ||
+                        data.message ||
+                        "Could not create account. Please try again!";
+
+                    errorDiv.style.display = "block";
+                }
+
+            } catch (err) {
+
+                console.error("Registration error:", err);
+
+                errorDiv.innerText =
+                    "Server error. Please check backend connection!";
+
+                errorDiv.style.display = "block";
+
+            } finally {
+
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Register";
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
