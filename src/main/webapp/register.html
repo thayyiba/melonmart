@@ -1,135 +1,233 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Melon Mart - Register</title>
+
+    <title>Melon Mart — Join us</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
 
     <style>
+
         * {
             box-sizing: border-box;
         }
 
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-                Roboto, Helvetica, Arial, sans-serif;
-            background: #f8f6fb;
             min-height: 100vh;
+            font-family: "DM Sans", sans-serif;
+            background: #FFF6D8;
+            color: #302A30;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px 0;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            width: 360px;
+            height: 360px;
+            border-radius: 50%;
+            background: #E1E5F7;
+            top: -150px;
+            right: -100px;
+            z-index: -1;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: #F9DDDD;
+            bottom: -150px;
+            left: -100px;
+            z-index: -1;
+        }
+
+        .page {
+            width: 100%;
+            max-width: 1080px;
+            display: grid;
+            grid-template-columns: 1fr 430px;
+            gap: 70px;
+            align-items: center;
+        }
+
+        .intro {
+            padding: 20px;
+        }
+
+        .mini-brand {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #594052;
+            font-weight: 800;
+            margin-bottom: 34px;
+        }
+
+        .mini-brand span:first-child {
+            font-size: 22px;
+        }
+
+        .mini-brand span:last-child {
+            font-family: "Fraunces", serif;
+            font-size: 21px;
+        }
+
+        .intro h1 {
+            font-family: "Fraunces", serif;
+            font-size: clamp(48px, 6vw, 74px);
+            line-height: .97;
+            letter-spacing: -2px;
+            color: #382A34;
+            margin: 0 0 22px;
+        }
+
+        .intro h1 em {
+            color: #A65B70;
+            font-style: normal;
+        }
+
+        .intro p {
+            max-width: 470px;
+            color: #756C73;
+            font-size: 17px;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        .note {
+            display: inline-block;
+            margin-top: 28px;
+            padding: 11px 17px;
+            background: #F2D477;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 800;
+            transform: rotate(2deg);
         }
 
         .register-box {
-            width: 90%;
-            max-width: 380px;
-            background: white;
-            padding: 35px;
-            border-radius: 24px;
-            border: 1px solid #efe8f8;
-            box-shadow: 0 10px 30px rgba(126, 34, 206, 0.08);
+            background: #FFFDF5;
+            border: 1px solid #E7DACB;
+            border-radius: 30px;
+            padding: 36px;
+            box-shadow: 0 22px 55px rgba(56, 42, 52, .10);
         }
 
         .logo {
             text-align: center;
-            font-size: 45px;
+            font-size: 50px;
         }
 
-        h1 {
+        h2 {
+            font-family: "Fraunces", serif;
             text-align: center;
-            color: #581c87;
-            margin-bottom: 5px;
-            font-weight: 800;
+            color: #382A34;
+            font-size: 31px;
+            margin: 5px 0 7px;
         }
 
         .welcome {
             text-align: center;
-            color: #7e22ce;
-            opacity: 0.8;
-            margin-bottom: 20px;
-            font-weight: 500;
+            color: #756C73;
             font-size: 14px;
+            margin: 0 0 25px;
         }
 
         label {
             display: block;
-            margin-top: 15px;
+            margin: 15px 0 7px;
+            font-size: 11px;
             font-weight: 800;
-            font-size: 12px;
-            color: #581c87;
+            letter-spacing: .8px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            color: #594052;
         }
 
         input,
         select {
             width: 100%;
-            padding: 13px;
-            margin-top: 7px;
-            border: 1px solid #e9d5ff;
-            border-radius: 10px;
-            background: #faf5ff;
-            font-size: 14px;
-            color: #2e1065;
+            padding: 13px 14px;
+            border: 1px solid #E7DACB;
+            border-radius: 14px;
+            background: #FFF6D8;
+            color: #302A30;
+            font: inherit;
             outline: none;
-            transition: all 0.2s;
+            transition: .2s ease;
         }
 
         input:focus,
         select:focus {
-            background: #ffffff;
-            border-color: #9333ea;
-            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.15);
+            background: #FFFDF5;
+            border-color: #A7B2E2;
+            box-shadow: 0 0 0 4px #E1E5F7;
+        }
+
+        select {
+            cursor: pointer;
         }
 
         button {
             width: 100%;
-            padding: 13px;
-            margin-top: 22px;
+            padding: 14px;
+            margin-top: 23px;
             border: none;
-            border-radius: 10px;
-            background: #7e22ce;
-            color: white;
-            font-size: 15px;
+            border-radius: 14px;
+            background: #594052;
+            color: #FFFDF5;
+            font: inherit;
             font-weight: 800;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: .2s ease;
         }
 
         button:hover {
-            background: #6b21a8;
+            background: #382A34;
+            transform: translateY(-1px);
         }
 
         button:disabled {
-            background: #c084fc;
+            opacity: .6;
             cursor: not-allowed;
+            transform: none;
         }
 
         .error-msg {
-            background: #fef2f2;
-            color: #dc2626;
-            border: 1px solid #fecaca;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 600;
-            text-align: center;
             display: none;
-            margin-bottom: 15px;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+            border-radius: 13px;
+            background: #F9DDDD;
+            border: 1px solid #F2B8B8;
+            color: #7C4351;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
         }
 
         .login-link {
             text-align: center;
-            margin-top: 20px;
-            color: #6b21a8;
+            margin-top: 21px;
+            color: #756C73;
             font-size: 13.5px;
         }
 
         .login-link a {
-            color: #7e22ce;
+            color: #594052;
             font-weight: 800;
             text-decoration: none;
         }
@@ -137,18 +235,90 @@
         .login-link a:hover {
             text-decoration: underline;
         }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 17px;
+            color: #756C73;
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        @media (max-width: 800px) {
+
+            body {
+                padding: 18px;
+            }
+
+            .page {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .intro {
+                text-align: center;
+                padding: 5px;
+            }
+
+            .intro h1 {
+                font-size: 47px;
+            }
+
+            .intro p {
+                margin: auto;
+                font-size: 15px;
+            }
+
+            .note {
+                display: none;
+            }
+
+            .register-box {
+                padding: 30px 25px;
+            }
+        }
+
     </style>
 </head>
 
 <body>
 
-    <div class="register-box">
+<div class="page">
+
+    <section class="intro">
+
+        <div class="mini-brand">
+            <span>🍉</span>
+            <span>melon mart</span>
+        </div>
+
+        <h1>
+            Never a Dull Moment<br>
+            <em>With Us .</em>
+        </h1>
+
+        <p>
+            Create your little corner —
+            where fresh things, MidNight emergencies and
+            random cute finds that never comes handy live happily together.
+        </p>
+
+        <div class="note">
+            No boring welcome speeches ♡
+        </div>
+
+    </section>
+
+    <main class="register-box">
 
         <div class="logo">🍉</div>
 
-        <h1>Create Account</h1>
+        <h2>Create your account</h2>
 
-        <p class="welcome">Join Melon Mart today ♡</p>
+        <p class="welcome">
+            Fill In Chat.
+        </p>
 
         <div id="errorMessage" class="error-msg">
             Could not create account. Please try again!
@@ -162,7 +332,7 @@
                 type="text"
                 id="name"
                 name="name"
-                placeholder="Enter your full name"
+                placeholder="Your name"
                 required
             >
 
@@ -172,7 +342,7 @@
                 type="email"
                 id="email"
                 name="email"
-                placeholder="Enter your email"
+                placeholder="you@example.com"
                 required
             >
 
@@ -189,114 +359,119 @@
             <label for="role">Account Type</label>
 
             <select id="role" name="role">
-                <option value="BUYER">Buyer (Customer)</option>
-                <option value="SELLER">Seller (Store Partner)</option>
+                <option value="BUYER">
+                    Buyer — I wanna to shop
+                </option>
+
+                <option value="SELLER">
+                    Seller — I wanna to sell
+                </option>
             </select>
 
             <button type="submit" id="submitBtn">
-                Register
+                Create account
             </button>
 
         </form>
 
         <div class="login-link">
-            Already have an account?
+            Already part of the melon club?
             <a href="login.html">Login</a>
         </div>
 
-    </div>
+        <a href="index.html" class="back">
+            ← Back to Melon Mart
+        </a>
 
-    <script>
+    </main>
 
-        // Automatically detects the MelonMart application context path.
-        // Example: /melonmart
-        const API_BASE = window.location.pathname.substring(
-            0,
-            window.location.pathname.lastIndexOf("/")
+</div>
+
+<script>
+
+const API_BASE = window.location.pathname.substring(
+    0,
+    window.location.pathname.lastIndexOf("/")
+);
+
+async function handleRegister(event) {
+
+    event.preventDefault();
+
+    const nameInput =
+        document.getElementById("name").value.trim();
+
+    const emailInput =
+        document.getElementById("email").value.trim();
+
+    const passwordInput =
+        document.getElementById("password").value;
+
+    const roleInput =
+        document.getElementById("role").value;
+
+    const errorDiv =
+        document.getElementById("errorMessage");
+
+    const submitBtn =
+        document.getElementById("submitBtn");
+
+    errorDiv.style.display = "none";
+
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Creating account...";
+
+    try {
+
+        const response = await fetch(
+            API_BASE + "/api/auth/register",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: nameInput,
+                    email: emailInput,
+                    password: passwordInput,
+                    role: roleInput
+                })
+            }
         );
 
-        async function handleRegister(event) {
+        const data = await response.json();
 
-            event.preventDefault();
+        if (data.success) {
 
-            const nameInput =
-                document.getElementById("name").value.trim();
+            window.location.href = "index.html";
 
-            const emailInput =
-                document.getElementById("email").value.trim();
+        } else {
 
-            const passwordInput =
-                document.getElementById("password").value;
+            errorDiv.innerText =
+                data.error ||
+                data.message ||
+                "Could not create account. Please try again!";
 
-            const roleInput =
-                document.getElementById("role").value;
-
-            const errorDiv =
-                document.getElementById("errorMessage");
-
-            const submitBtn =
-                document.getElementById("submitBtn");
-
-            errorDiv.style.display = "none";
-
-            submitBtn.disabled = true;
-            submitBtn.innerText = "Creating account...";
-
-            try {
-
-                const response = await fetch(
-                    API_BASE + "/api/auth/register",
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-
-                        body: JSON.stringify({
-                            name: nameInput,
-                            email: emailInput,
-                            password: passwordInput,
-                            role: roleInput
-                        })
-                    }
-                );
-
-                const data = await response.json();
-
-                if (data.success) {
-
-                    // Registration successful
-                    window.location.href = "index.html";
-
-                } else {
-
-                    errorDiv.innerText =
-                        data.error ||
-                        data.message ||
-                        "Could not create account. Please try again!";
-
-                    errorDiv.style.display = "block";
-                }
-
-            } catch (err) {
-
-                console.error("Registration error:", err);
-
-                errorDiv.innerText =
-                    "Server error. Please check backend connection!";
-
-                errorDiv.style.display = "block";
-
-            } finally {
-
-                submitBtn.disabled = false;
-                submitBtn.innerText = "Register";
-            }
+            errorDiv.style.display = "block";
         }
 
-    </script>
+    } catch (err) {
+
+        console.error("Registration error:", err);
+
+        errorDiv.innerText =
+            "Server error. Please check backend connection!";
+
+        errorDiv.style.display = "block";
+
+    } finally {
+
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Create account";
+    }
+}
+
+</script>
 
 </body>
-
 </html>
