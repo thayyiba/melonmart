@@ -202,6 +202,23 @@
             transform: translateY(-1px);
         }
 
+        .cancel-btn {
+            width: 100%;
+            border: 1px solid #E7DACB;
+            border-radius: 14px;
+            padding: 12px;
+            background: #FFF6D8;
+            color: #594052;
+            font: inherit;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .cancel-btn:hover {
+            background: #F9DDDD;
+        }
+
         .inventory-card {
             min-width: 0;
             overflow: hidden;
@@ -215,7 +232,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 620px;
+            min-width: 780px;
         }
 
         th {
@@ -283,6 +300,41 @@
             font-weight: 700;
         }
 
+        .action-buttons {
+            display: flex;
+            gap: 7px;
+        }
+
+        .edit-btn,
+        .delete-btn {
+            border: 0;
+            border-radius: 10px;
+            padding: 8px 11px;
+            font: inherit;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .edit-btn {
+            background: #E1E5F7;
+            color: #594052;
+        }
+
+        .edit-btn:hover {
+            background: #A7B2E2;
+        }
+
+        .delete-btn {
+            background: #F9DDDD;
+            color: #A65B70;
+        }
+
+        .delete-btn:hover {
+            background: #F2B8B8;
+        }
+
         .empty-state {
             text-align: center;
             color: #756C73;
@@ -298,6 +350,17 @@
             color: #594052;
             font-size: 12px;
             font-weight: 700;
+        }
+
+        .edit-banner {
+            display: none;
+            background: #E1E5F7;
+            color: #594052;
+            border-radius: 13px;
+            padding: 10px 12px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            font-weight: 800;
         }
 
         @media (max-width: 900px) {
@@ -354,11 +417,13 @@
 
 </header>
 
+
 <main>
 
     <section class="hero">
 
         <div>
+
             <div class="eyebrow">
                 Your little corner of Melon Mart
             </div>
@@ -373,27 +438,35 @@
                 and give shoppers something they didn't know
                 they needed five minutes ago.
             </p>
+
         </div>
 
     </section>
 
+
     <div class="dashboard-grid">
 
-        <!-- ADD PRODUCT -->
+        <!-- ADD / EDIT PRODUCT -->
 
         <div class="card">
 
             <div class="card-title-row">
 
-                <h2 class="card-title">
+                <h2 class="card-title" id="formTitle">
                     Add a product
                 </h2>
 
-                <span class="little-note">
+                <span class="little-note" id="formNote">
                     Let's sell something good.
                 </span>
 
             </div>
+
+
+            <div class="edit-banner" id="editBanner">
+                ✏️ You're editing a listing.
+            </div>
+
 
             <form id="productForm" onsubmit="handleAddProduct(event)">
 
@@ -411,6 +484,7 @@
                     >
 
                 </div>
+
 
                 <div class="form-group">
 
@@ -448,6 +522,7 @@
 
                 </div>
 
+
                 <div class="form-group">
 
                     <label for="pPrice">
@@ -465,6 +540,7 @@
 
                 </div>
 
+
                 <div class="form-group">
 
                     <label for="pStock">
@@ -481,6 +557,7 @@
 
                 </div>
 
+
                 <div class="form-group">
 
                     <label for="pImg">
@@ -496,6 +573,7 @@
 
                 </div>
 
+
                 <div class="form-group">
 
                     <label for="pDesc">
@@ -510,20 +588,35 @@
 
                 </div>
 
+
                 <button
                     type="submit"
                     class="submit-btn"
+                    id="submitBtn"
                 >
                     List this item
                 </button>
 
+
+                <button
+                    type="button"
+                    class="cancel-btn"
+                    id="cancelBtn"
+                    onclick="cancelEdit()"
+                    style="display: none;"
+                >
+                    Cancel edit
+                </button>
+
             </form>
+
 
             <div class="bottom-note">
                 🍉 Tip: good photos + honest descriptions = happier shoppers.
             </div>
 
         </div>
+
 
         <!-- INVENTORY -->
 
@@ -541,6 +634,7 @@
 
             </div>
 
+
             <div class="table-wrap">
 
                 <table>
@@ -548,14 +642,35 @@
                     <thead>
 
                         <tr>
-                            <th>Item</th>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Price</th>
-                            <th>Stock</th>
+
+                            <th>
+                                Item
+                            </th>
+
+                            <th>
+                                Name
+                            </th>
+
+                            <th>
+                                Category
+                            </th>
+
+                            <th>
+                                Price
+                            </th>
+
+                            <th>
+                                Stock
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
                         </tr>
 
                     </thead>
+
 
                     <tbody id="inventoryList"></tbody>
 
@@ -569,12 +684,15 @@
 
 </main>
 
+
 <script>
 
 const API_BASE = window.location.pathname.substring(
     0,
     window.location.pathname.lastIndexOf("/")
 );
+
+let editingProductId = null;
 
 
 // --------------------------------------------------
@@ -592,6 +710,7 @@ async function checkAuth() {
         if (!res.ok) {
 
             window.location.href = "login.html";
+
             return false;
         }
 
@@ -603,6 +722,7 @@ async function checkAuth() {
         ) {
 
             window.location.href = "login.html";
+
             return false;
         }
 
@@ -631,13 +751,13 @@ async function fetchSellerInventory() {
     try {
 
         const res = await fetch(
-            API_BASE + "/api/products"
+            API_BASE + "/api/products/mine"
         );
 
         if (!res.ok) {
 
             throw new Error(
-                "Failed to load products"
+                "Failed to load seller products"
             );
         }
 
@@ -648,6 +768,7 @@ async function fetchSellerInventory() {
                 "inventoryList"
             );
 
+
         if (
             Array.isArray(products) &&
             products.length > 0
@@ -655,50 +776,105 @@ async function fetchSellerInventory() {
 
             tbody.innerHTML = "";
 
+
             products.forEach(p => {
+
+                const imageUrl =
+                    p.imageUrl ||
+                    "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=300&q=80";
+
 
                 tbody.innerHTML += `
 
                     <tr>
 
                         <td>
+
                             <img
-                                src="${p.imageUrl || ""}"
+                                src="${escapeHtml(imageUrl)}"
                                 class="product-img"
-                                alt="${p.name || "Product"}"
+                                alt="${escapeHtml(p.name || "Product")}"
                             >
+
                         </td>
 
+
                         <td>
+
                             <span class="product-name">
-                                ${p.name || "Unnamed Product"}
+                                ${escapeHtml(
+                                    p.name || "Unnamed Product"
+                                )}
                             </span>
+
                         </td>
 
+
                         <td>
+
                             <span class="category-tag">
-                                ${p.category || "-"}
+                                ${escapeHtml(
+                                    p.category || "-"
+                                )}
                             </span>
+
                         </td>
 
+
                         <td>
+
                             <span class="price">
                                 ₹${Number(
                                     p.price || 0
                                 ).toFixed(2)}
                             </span>
+
                         </td>
 
+
                         <td>
+
                             <span class="stock">
                                 ${p.stockQty ?? 0}
                             </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="action-buttons">
+
+                                <button
+                                    type="button"
+                                    class="edit-btn"
+                                    onclick="startEdit(${p.id})"
+                                >
+                                    ✏️ Edit
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    class="delete-btn"
+                                    onclick="deleteProduct(${p.id})"
+                                >
+                                    🗑️ Delete
+                                </button>
+
+                            </div>
+
                         </td>
 
                     </tr>
 
                 `;
+
             });
+
+
+            // Store products so Edit can find them
+            window.sellerProducts = products;
 
         } else {
 
@@ -707,7 +883,7 @@ async function fetchSellerInventory() {
                 <tr>
 
                     <td
-                        colspan="5"
+                        colspan="6"
                         class="empty-state"
                     >
                         No listings yet.<br>
@@ -717,6 +893,8 @@ async function fetchSellerInventory() {
                 </tr>
 
             `;
+
+            window.sellerProducts = [];
         }
 
     } catch (e) {
@@ -733,7 +911,7 @@ async function fetchSellerInventory() {
             <tr>
 
                 <td
-                    colspan="5"
+                    colspan="6"
                     class="empty-state"
                 >
                     Couldn't load your listings right now.
@@ -743,17 +921,19 @@ async function fetchSellerInventory() {
             </tr>
 
         `;
+
     }
 }
 
 
 // --------------------------------------------------
-// ADD PRODUCT
+// ADD OR EDIT PRODUCT
 // --------------------------------------------------
 
 async function handleAddProduct(e) {
 
     e.preventDefault();
+
 
     const payload = {
 
@@ -794,63 +974,399 @@ async function handleAddProduct(e) {
                 .getElementById("pDesc")
                 .value
                 .trim()
+
     };
+
 
     try {
 
-        const res = await fetch(
-            API_BASE + "/api/products",
-            {
-                method: "POST",
+        let res;
 
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
 
-                body:
-                    JSON.stringify(payload)
-            }
-        );
+        // EDIT EXISTING PRODUCT
 
-        const data =
-            await res.json();
+        if (editingProductId !== null) {
+
+            res = await fetch(
+                API_BASE +
+                "/api/products/" +
+                editingProductId,
+                {
+
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(payload)
+
+                }
+            );
+
+        }
+
+
+        // ADD NEW PRODUCT
+
+        else {
+
+            res = await fetch(
+                API_BASE + "/api/products",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(payload)
+
+                }
+            );
+
+        }
+
+
+        const data = await res.json();
+
 
         if (res.ok && data.success) {
 
-            alert(
-                "Product listed successfully!"
-            );
 
-            document
-                .getElementById("productForm")
-                .reset();
+            if (editingProductId !== null) {
 
-            document
-                .getElementById("pStock")
-                .value = 20;
+                alert(
+                    "Product updated successfully!"
+                );
+
+            } else {
+
+                alert(
+                    "Product listed successfully!"
+                );
+
+            }
+
+
+            resetProductForm();
 
             await fetchSellerInventory();
+
 
         } else {
 
             alert(
                 data.message ||
-                "Failed to add product."
+                "Something went wrong."
             );
+
         }
+
 
     } catch (err) {
 
         console.error(
-            "Add product error:",
+            "Product save error:",
             err
         );
 
         alert(
             "Server connection error."
         );
+
     }
+
+}
+
+
+// --------------------------------------------------
+// START EDIT
+// --------------------------------------------------
+
+function startEdit(productId) {
+
+    const products =
+        window.sellerProducts || [];
+
+
+    const product =
+        products.find(
+            p => p.id === productId
+        );
+
+
+    if (!product) {
+
+        alert(
+            "Could not find this product."
+        );
+
+        return;
+    }
+
+
+    editingProductId = productId;
+
+
+    document.getElementById(
+        "pName"
+    ).value =
+        product.name || "";
+
+
+    document.getElementById(
+        "pCategory"
+    ).value =
+        product.category || "FRUITS";
+
+
+    document.getElementById(
+        "pPrice"
+    ).value =
+        product.price || "";
+
+
+    document.getElementById(
+        "pStock"
+    ).value =
+        product.stockQty ?? 0;
+
+
+    document.getElementById(
+        "pImg"
+    ).value =
+        product.imageUrl || "";
+
+
+    document.getElementById(
+        "pDesc"
+    ).value =
+        product.description || "";
+
+
+    // Change form appearance
+
+    document.getElementById(
+        "formTitle"
+    ).textContent =
+        "Edit product";
+
+
+    document.getElementById(
+        "formNote"
+    ).textContent =
+        "Give it a little update.";
+
+
+    document.getElementById(
+        "editBanner"
+    ).style.display =
+        "block";
+
+
+    document.getElementById(
+        "submitBtn"
+    ).textContent =
+        "Save changes";
+
+
+    document.getElementById(
+        "cancelBtn"
+    ).style.display =
+        "block";
+
+
+    // Scroll back to form
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+// --------------------------------------------------
+// CANCEL EDIT
+// --------------------------------------------------
+
+function cancelEdit() {
+
+    resetProductForm();
+
+}
+
+
+// --------------------------------------------------
+// RESET FORM
+// --------------------------------------------------
+
+function resetProductForm() {
+
+    editingProductId = null;
+
+
+    document.getElementById(
+        "productForm"
+    ).reset();
+
+
+    document.getElementById(
+        "pStock"
+    ).value = 20;
+
+
+    document.getElementById(
+        "formTitle"
+    ).textContent =
+        "Add a product";
+
+
+    document.getElementById(
+        "formNote"
+    ).textContent =
+        "Let's sell something good.";
+
+
+    document.getElementById(
+        "editBanner"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "submitBtn"
+    ).textContent =
+        "List this item";
+
+
+    document.getElementById(
+        "cancelBtn"
+    ).style.display =
+        "none";
+
+}
+
+
+// --------------------------------------------------
+// DELETE PRODUCT
+// --------------------------------------------------
+
+async function deleteProduct(productId) {
+
+    const products =
+        window.sellerProducts || [];
+
+
+    const product =
+        products.find(
+            p => p.id === productId
+        );
+
+
+    if (!product) {
+
+        alert(
+            "Could not find this product."
+        );
+
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            `Delete "${product.name}"?\n\nThis cannot be undone.`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+
+        const res = await fetch(
+            API_BASE +
+            "/api/products/" +
+            productId,
+            {
+                method: "DELETE"
+            }
+        );
+
+
+        const data =
+            await res.json();
+
+
+        if (res.ok && data.success) {
+
+            alert(
+                "Product deleted successfully!"
+            );
+
+
+            // If we were editing this product,
+            // leave edit mode.
+
+            if (
+                editingProductId === productId
+            ) {
+
+                resetProductForm();
+
+            }
+
+
+            await fetchSellerInventory();
+
+
+        } else {
+
+            alert(
+                data.message ||
+                "Failed to delete product."
+            );
+
+        }
+
+
+    } catch (err) {
+
+        console.error(
+            "Delete product error:",
+            err
+        );
+
+        alert(
+            "Server connection error."
+        );
+
+    }
+
+}
+
+
+// --------------------------------------------------
+// ESCAPE HTML
+// --------------------------------------------------
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 
@@ -863,11 +1379,15 @@ async function initializeSellerPage() {
     const authenticated =
         await checkAuth();
 
+
     if (authenticated) {
 
         await fetchSellerInventory();
+
     }
+
 }
+
 
 initializeSellerPage();
 

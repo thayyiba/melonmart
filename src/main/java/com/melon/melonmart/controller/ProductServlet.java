@@ -30,18 +30,41 @@ public class ProductServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String category = request.getParameter("category");
+        String path = request.getPathInfo();
 
         List<Product> products;
 
-        if (category != null && !category.isBlank()
-                && !"ALL".equalsIgnoreCase(category)) {
+        // GET ONLY LOGGED-IN SELLER'S PRODUCTS
+        if ("/mine".equalsIgnoreCase(path)) {
 
-            products = productDAO.getProductsByCategory(category);
+            User user = getLoggedInSeller(request);
+
+            if (user == null) {
+                sendError(
+                        response,
+                        HttpServletResponse.SC_FORBIDDEN,
+                        "Only sellers can view their listings."
+                );
+                return;
+            }
+
+            products = productDAO.getProductsBySeller(user.getId());
 
         } else {
 
-            products = productDAO.getAllProducts();
+            // PUBLIC PRODUCT LIST
+
+            String category = request.getParameter("category");
+
+            if (category != null && !category.isBlank()
+                    && !"ALL".equalsIgnoreCase(category)) {
+
+                products = productDAO.getProductsByCategory(category);
+
+            } else {
+
+                products = productDAO.getAllProducts();
+            }
         }
 
         response.setContentType("application/json");
@@ -60,11 +83,13 @@ public class ProductServlet extends HttpServlet {
         User user = getLoggedInSeller(request);
 
         if (user == null) {
+
             sendError(
                     response,
                     HttpServletResponse.SC_FORBIDDEN,
                     "Only sellers can add products."
             );
+
             return;
         }
 
@@ -134,7 +159,7 @@ public class ProductServlet extends HttpServlet {
             }
 
 
-            // CREATE PRODUCT OBJECT
+            // CREATE PRODUCT
 
             Product product = new Product();
 
@@ -146,8 +171,6 @@ public class ProductServlet extends HttpServlet {
             product.setCategory(category.toUpperCase());
             product.setImageUrl(imageUrl);
 
-
-            // SAVE TO DATABASE
 
             boolean created = productDAO.addProduct(product);
 
@@ -207,7 +230,8 @@ public class ProductServlet extends HttpServlet {
         }
 
 
-        // Get product ID from URL
+        // GET PRODUCT ID FROM URL
+
         String path = request.getPathInfo();
 
         if (path == null || path.equals("/") || path.length() <= 1) {
@@ -375,7 +399,8 @@ public class ProductServlet extends HttpServlet {
         }
 
 
-        // Get product ID from URL
+        // GET PRODUCT ID FROM URL
+
         String path = request.getPathInfo();
 
         if (path == null || path.equals("/") || path.length() <= 1) {
@@ -408,7 +433,7 @@ public class ProductServlet extends HttpServlet {
         }
 
 
-        // DELETE ONLY IF PRODUCT BELONGS TO THIS SELLER
+        // DELETE ONLY SELLER'S OWN PRODUCT
 
         boolean deleted = productDAO.deleteProduct(
                 productId,
@@ -441,7 +466,7 @@ public class ProductServlet extends HttpServlet {
     }
 
 
-    // CHECK LOGGED-IN SELLER
+    // GET LOGGED-IN SELLER
 
     private User getLoggedInSeller(HttpServletRequest request) {
 
@@ -465,7 +490,7 @@ public class ProductServlet extends HttpServlet {
     }
 
 
-    // JSON READER
+    // READ JSON
 
     private Map<String, Object> readJson(HttpServletRequest request)
             throws IOException {
@@ -530,7 +555,6 @@ public class ProductServlet extends HttpServlet {
 
 
     // GET INTEGER
-    // Handles Gson numbers correctly
 
     private int getInt(
             Map<String, Object> data,
