@@ -25,22 +25,16 @@ public class ProductServlet extends HttpServlet {
     private final ProductDAO productDAO = new ProductDAO();
     private final Gson gson = new Gson();
 
-    // =========================
     // GET PRODUCTS
-    // =========================
-
     @Override
-    protected void doGet(
-            HttpServletRequest request,
-            HttpServletResponse response
-    ) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         String category = request.getParameter("category");
 
         List<Product> products;
 
-        if (category != null
-                && !category.isBlank()
+        if (category != null && !category.isBlank()
                 && !"ALL".equalsIgnoreCase(category)) {
 
             products = productDAO.getProductsByCategory(category);
@@ -57,34 +51,20 @@ public class ProductServlet extends HttpServlet {
         response.getWriter().write(gson.toJson(products));
     }
 
-    // =========================
+
     // ADD PRODUCT
-    // =========================
-
     @Override
-    protected void doPost(
-            HttpServletRequest request,
-            HttpServletResponse response
-    ) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-        HttpSession session = request.getSession(false);
+        User user = getLoggedInSeller(request);
 
-        User user = null;
-
-        if (session != null) {
-            user = (User) session.getAttribute("user");
-        }
-
-        // Only sellers can add products
-        if (user == null
-                || !"SELLER".equalsIgnoreCase(user.getRole())) {
-
+        if (user == null) {
             sendError(
                     response,
                     HttpServletResponse.SC_FORBIDDEN,
                     "Only sellers can add products."
             );
-
             return;
         }
 
@@ -94,9 +74,10 @@ public class ProductServlet extends HttpServlet {
 
             String name = getString(data, "name");
 
-if (name == null || name.isBlank()) {
-    name = getString(data, "title");
-}
+            if (name == null || name.isBlank()) {
+                name = getString(data, "title");
+            }
+
             String description = getString(data, "description");
             String category = getString(data, "category");
             String imageUrl = getString(data, "imageUrl");
@@ -105,7 +86,9 @@ if (name == null || name.isBlank()) {
 
             int stockQty = getInt(data, "stockQty");
 
-            // Validation
+
+            // VALIDATION
+
             if (name == null || name.isBlank()) {
 
                 sendError(
@@ -150,6 +133,9 @@ if (name == null || name.isBlank()) {
                 return;
             }
 
+
+            // CREATE PRODUCT OBJECT
+
             Product product = new Product();
 
             product.setSellerId(user.getId());
@@ -159,6 +145,9 @@ if (name == null || name.isBlank()) {
             product.setStockQty(stockQty);
             product.setCategory(category.toUpperCase());
             product.setImageUrl(imageUrl);
+
+
+            // SAVE TO DATABASE
 
             boolean created = productDAO.addProduct(product);
 
@@ -173,6 +162,7 @@ if (name == null || name.isBlank()) {
                 return;
             }
 
+
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_CREATED);
@@ -183,6 +173,7 @@ if (name == null || name.isBlank()) {
             result.put("message", "Product created successfully.");
 
             response.getWriter().write(gson.toJson(result));
+
 
         } catch (Exception e) {
 
@@ -196,13 +187,288 @@ if (name == null || name.isBlank()) {
         }
     }
 
-    // =========================
-    // JSON READER
-    // =========================
 
-    private Map<String, Object> readJson(
-            HttpServletRequest request
-    ) throws IOException {
+    // EDIT PRODUCT
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        User user = getLoggedInSeller(request);
+
+        if (user == null) {
+
+            sendError(
+                    response,
+                    HttpServletResponse.SC_FORBIDDEN,
+                    "Only sellers can edit products."
+            );
+
+            return;
+        }
+
+
+        // Get product ID from URL
+        String path = request.getPathInfo();
+
+        if (path == null || path.equals("/") || path.length() <= 1) {
+
+            sendError(
+                    response,
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Product ID is required."
+            );
+
+            return;
+        }
+
+
+        int productId;
+
+        try {
+
+            productId = Integer.parseInt(path.substring(1));
+
+        } catch (NumberFormatException e) {
+
+            sendError(
+                    response,
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Invalid product ID."
+            );
+
+            return;
+        }
+
+
+        try {
+
+            Map<String, Object> data = readJson(request);
+
+            String name = getString(data, "name");
+            String description = getString(data, "description");
+            String category = getString(data, "category");
+            String imageUrl = getString(data, "imageUrl");
+
+            BigDecimal price = getBigDecimal(data, "price");
+
+            int stockQty = getInt(data, "stockQty");
+
+
+            // VALIDATION
+
+            if (name == null || name.isBlank()) {
+
+                sendError(
+                        response,
+                        HttpServletResponse.SC_BAD_REQUEST,
+                        "Product name is required."
+                );
+
+                return;
+            }
+
+            if (category == null || category.isBlank()) {
+
+                sendError(
+                        response,
+                        HttpServletResponse.SC_BAD_REQUEST,
+                        "Product category is required."
+                );
+
+                return;
+            }
+
+            if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) {
+
+                sendError(
+                        response,
+                        HttpServletResponse.SC_BAD_REQUEST,
+                        "Price must be greater than zero."
+                );
+
+                return;
+            }
+
+            if (stockQty < 0) {
+
+                sendError(
+                        response,
+                        HttpServletResponse.SC_BAD_REQUEST,
+                        "Stock quantity cannot be negative."
+                );
+
+                return;
+            }
+
+
+            // CREATE UPDATED PRODUCT
+
+            Product product = new Product();
+
+            product.setId(productId);
+            product.setSellerId(user.getId());
+            product.setName(name);
+            product.setDescription(description);
+            product.setPrice(price);
+            product.setStockQty(stockQty);
+            product.setCategory(category.toUpperCase());
+            product.setImageUrl(imageUrl);
+
+
+            // UPDATE DATABASE
+
+            boolean updated = productDAO.updateProduct(product);
+
+            if (!updated) {
+
+                sendError(
+                        response,
+                        HttpServletResponse.SC_NOT_FOUND,
+                        "Product not found or you do not own this product."
+                );
+
+                return;
+            }
+
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.setStatus(HttpServletResponse.SC_OK);
+
+            Map<String, Object> result = new HashMap<>();
+
+            result.put("success", true);
+            result.put("message", "Product updated successfully.");
+
+            response.getWriter().write(gson.toJson(result));
+
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            sendError(
+                    response,
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Invalid product data."
+            );
+        }
+    }
+
+
+    // DELETE PRODUCT
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        User user = getLoggedInSeller(request);
+
+        if (user == null) {
+
+            sendError(
+                    response,
+                    HttpServletResponse.SC_FORBIDDEN,
+                    "Only sellers can delete products."
+            );
+
+            return;
+        }
+
+
+        // Get product ID from URL
+        String path = request.getPathInfo();
+
+        if (path == null || path.equals("/") || path.length() <= 1) {
+
+            sendError(
+                    response,
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Product ID is required."
+            );
+
+            return;
+        }
+
+
+        int productId;
+
+        try {
+
+            productId = Integer.parseInt(path.substring(1));
+
+        } catch (NumberFormatException e) {
+
+            sendError(
+                    response,
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Invalid product ID."
+            );
+
+            return;
+        }
+
+
+        // DELETE ONLY IF PRODUCT BELONGS TO THIS SELLER
+
+        boolean deleted = productDAO.deleteProduct(
+                productId,
+                user.getId()
+        );
+
+
+        if (!deleted) {
+
+            sendError(
+                    response,
+                    HttpServletResponse.SC_NOT_FOUND,
+                    "Product not found or you do not own this product."
+            );
+
+            return;
+        }
+
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.setStatus(HttpServletResponse.SC_OK);
+
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("success", true);
+        result.put("message", "Product deleted successfully.");
+
+        response.getWriter().write(gson.toJson(result));
+    }
+
+
+    // CHECK LOGGED-IN SELLER
+
+    private User getLoggedInSeller(HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+
+        if (session == null) {
+            return null;
+        }
+
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return null;
+        }
+
+        if (!"SELLER".equalsIgnoreCase(user.getRole())) {
+            return null;
+        }
+
+        return user;
+    }
+
+
+    // JSON READER
+
+    private Map<String, Object> readJson(HttpServletRequest request)
+            throws IOException {
 
         StringBuilder json = new StringBuilder();
 
@@ -218,14 +484,11 @@ if (name == null || name.isBlank()) {
         Map<String, Object> data =
                 gson.fromJson(json.toString(), Map.class);
 
-        return data != null
-                ? data
-                : new HashMap<>();
+        return data != null ? data : new HashMap<>();
     }
 
-    // =========================
+
     // GET STRING
-    // =========================
 
     private String getString(
             Map<String, Object> data,
@@ -241,9 +504,8 @@ if (name == null || name.isBlank()) {
         return value.toString().trim();
     }
 
-    // =========================
+
     // GET PRICE
-    // =========================
 
     private BigDecimal getBigDecimal(
             Map<String, Object> data,
@@ -257,15 +519,18 @@ if (name == null || name.isBlank()) {
         }
 
         try {
+
             return new BigDecimal(value.toString());
+
         } catch (NumberFormatException e) {
+
             return null;
         }
     }
 
-    // =========================
+
     // GET INTEGER
-    // =========================
+    // Handles Gson numbers correctly
 
     private int getInt(
             Map<String, Object> data,
@@ -279,15 +544,21 @@ if (name == null || name.isBlank()) {
         }
 
         try {
+
+            if (value instanceof Number) {
+                return ((Number) value).intValue();
+            }
+
             return Integer.parseInt(value.toString());
+
         } catch (NumberFormatException e) {
+
             return 0;
         }
     }
 
-    // =========================
+
     // ERROR RESPONSE
-    // =========================
 
     private void sendError(
             HttpServletResponse response,
@@ -304,8 +575,6 @@ if (name == null || name.isBlank()) {
         result.put("success", false);
         result.put("message", message);
 
-        response.getWriter().write(
-                gson.toJson(result)
-        );
+        response.getWriter().write(gson.toJson(result));
     }
 }
