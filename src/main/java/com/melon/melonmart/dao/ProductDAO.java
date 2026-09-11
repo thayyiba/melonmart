@@ -147,6 +147,70 @@ public class ProductDAO {
         }
     }
 
+    // Update a product belonging to a seller
+    public boolean updateProduct(Product product) {
+
+        String sql = """
+                UPDATE products
+                SET name = ?,
+                    description = ?,
+                    price = ?,
+                    stock_qty = ?,
+                    category = ?,
+                    image_url = ?
+                WHERE id = ?
+                  AND seller_id = ?
+                """;
+
+        try (
+                Connection connection = getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
+
+            statement.setString(1, product.getName());
+            statement.setString(2, product.getDescription());
+            statement.setBigDecimal(3, product.getPrice());
+            statement.setInt(4, product.getStockQty());
+            statement.setString(5, product.getCategory());
+            statement.setString(6, product.getImageUrl());
+            statement.setInt(7, product.getId());
+            statement.setInt(8, product.getSellerId());
+
+            return statement.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            System.err.println("Error updating product:");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Delete a product belonging to a seller
+    public boolean deleteProduct(int productId, int sellerId) {
+
+        String sql = """
+                DELETE FROM products
+                WHERE id = ?
+                  AND seller_id = ?
+                """;
+
+        try (
+                Connection connection = getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
+
+            statement.setInt(1, productId);
+            statement.setInt(2, sellerId);
+
+            return statement.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            System.err.println("Error deleting product:");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // Convert database row into Product object
     private Product extractProduct(ResultSet result) throws Exception {
 
