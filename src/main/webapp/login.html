@@ -1,438 +1,928 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>Melon Mart — Welcome back</title>
 
+
+    <!-- =========================
+         GOOGLE FONTS
+    ========================== -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap"
+        rel="stylesheet"
+    >
+
 
     <style>
+
+        /* =========================
+           RESET
+        ========================== */
+
         * {
             box-sizing: border-box;
         }
 
+
+        html {
+            min-height: 100%;
+
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+
+        /* =========================
+           BODY
+        ========================== */
+
         body {
             margin: 0;
+
             min-height: 100vh;
+
             font-family: "DM Sans", sans-serif;
+
             background: #FFF6D8;
+
             color: #302A30;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 28px;
+
+            /*
+                IMPORTANT:
+                Use normal document flow.
+                This allows the page to
+                scroll naturally.
+            */
+
+            display: block;
+
+            padding: 30px;
+
             position: relative;
-            overflow: hidden;
+
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
-        body::before,
-        body::after {
-            content: "";
-            position: fixed;
-            border-radius: 50%;
-            z-index: -1;
-        }
+
+        /* =========================
+           BACKGROUND DECORATION
+        ========================== */
 
         body::before {
+            content: "";
+
+            position: fixed;
+
             width: 330px;
             height: 330px;
+
+            border-radius: 50%;
+
             background: #F9DDDD;
+
             top: -120px;
             left: -100px;
+
+            z-index: -1;
+
+            pointer-events: none;
         }
 
+
         body::after {
+            content: "";
+
+            position: fixed;
+
             width: 390px;
             height: 390px;
+
+            border-radius: 50%;
+
             background: #E1E5F7;
+
             bottom: -180px;
             right: -120px;
+
+            z-index: -1;
+
+            pointer-events: none;
         }
+
+
+        /* =========================
+           MAIN PAGE
+        ========================== */
 
         .page {
             width: 100%;
+
             max-width: 1080px;
+
             display: grid;
-            grid-template-columns: 1fr 420px;
+
+            grid-template-columns: minmax(0, 1fr) 420px;
+
             gap: 70px;
-            align-items: center;
+
+            /*
+                Both columns start
+                from the same top.
+            */
+
+            align-items: start;
+
+            margin: 40px auto;
         }
+
+
+        /* =========================
+           LEFT INTRO
+        ========================== */
 
         .intro {
             padding: 20px;
+
+            padding-top: 20px;
+
+            min-width: 0;
         }
+
+
+        /* =========================
+           MINI BRAND
+        ========================== */
 
         .mini-brand {
             display: inline-flex;
+
             align-items: center;
+
             gap: 9px;
+
             color: #594052;
+
             font-weight: 800;
+
             font-size: 15px;
+
             margin-bottom: 35px;
         }
 
-        .mini-brand span {
+
+        .mini-brand span:first-child {
             font-family: "Fraunces", serif;
+
             font-size: 21px;
         }
 
+
+        /* =========================
+           INTRO HEADING
+        ========================== */
+
         .intro h1 {
             font-family: "Fraunces", serif;
-            font-size: clamp(48px, 6vw, 76px);
+
+            font-size: clamp(
+                48px,
+                6vw,
+                76px
+            );
+
             line-height: .95;
+
             color: #382A34;
+
             margin: 0 0 22px;
+
             letter-spacing: -2px;
         }
 
+
         .intro h1 em {
             color: #A65B70;
+
             font-style: normal;
         }
 
+
+        /* =========================
+           INTRO TEXT
+        ========================== */
+
         .intro p {
             max-width: 470px;
+
             color: #756C73;
+
             font-size: 17px;
+
             line-height: 1.7;
+
             margin: 0;
         }
 
+
+        /* =========================
+           LITTLE NOTE
+        ========================== */
+
         .scribble {
             display: inline-block;
+
             margin-top: 30px;
+
             background: #F2D477;
+
             padding: 10px 17px;
+
             border-radius: 100px;
+
             color: #594052;
+
             font-weight: 800;
+
             transform: rotate(-2deg);
         }
 
+
+        /* =========================
+           LOGIN CARD
+        ========================== */
+
         .login-box {
+            width: 100%;
+
             background: #FFFDF5;
+
             border: 1px solid #E7DACB;
+
             border-radius: 30px;
+
             padding: 38px;
-            box-shadow: 0 22px 55px rgba(56, 42, 52, .10);
+
+            box-shadow:
+                0 22px 55px rgba(
+                    56,
+                    42,
+                    52,
+                    .10
+                );
         }
+
+
+        /* =========================
+           LOGO
+        ========================== */
 
         .logo {
             text-align: center;
+
             font-size: 52px;
+
             margin-bottom: 5px;
         }
 
+
+        /* =========================
+           HEADING
+        ========================== */
+
         h2 {
             font-family: "Fraunces", serif;
+
             text-align: center;
+
             font-size: 31px;
+
             color: #382A34;
+
             margin: 0 0 7px;
         }
 
+
         .welcome {
             text-align: center;
+
             color: #756C73;
+
             margin: 0 0 28px;
+
             font-size: 14px;
         }
 
+
+        /* =========================
+           LABELS
+        ========================== */
+
         label {
             display: block;
+
             margin: 17px 0 7px;
+
             font-size: 11px;
+
             font-weight: 800;
+
             letter-spacing: .8px;
+
             text-transform: uppercase;
+
             color: #594052;
         }
+
+
+        /* =========================
+           INPUTS
+        ========================== */
 
         input {
             width: 100%;
+
             padding: 14px 15px;
+
             border: 1px solid #E7DACB;
+
             border-radius: 14px;
+
             background: #FFF6D8;
+
             color: #302A30;
+
             font: inherit;
+
             outline: none;
+
             transition: .2s ease;
         }
+
 
         input:focus {
             background: #FFFDF5;
+
             border-color: #A7B2E2;
-            box-shadow: 0 0 0 4px #E1E5F7;
+
+            box-shadow:
+                0 0 0 4px #E1E5F7;
         }
+
+
+        /* =========================
+           LOGIN BUTTON
+        ========================== */
 
         button {
             width: 100%;
+
             border: 0;
+
             border-radius: 14px;
+
             padding: 14px;
+
             margin-top: 24px;
+
             background: #594052;
+
             color: #FFFDF5;
+
             font: inherit;
+
             font-weight: 800;
+
             cursor: pointer;
+
             transition: .2s ease;
         }
 
+
         button:hover {
             background: #382A34;
+
             transform: translateY(-1px);
         }
 
+
         button:disabled {
             opacity: .6;
+
             cursor: not-allowed;
+
             transform: none;
         }
 
+
+        /* =========================
+           ERROR MESSAGE
+        ========================== */
+
         .error-msg {
             display: none;
+
             padding: 12px 14px;
+
             margin-bottom: 15px;
+
             border-radius: 13px;
+
             background: #F9DDDD;
+
             border: 1px solid #F2B8B8;
+
             color: #7C4351;
+
             font-size: 13px;
+
             font-weight: 700;
+
             text-align: center;
         }
+
+
+        /* =========================
+           REGISTER LINK
+        ========================== */
 
         .register-link {
             text-align: center;
+
             margin-top: 22px;
+
             color: #756C73;
+
             font-size: 13.5px;
         }
 
+
         .register-link a {
             color: #594052;
+
             font-weight: 800;
+
             text-decoration: none;
         }
+
 
         .register-link a:hover {
             text-decoration: underline;
         }
 
+
+        /* =========================
+           BACK LINK
+        ========================== */
+
         .back {
             display: block;
+
             text-align: center;
+
             margin-top: 18px;
+
             color: #756C73;
+
             font-size: 12px;
+
             text-decoration: none;
         }
 
+
+        /* =========================
+           TABLET / MOBILE
+        ========================== */
+
         @media (max-width: 800px) {
+
             body {
                 padding: 18px;
             }
 
+
             .page {
                 grid-template-columns: 1fr;
-                gap: 15px;
+
+                gap: 20px;
+
+                margin: 20px auto;
             }
+
 
             .intro {
                 text-align: center;
+
                 padding: 5px;
             }
+
 
             .intro h1 {
                 font-size: 48px;
             }
 
+
             .intro p {
                 margin: auto;
+
                 font-size: 15px;
             }
+
 
             .mini-brand {
                 margin-bottom: 20px;
             }
 
+
             .scribble {
                 display: none;
             }
 
+
             .login-box {
                 padding: 30px 25px;
             }
+
         }
+
+
+        /* =========================
+           SMALL PHONES
+        ========================== */
+
+        @media (max-width: 450px) {
+
+            body {
+                padding: 12px;
+            }
+
+
+            .page {
+                margin: 15px auto;
+
+                gap: 18px;
+            }
+
+
+            .intro h1 {
+                font-size: 40px;
+
+                letter-spacing: -1px;
+            }
+
+
+            .intro p {
+                font-size: 14px;
+            }
+
+
+            .login-box {
+                padding: 25px 20px;
+
+                border-radius: 24px;
+            }
+
+
+            .logo {
+                font-size: 45px;
+            }
+
+
+            h2 {
+                font-size: 27px;
+            }
+
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
-<div class="page">
 
-    <section class="intro">
-        <div class="mini-brand">
-            <span>🍉</span>
-            <span>melon mart</span>
-        </div>
+    <!-- =========================
+         MAIN PAGE
+    ========================== -->
 
-        <h1>
-            Good things<br>
-            are waiting<br>
-            <em>for you.</em>
-        </h1>
+    <div class="page">
 
-        <p>
-            Your snacks, fresh finds, little cravings and
-            questionable late-night decisions are all still here.
-        </p>
 
-        <div class="scribble">
-            Come on in ♡
-        </div>
-    </section>
+        <!-- =========================
+             LEFT INTRO
+        ========================== -->
 
-    <main class="login-box">
+        <section class="intro">
 
-        <div class="logo">🍉</div>
+            <div class="mini-brand">
 
-        <h2>Welcome back</h2>
+                <span>🍉</span>
 
-        <p class="welcome">
-            Pick up where you left off.
-        </p>
+                <span>melon mart</span>
 
-        <div id="errorMessage" class="error-msg">
-            Invalid email or password. Please try again!
-        </div>
+            </div>
 
-        <form id="loginForm" onsubmit="handleLogin(event)">
 
-            <label for="email">Email</label>
+            <h1>
 
-            <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="you@example.com"
-                required
+                Good things<br>
+
+                are waiting<br>
+
+                <em>for you.</em>
+
+            </h1>
+
+
+            <p>
+
+                Your snacks, fresh finds, little cravings and
+                questionable late-night decisions are all still here.
+
+            </p>
+
+
+            <div class="scribble">
+
+                Come on in ♡
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             LOGIN CARD
+        ========================== -->
+
+        <main class="login-box">
+
+
+            <div class="logo">
+                🍉
+            </div>
+
+
+            <h2>
+                Welcome back
+            </h2>
+
+
+            <p class="welcome">
+                Pick up where you left off.
+            </p>
+
+
+            <div
+                id="errorMessage"
+                class="error-msg"
+            >
+                Invalid email or password.
+                Please try again!
+            </div>
+
+
+            <form
+                id="loginForm"
+                onsubmit="handleLogin(event)"
             >
 
-            <label for="password">Password</label>
 
-            <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Your password"
-                required
+                <!-- EMAIL -->
+
+                <label for="email">
+                    Email
+                </label>
+
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="you@example.com"
+                    required
+                >
+
+
+
+                <!-- PASSWORD -->
+
+                <label for="password">
+                    Password
+                </label>
+
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Your password"
+                    required
+                >
+
+
+
+                <!-- LOGIN -->
+
+                <button
+                    type="submit"
+                    id="submitBtn"
+                >
+                    Login
+                </button>
+
+
+            </form>
+
+
+
+            <!-- REGISTER -->
+
+            <div class="register-link">
+
+                New around here?
+
+                <a href="register.html">
+                    Create an account
+                </a>
+
+            </div>
+
+
+
+            <!-- BACK -->
+
+            <a
+                href="index.html"
+                class="back"
             >
+                ← Back to Melon Mart
+            </a>
 
-            <button type="submit" id="submitBtn">
-                Login
-            </button>
 
-        </form>
+        </main>
 
-        <div class="register-link">
-            New around here?
-            <a href="register.html">Create an account</a>
-        </div>
 
-        <a href="index.html" class="back">
-            ← Back to Melon Mart
-        </a>
+    </div>
 
-    </main>
 
-</div>
 
-<script>
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
 
-const API_BASE = window.location.pathname.substring(
-    0,
-    window.location.pathname.lastIndexOf("/")
-);
+    <script>
 
-async function handleLogin(event) {
+        const API_BASE =
+            window.location.pathname.substring(
+                0,
+                window.location.pathname.lastIndexOf("/")
+            );
 
-    event.preventDefault();
 
-    const emailInput =
-        document.getElementById("email").value.trim();
+        async function handleLogin(event) {
 
-    const passwordInput =
-        document.getElementById("password").value;
+            event.preventDefault();
 
-    const errorDiv =
-        document.getElementById("errorMessage");
 
-    const submitBtn =
-        document.getElementById("submitBtn");
+            const emailInput =
+                document
+                    .getElementById("email")
+                    .value
+                    .trim();
 
-    errorDiv.style.display = "none";
 
-    submitBtn.disabled = true;
-    submitBtn.innerText = "Logging in...";
+            const passwordInput =
+                document
+                    .getElementById("password")
+                    .value;
 
-    try {
 
-        const response = await fetch(
-            API_BASE + "/api/auth/login",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    email: emailInput,
-                    password: passwordInput
-                })
+            const errorDiv =
+                document
+                    .getElementById("errorMessage");
+
+
+            const submitBtn =
+                document
+                    .getElementById("submitBtn");
+
+
+            errorDiv.style.display =
+                "none";
+
+
+            submitBtn.disabled =
+                true;
+
+
+            submitBtn.innerText =
+                "Logging in...";
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        API_BASE +
+                        "/api/auth/login",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                email:
+                                    emailInput,
+
+                                password:
+                                    passwordInput
+
+                            })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (data.success) {
+
+                    window.location.href =
+                        "index.html";
+
+                }
+
+                else {
+
+                    errorDiv.innerText =
+                        data.error ||
+                        data.message ||
+                        "Invalid email or password. Please try again!";
+
+
+                    errorDiv.style.display =
+                        "block";
+
+                }
+
+
             }
-        );
 
-        const data = await response.json();
+            catch (err) {
 
-        if (data.success) {
+                console.error(
+                    "Login error:",
+                    err
+                );
 
-            window.location.href = "index.html";
 
-        } else {
+                errorDiv.innerText =
+                    "Server error. Please check backend connection!";
 
-            errorDiv.innerText =
-                data.error ||
-                data.message ||
-                "Invalid email or password. Please try again!";
 
-            errorDiv.style.display = "block";
+                errorDiv.style.display =
+                    "block";
+
+            }
+
+
+            finally {
+
+                submitBtn.disabled =
+                    false;
+
+                submitBtn.innerText =
+                    "Login";
+
+            }
+
         }
-
-    } catch (err) {
-
-        console.error("Login error:", err);
-
-        errorDiv.innerText =
-            "Server error. Please check backend connection!";
-
-        errorDiv.style.display = "block";
-
-    } finally {
-
-        submitBtn.disabled = false;
-        submitBtn.innerText = "Login";
-    }
-}
-
-</script>
-
+    </script>
 </body>
 </html>
-

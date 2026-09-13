@@ -1,689 +1,670 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Melon Mart — Seller Studio</title>
+```
+<title>Melon Mart — Seller Studio</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
 
-    <style>
+<style>
 
-        * {
-            box-sizing: border-box;
-        }
+    * {
+        box-sizing: border-box;
+    }
 
-        body {
-            margin: 0;
-            font-family: "DM Sans", sans-serif;
-            background: #FFF6D8;
-            color: #302A30;
-        }
+    html {
+        min-height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
 
-        header {
-            min-height: 78px;
-            background: #FFFDF5;
-            border-bottom: 1px solid #E7DACB;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 6%;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "DM Sans", sans-serif;
+        background: #FFF6D8;
+        color: #302A30;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
 
-        .logo {
-            text-decoration: none;
-            color: #382A34;
-            display: flex;
-            align-items: center;
-            gap: 9px;
-        }
+    header {
+        min-height: 78px;
+        background: #FFFDF5;
+        border-bottom: 1px solid #E7DACB;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 6%;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
 
-        .logo-icon {
-            font-size: 27px;
-        }
+    .logo {
+        text-decoration: none;
+        color: #382A34;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
 
-        .logo-text {
-            font-family: "Fraunces", serif;
-            font-size: 25px;
-            font-weight: 700;
-        }
+    .logo-icon {
+        font-size: 27px;
+    }
 
-        .seller-pill {
-            background: #F9DDDD;
-            color: #594052;
-            border: 1px solid #F2B8B8;
-            border-radius: 100px;
-            padding: 9px 15px;
-            font-size: 12px;
-            font-weight: 800;
-        }
+    .logo-text {
+        font-family: "Fraunces", serif;
+        font-size: 25px;
+        font-weight: 700;
+    }
 
-        main {
-            width: 88%;
-            max-width: 1250px;
-            margin: 0 auto;
-            padding: 45px 0 70px;
+    .seller-pill {
+        background: #F9DDDD;
+        color: #594052;
+        border: 1px solid #F2B8B8;
+        border-radius: 100px;
+        padding: 9px 15px;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    main {
+        width: 88%;
+        max-width: 1250px;
+        margin: 0 auto;
+        padding: 45px 0 70px;
+    }
+
+    .hero {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 30px;
+        margin-bottom: 32px;
+    }
+
+    .eyebrow {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: #A65B70;
+        margin-bottom: 9px;
+    }
+
+    .hero h1 {
+        font-family: "Fraunces", serif;
+        font-size: clamp(42px, 5vw, 62px);
+        line-height: 1;
+        letter-spacing: -1.5px;
+        color: #382A34;
+        margin: 0;
+    }
+
+    .hero h1 em {
+        color: #A65B70;
+        font-style: normal;
+    }
+
+    .hero p {
+        max-width: 440px;
+        color: #756C73;
+        line-height: 1.6;
+        margin: 12px 0 0;
+        font-size: 14px;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        gap: 25px;
+        align-items: start;
+    }
+
+    .card {
+        background: #FFFDF5;
+        border: 1px solid #E7DACB;
+        border-radius: 25px;
+        padding: 25px;
+        box-shadow: 0 15px 40px rgba(56, 42, 52, .07);
+    }
+
+    .card-title-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 21px;
+    }
+
+    .card-title {
+        font-family: "Fraunces", serif;
+        font-size: 24px;
+        color: #382A34;
+        margin: 0;
+    }
+
+    .little-note {
+        color: #756C73;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 10px;
+        font-weight: 800;
+        color: #594052;
+        text-transform: uppercase;
+        letter-spacing: .8px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 13px;
+        border: 1px solid #E7DACB;
+        border-radius: 13px;
+        background: #FFF6D8;
+        color: #302A30;
+        font: inherit;
+        font-size: 13px;
+        outline: none;
+        resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        background: #FFFDF5;
+        border-color: #A7B2E2;
+        box-shadow: 0 0 0 4px #E1E5F7;
+    }
+
+    .submit-btn {
+        width: 100%;
+        border: 0;
+        border-radius: 14px;
+        padding: 13px;
+        background: #594052;
+        color: #FFFDF5;
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+        transition: .2s ease;
+        margin-top: 3px;
+    }
+
+    .submit-btn:hover {
+        background: #382A34;
+        transform: translateY(-1px);
+    }
+
+    .cancel-btn {
+        width: 100%;
+        border: 1px solid #E7DACB;
+        border-radius: 14px;
+        padding: 12px;
+        background: #FFF6D8;
+        color: #594052;
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+        margin-top: 8px;
+    }
+
+    .cancel-btn:hover {
+        background: #F9DDDD;
+    }
+
+    .inventory-card {
+        min-width: 0;
+        overflow: hidden;
+    }
+
+    .table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: visible;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 780px;
+    }
+
+    th {
+        text-align: left;
+        padding: 12px;
+        background: #FFF6D8;
+        color: #594052;
+        border-bottom: 1px solid #E7DACB;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .7px;
+    }
+
+    th:first-child {
+        border-radius: 10px 0 0 10px;
+    }
+
+    th:last-child {
+        border-radius: 0 10px 10px 0;
+    }
+
+    td {
+        padding: 13px 12px;
+        border-bottom: 1px solid #E7DACB;
+        color: #594052;
+        font-size: 13px;
+        vertical-align: middle;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    .product-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 13px;
+        object-fit: cover;
+        background: #F9DDDD;
+        display: block;
+    }
+
+    .product-name {
+        color: #382A34;
+        font-weight: 800;
+    }
+
+    .category-tag {
+        display: inline-block;
+        background: #E1E5F7;
+        color: #594052;
+        padding: 5px 9px;
+        border-radius: 100px;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .price {
+        font-weight: 800;
+        color: #A65B70;
+    }
+
+    .stock {
+        font-weight: 700;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 7px;
+    }
+
+    .edit-btn,
+    .delete-btn {
+        border: 0;
+        border-radius: 10px;
+        padding: 8px 11px;
+        font: inherit;
+        font-size: 11px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: .2s ease;
+    }
+
+    .edit-btn {
+        background: #E1E5F7;
+        color: #594052;
+    }
+
+    .edit-btn:hover {
+        background: #A7B2E2;
+    }
+
+    .delete-btn {
+        background: #F9DDDD;
+        color: #A65B70;
+    }
+
+    .delete-btn:hover {
+        background: #F2B8B8;
+    }
+
+    .empty-state {
+        text-align: center;
+        color: #756C73;
+        padding: 35px 20px !important;
+        line-height: 1.6;
+    }
+
+    .bottom-note {
+        margin-top: 22px;
+        background: #F2D477;
+        border-radius: 17px;
+        padding: 13px 16px;
+        color: #594052;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .edit-banner {
+        display: none;
+        background: #E1E5F7;
+        color: #594052;
+        border-radius: 13px;
+        padding: 10px 12px;
+        margin-bottom: 16px;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    @media (max-width: 900px) {
+
+        .dashboard-grid {
+            grid-template-columns: 1fr;
         }
 
         .hero {
-            display: flex;
-            justify-content: space-between;
-            align-items: end;
-            gap: 30px;
-            margin-bottom: 32px;
-        }
-
-        .eyebrow {
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            color: #A65B70;
-            margin-bottom: 9px;
-        }
-
-        .hero h1 {
-            font-family: "Fraunces", serif;
-            font-size: clamp(42px, 5vw, 62px);
-            line-height: 1;
-            letter-spacing: -1.5px;
-            color: #382A34;
-            margin: 0;
-        }
-
-        .hero h1 em {
-            color: #A65B70;
-            font-style: normal;
-        }
-
-        .hero p {
-            max-width: 440px;
-            color: #756C73;
-            line-height: 1.6;
-            margin: 12px 0 0;
-            font-size: 14px;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 340px 1fr;
-            gap: 25px;
             align-items: start;
+            flex-direction: column;
+        }
+
+        .seller-pill {
+            display: none;
+        }
+    }
+
+    @media (max-width: 600px) {
+
+        header {
+            padding: 0 20px;
+        }
+
+        main {
+            width: calc(100% - 30px);
+            padding-top: 30px;
         }
 
         .card {
-            background: #FFFDF5;
-            border: 1px solid #E7DACB;
-            border-radius: 25px;
-            padding: 25px;
-            box-shadow: 0 15px 40px rgba(56, 42, 52, .07);
+            padding: 20px;
         }
 
-        .card-title-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 21px;
+        .hero h1 {
+            font-size: 43px;
         }
+    }
 
-        .card-title {
-            font-family: "Fraunces", serif;
-            font-size: 24px;
-            color: #382A34;
-            margin: 0;
-        }
+</style>
+```
 
-        .little-note {
-            color: #756C73;
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 7px;
-            font-size: 10px;
-            font-weight: 800;
-            color: #594052;
-            text-transform: uppercase;
-            letter-spacing: .8px;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px 13px;
-            border: 1px solid #E7DACB;
-            border-radius: 13px;
-            background: #FFF6D8;
-            color: #302A30;
-            font: inherit;
-            font-size: 13px;
-            outline: none;
-            resize: vertical;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            background: #FFFDF5;
-            border-color: #A7B2E2;
-            box-shadow: 0 0 0 4px #E1E5F7;
-        }
-
-        .submit-btn {
-            width: 100%;
-            border: 0;
-            border-radius: 14px;
-            padding: 13px;
-            background: #594052;
-            color: #FFFDF5;
-            font: inherit;
-            font-weight: 800;
-            cursor: pointer;
-            transition: .2s ease;
-            margin-top: 3px;
-        }
-
-        .submit-btn:hover {
-            background: #382A34;
-            transform: translateY(-1px);
-        }
-
-        .cancel-btn {
-            width: 100%;
-            border: 1px solid #E7DACB;
-            border-radius: 14px;
-            padding: 12px;
-            background: #FFF6D8;
-            color: #594052;
-            font: inherit;
-            font-weight: 800;
-            cursor: pointer;
-            margin-top: 8px;
-        }
-
-        .cancel-btn:hover {
-            background: #F9DDDD;
-        }
-
-        .inventory-card {
-            min-width: 0;
-            overflow: hidden;
-        }
-
-        .table-wrap {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 780px;
-        }
-
-        th {
-            text-align: left;
-            padding: 12px;
-            background: #FFF6D8;
-            color: #594052;
-            border-bottom: 1px solid #E7DACB;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .7px;
-        }
-
-        th:first-child {
-            border-radius: 10px 0 0 10px;
-        }
-
-        th:last-child {
-            border-radius: 0 10px 10px 0;
-        }
-
-        td {
-            padding: 13px 12px;
-            border-bottom: 1px solid #E7DACB;
-            color: #594052;
-            font-size: 13px;
-            vertical-align: middle;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        .product-img {
-            width: 50px;
-            height: 50px;
-            border-radius: 13px;
-            object-fit: cover;
-            background: #F9DDDD;
-            display: block;
-        }
-
-        .product-name {
-            color: #382A34;
-            font-weight: 800;
-        }
-
-        .category-tag {
-            display: inline-block;
-            background: #E1E5F7;
-            color: #594052;
-            padding: 5px 9px;
-            border-radius: 100px;
-            font-size: 10px;
-            font-weight: 800;
-        }
-
-        .price {
-            font-weight: 800;
-            color: #A65B70;
-        }
-
-        .stock {
-            font-weight: 700;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 7px;
-        }
-
-        .edit-btn,
-        .delete-btn {
-            border: 0;
-            border-radius: 10px;
-            padding: 8px 11px;
-            font: inherit;
-            font-size: 11px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: .2s ease;
-        }
-
-        .edit-btn {
-            background: #E1E5F7;
-            color: #594052;
-        }
-
-        .edit-btn:hover {
-            background: #A7B2E2;
-        }
-
-        .delete-btn {
-            background: #F9DDDD;
-            color: #A65B70;
-        }
-
-        .delete-btn:hover {
-            background: #F2B8B8;
-        }
-
-        .empty-state {
-            text-align: center;
-            color: #756C73;
-            padding: 35px 20px !important;
-            line-height: 1.6;
-        }
-
-        .bottom-note {
-            margin-top: 22px;
-            background: #F2D477;
-            border-radius: 17px;
-            padding: 13px 16px;
-            color: #594052;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .edit-banner {
-            display: none;
-            background: #E1E5F7;
-            color: #594052;
-            border-radius: 13px;
-            padding: 10px 12px;
-            margin-bottom: 16px;
-            font-size: 12px;
-            font-weight: 800;
-        }
-
-        @media (max-width: 900px) {
-
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .hero {
-                align-items: start;
-                flex-direction: column;
-            }
-
-            .seller-pill {
-                display: none;
-            }
-        }
-
-        @media (max-width: 600px) {
-
-            header {
-                padding: 0 20px;
-            }
-
-            main {
-                width: calc(100% - 30px);
-                padding-top: 30px;
-            }
-
-            .card {
-                padding: 20px;
-            }
-
-            .hero h1 {
-                font-size: 43px;
-            }
-        }
-
-    </style>
 </head>
 
 <body>
 
 <header>
 
-    <a href="index.html" class="logo">
-        <span class="logo-icon">🍉</span>
-        <span class="logo-text">melon mart</span>
-    </a>
+```
+<a href="index.html" class="logo">
+    <span class="logo-icon">🍉</span>
+    <span class="logo-text">melon mart</span>
+</a>
 
-    <span class="seller-pill">
-        Seller Studio
-    </span>
+<span class="seller-pill">
+    Seller Studio
+</span>
+```
 
 </header>
 
-
 <main>
 
-    <section class="hero">
+```
+<section class="hero">
 
-        <div>
+    <div>
 
-            <div class="eyebrow">
-                Your little corner of Melon Mart
-            </div>
+        <div class="eyebrow">
+            Your little corner of Melon Mart
+        </div>
 
-            <h1>
-                Make something<br>
-                <em>worth adding.</em>
-            </h1>
+        <h1>
+            Make something<br>
+            <em>worth adding.</em>
+        </h1>
 
-            <p>
-                List your products, keep an eye on your stock,
-                and give shoppers something they didn't know
-                they needed five minutes ago.
-            </p>
+        <p>
+            List your products, keep an eye on your stock,
+            and give shoppers something they didn't know
+            they needed five minutes ago.
+        </p>
+
+    </div>
+
+</section>
+
+<div class="dashboard-grid">
+
+    <div class="card">
+
+        <div class="card-title-row">
+
+            <h2 class="card-title" id="formTitle">
+                Add a product
+            </h2>
+
+            <span class="little-note" id="formNote">
+                Let's sell something good.
+            </span>
 
         </div>
 
-    </section>
+        <div class="edit-banner" id="editBanner">
+            ✏️ You're editing a listing.
+        </div>
 
+        <form id="productForm" onsubmit="handleAddProduct(event)">
 
-    <div class="dashboard-grid">
+            <div class="form-group">
 
-        <!-- ADD / EDIT PRODUCT -->
+                <label for="pName">
+                    Product name
+                </label>
 
-        <div class="card">
-
-            <div class="card-title-row">
-
-                <h2 class="card-title" id="formTitle">
-                    Add a product
-                </h2>
-
-                <span class="little-note" id="formNote">
-                    Let's sell something good.
-                </span>
-
-            </div>
-
-
-            <div class="edit-banner" id="editBanner">
-                ✏️ You're editing a listing.
-            </div>
-
-
-            <form id="productForm" onsubmit="handleAddProduct(event)">
-
-                <div class="form-group">
-
-                    <label for="pName">
-                        Product name
-                    </label>
-
-                    <input
-                        type="text"
-                        id="pName"
-                        placeholder="e.g. Mango Situation"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="pCategory">
-                        Category
-                    </label>
-
-                    <select id="pCategory" required>
-
-                        <option value="FRUITS">
-                            Fresh stuff
-                        </option>
-
-                        <option value="JUICES">
-                            Drinks
-                        </option>
-
-                        <option value="SNACKS">
-                            Snack attack
-                        </option>
-
-                        <option value="RECIPES">
-                            Recipes
-                        </option>
-
-                        <option value="CREATIVE">
-                            Creative
-                        </option>
-
-                        <option value="JEWELLERY">
-                            Little sparkle
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="pPrice">
-                        Price (₹)
-                    </label>
-
-                    <input
-                        type="number"
-                        step="0.01"
-                        id="pPrice"
-                        placeholder="299.00"
-                        min="0.01"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="pStock">
-                        Stock quantity
-                    </label>
-
-                    <input
-                        type="number"
-                        id="pStock"
-                        value="20"
-                        min="0"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="pImg">
-                        Image URL
-                    </label>
-
-                    <input
-                        type="url"
-                        id="pImg"
-                        placeholder="https://..."
-                        required
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="pDesc">
-                        Description
-                    </label>
-
-                    <textarea
-                        id="pDesc"
-                        rows="3"
-                        placeholder="Tell shoppers why they need this."
-                    ></textarea>
-
-                </div>
-
-
-                <button
-                    type="submit"
-                    class="submit-btn"
-                    id="submitBtn"
+                <input
+                    type="text"
+                    id="pName"
+                    placeholder="e.g. Mango Situation"
+                    required
                 >
-                    List this item
-                </button>
 
-
-                <button
-                    type="button"
-                    class="cancel-btn"
-                    id="cancelBtn"
-                    onclick="cancelEdit()"
-                    style="display: none;"
-                >
-                    Cancel edit
-                </button>
-
-            </form>
-
-
-            <div class="bottom-note">
-                🍉 Tip: good photos + honest descriptions = happier shoppers.
             </div>
+
+            <div class="form-group">
+
+                <label for="pCategory">
+                    Category
+                </label>
+
+                <select id="pCategory" required>
+
+                    <option value="FRUITS">
+                        Fresh stuff
+                    </option>
+
+                    <option value="JUICES">
+                        Drinks
+                    </option>
+
+                    <option value="SNACKS">
+                        Snack attack
+                    </option>
+
+                    <option value="RECIPES">
+                        Recipes
+                    </option>
+
+                    <option value="CREATIVE">
+                        Creative
+                    </option>
+
+                    <option value="JEWELLERY">
+                        Little sparkle
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="pPrice">
+                    Price (₹)
+                </label>
+
+                <input
+                    type="number"
+                    step="0.01"
+                    id="pPrice"
+                    placeholder="299.00"
+                    min="0.01"
+                    required
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="pStock">
+                    Stock quantity
+                </label>
+
+                <input
+                    type="number"
+                    id="pStock"
+                    value="20"
+                    min="0"
+                    required
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="pImg">
+                    Image URL
+                </label>
+
+                <input
+                    type="url"
+                    id="pImg"
+                    placeholder="https://..."
+                    required
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="pDesc">
+                    Description
+                </label>
+
+                <textarea
+                    id="pDesc"
+                    rows="3"
+                    placeholder="Tell shoppers why they need this."
+                ></textarea>
+
+            </div>
+
+            <button
+                type="submit"
+                class="submit-btn"
+                id="submitBtn"
+            >
+                List this item
+            </button>
+
+            <button
+                type="button"
+                class="cancel-btn"
+                id="cancelBtn"
+                onclick="cancelEdit()"
+                style="display: none;"
+            >
+                Cancel edit
+            </button>
+
+        </form>
+
+        <div class="bottom-note">
+            🍉 Tip: good photos + honest descriptions = happier shoppers.
+        </div>
+
+    </div>
+
+    <div class="card inventory-card">
+
+        <div class="card-title-row">
+
+            <h2 class="card-title">
+                Your listings
+            </h2>
+
+            <span class="little-note">
+                Active inventory
+            </span>
 
         </div>
 
+        <div class="table-wrap">
 
-        <!-- INVENTORY -->
+            <table>
 
-        <div class="card inventory-card">
+                <thead>
 
-            <div class="card-title-row">
+                    <tr>
 
-                <h2 class="card-title">
-                    Your listings
-                </h2>
+                        <th>Item</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Actions</th>
 
-                <span class="little-note">
-                    Active inventory
-                </span>
+                    </tr>
 
-            </div>
+                </thead>
 
+                <tbody id="inventoryList"></tbody>
 
-            <div class="table-wrap">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                Item
-                            </th>
-
-                            <th>
-                                Name
-                            </th>
-
-                            <th>
-                                Category
-                            </th>
-
-                            <th>
-                                Price
-                            </th>
-
-                            <th>
-                                Stock
-                            </th>
-
-                            <th>
-                                Actions
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody id="inventoryList"></tbody>
-
-                </table>
-
-            </div>
+            </table>
 
         </div>
 
     </div>
 
-</main>
+</div>
+```
 
+</main>
 
 <script>
 
@@ -768,7 +749,6 @@ async function fetchSellerInventory() {
                 "inventoryList"
             );
 
-
         if (
             Array.isArray(products) &&
             products.length > 0
@@ -776,13 +756,11 @@ async function fetchSellerInventory() {
 
             tbody.innerHTML = "";
 
-
             products.forEach(p => {
 
                 const imageUrl =
                     p.imageUrl ||
                     "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=300&q=80";
-
 
                 tbody.innerHTML += `
 
@@ -798,7 +776,6 @@ async function fetchSellerInventory() {
 
                         </td>
 
-
                         <td>
 
                             <span class="product-name">
@@ -808,7 +785,6 @@ async function fetchSellerInventory() {
                             </span>
 
                         </td>
-
 
                         <td>
 
@@ -820,7 +796,6 @@ async function fetchSellerInventory() {
 
                         </td>
 
-
                         <td>
 
                             <span class="price">
@@ -831,7 +806,6 @@ async function fetchSellerInventory() {
 
                         </td>
 
-
                         <td>
 
                             <span class="stock">
@@ -839,7 +813,6 @@ async function fetchSellerInventory() {
                             </span>
 
                         </td>
-
 
                         <td>
 
@@ -852,7 +825,6 @@ async function fetchSellerInventory() {
                                 >
                                     ✏️ Edit
                                 </button>
-
 
                                 <button
                                     type="button"
@@ -872,8 +844,6 @@ async function fetchSellerInventory() {
 
             });
 
-
-            // Store products so Edit can find them
             window.sellerProducts = products;
 
         } else {
@@ -934,7 +904,6 @@ async function handleAddProduct(e) {
 
     e.preventDefault();
 
-
     const payload = {
 
         name:
@@ -977,13 +946,9 @@ async function handleAddProduct(e) {
 
     };
 
-
     try {
 
         let res;
-
-
-        // EDIT EXISTING PRODUCT
 
         if (editingProductId !== null) {
 
@@ -1006,12 +971,7 @@ async function handleAddProduct(e) {
                 }
             );
 
-        }
-
-
-        // ADD NEW PRODUCT
-
-        else {
+        } else {
 
             res = await fetch(
                 API_BASE + "/api/products",
@@ -1032,12 +992,9 @@ async function handleAddProduct(e) {
 
         }
 
-
         const data = await res.json();
 
-
         if (res.ok && data.success) {
-
 
             if (editingProductId !== null) {
 
@@ -1053,11 +1010,9 @@ async function handleAddProduct(e) {
 
             }
 
-
             resetProductForm();
 
             await fetchSellerInventory();
-
 
         } else {
 
@@ -1067,7 +1022,6 @@ async function handleAddProduct(e) {
             );
 
         }
-
 
     } catch (err) {
 
@@ -1094,12 +1048,10 @@ function startEdit(productId) {
     const products =
         window.sellerProducts || [];
 
-
     const product =
         products.find(
             p => p.id === productId
         );
-
 
     if (!product) {
 
@@ -1110,79 +1062,62 @@ function startEdit(productId) {
         return;
     }
 
-
     editingProductId = productId;
-
 
     document.getElementById(
         "pName"
     ).value =
         product.name || "";
 
-
     document.getElementById(
         "pCategory"
     ).value =
         product.category || "FRUITS";
-
 
     document.getElementById(
         "pPrice"
     ).value =
         product.price || "";
 
-
     document.getElementById(
         "pStock"
     ).value =
         product.stockQty ?? 0;
-
 
     document.getElementById(
         "pImg"
     ).value =
         product.imageUrl || "";
 
-
     document.getElementById(
         "pDesc"
     ).value =
         product.description || "";
-
-
-    // Change form appearance
 
     document.getElementById(
         "formTitle"
     ).textContent =
         "Edit product";
 
-
     document.getElementById(
         "formNote"
     ).textContent =
         "Give it a little update.";
-
 
     document.getElementById(
         "editBanner"
     ).style.display =
         "block";
 
-
     document.getElementById(
         "submitBtn"
     ).textContent =
         "Save changes";
 
-
     document.getElementById(
         "cancelBtn"
     ).style.display =
         "block";
-
-
-    // Scroll back to form
 
     window.scrollTo({
         top: 0,
@@ -1211,40 +1146,33 @@ function resetProductForm() {
 
     editingProductId = null;
 
-
     document.getElementById(
         "productForm"
     ).reset();
 
-
     document.getElementById(
         "pStock"
     ).value = 20;
-
 
     document.getElementById(
         "formTitle"
     ).textContent =
         "Add a product";
 
-
     document.getElementById(
         "formNote"
     ).textContent =
         "Let's sell something good.";
-
 
     document.getElementById(
         "editBanner"
     ).style.display =
         "none";
 
-
     document.getElementById(
         "submitBtn"
     ).textContent =
         "List this item";
-
 
     document.getElementById(
         "cancelBtn"
@@ -1263,12 +1191,10 @@ async function deleteProduct(productId) {
     const products =
         window.sellerProducts || [];
 
-
     const product =
         products.find(
             p => p.id === productId
         );
-
 
     if (!product) {
 
@@ -1279,17 +1205,14 @@ async function deleteProduct(productId) {
         return;
     }
 
-
     const confirmed =
         confirm(
             `Delete "${product.name}"?\n\nThis cannot be undone.`
         );
 
-
     if (!confirmed) {
         return;
     }
-
 
     try {
 
@@ -1302,20 +1225,14 @@ async function deleteProduct(productId) {
             }
         );
 
-
         const data =
             await res.json();
-
 
         if (res.ok && data.success) {
 
             alert(
                 "Product deleted successfully!"
             );
-
-
-            // If we were editing this product,
-            // leave edit mode.
 
             if (
                 editingProductId === productId
@@ -1325,9 +1242,7 @@ async function deleteProduct(productId) {
 
             }
 
-
             await fetchSellerInventory();
-
 
         } else {
 
@@ -1337,7 +1252,6 @@ async function deleteProduct(productId) {
             );
 
         }
-
 
     } catch (err) {
 
@@ -1367,6 +1281,7 @@ function escapeHtml(value) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+
 }
 
 
@@ -1379,7 +1294,6 @@ async function initializeSellerPage() {
     const authenticated =
         await checkAuth();
 
-
     if (authenticated) {
 
         await fetchSellerInventory();
@@ -1387,7 +1301,6 @@ async function initializeSellerPage() {
     }
 
 }
-
 
 initializeSellerPage();
 

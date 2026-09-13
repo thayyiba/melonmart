@@ -15,10 +15,6 @@ public class CartDAO {
         return DbContextListener.getDataSource().getConnection();
     }
 
-    // =========================
-    // GET USER CART
-    // =========================
-
     public List<CartItem> getCartByUserId(int userId) {
 
         List<CartItem> cart = new ArrayList<>();
@@ -41,7 +37,8 @@ public class CartDAO {
 
         try (
                 Connection connection = getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)
+                PreparedStatement statement =
+                        connection.prepareStatement(sql)
         ) {
 
             statement.setInt(1, userId);
@@ -82,10 +79,6 @@ public class CartDAO {
         return cart;
     }
 
-    // =========================
-    // ADD / UPDATE CART ITEM
-    // =========================
-
     public boolean addToCart(
             int userId,
             int productId,
@@ -93,14 +86,16 @@ public class CartDAO {
     ) {
 
         String sql = """
-                MERGE INTO cart_items (user_id, product_id, quantity)
+                MERGE INTO cart_items
+                (user_id, product_id, quantity)
                 KEY (user_id, product_id)
                 VALUES (?, ?, ?)
                 """;
 
         try (
                 Connection connection = getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)
+                PreparedStatement statement =
+                        connection.prepareStatement(sql)
         ) {
 
             statement.setInt(1, userId);
@@ -118,10 +113,6 @@ public class CartDAO {
         }
     }
 
-    // =========================
-    // SET EXACT QUANTITY
-    // =========================
-
     public boolean updateQuantity(
             int userId,
             int productId,
@@ -137,7 +128,8 @@ public class CartDAO {
 
         try (
                 Connection connection = getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)
+                PreparedStatement statement =
+                        connection.prepareStatement(sql)
         ) {
 
             statement.setInt(1, quantity);
@@ -155,10 +147,6 @@ public class CartDAO {
         }
     }
 
-    // =========================
-    // REMOVE ONE ITEM
-    // =========================
-
     public boolean removeFromCart(
             int userId,
             int productId
@@ -172,7 +160,8 @@ public class CartDAO {
 
         try (
                 Connection connection = getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)
+                PreparedStatement statement =
+                        connection.prepareStatement(sql)
         ) {
 
             statement.setInt(1, userId);
@@ -189,10 +178,6 @@ public class CartDAO {
         }
     }
 
-    // =========================
-    // CLEAR CART
-    // =========================
-
     public boolean clearCart(int userId) {
 
         String sql = """
@@ -202,7 +187,8 @@ public class CartDAO {
 
         try (
                 Connection connection = getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)
+                PreparedStatement statement =
+                        connection.prepareStatement(sql)
         ) {
 
             statement.setInt(1, userId);
@@ -217,6 +203,33 @@ public class CartDAO {
             e.printStackTrace();
 
             return false;
+        }
+    }
+
+    /*
+     * Used during checkout.
+     *
+     * This method uses the connection
+     * already opened by OrderService.
+     */
+    public void clearCart(
+            Connection connection,
+            int userId
+    ) throws Exception {
+
+        String sql = """
+                DELETE FROM cart_items
+                WHERE user_id = ?
+                """;
+
+        try (
+                PreparedStatement statement =
+                        connection.prepareStatement(sql)
+        ) {
+
+            statement.setInt(1, userId);
+
+            statement.executeUpdate();
         }
     }
 }
