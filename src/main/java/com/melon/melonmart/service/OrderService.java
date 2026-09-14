@@ -8,6 +8,7 @@ import com.melon.melonmart.listener.DbContextListener;
 import com.melon.melonmart.model.CartItem;
 import com.melon.melonmart.model.Order;
 import com.melon.melonmart.model.OrderItem;
+import com.melon.melonmart.dto.SellerOrderDTO;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -163,6 +164,13 @@ public class OrderService {
 
         return orderDAO.getOrdersByUserId(userId);
     }
+
+    public List<SellerOrderDTO> getOrdersBySellerId(
+        int sellerId
+) throws Exception {
+
+    return orderDAO.getOrdersBySellerId(sellerId);
+}
 
     public Order getOrderById(
             int orderId
