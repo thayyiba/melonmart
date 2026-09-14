@@ -1,6 +1,7 @@
 package com.melon.melonmart.controller;
 
 import com.google.gson.Gson;
+import com.melon.melonmart.dao.AdminDAO;
 import com.melon.melonmart.model.User;
 
 import javax.servlet.annotation.WebServlet;
@@ -17,6 +18,13 @@ import java.util.Map;
 public class AdminServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
+    private AdminDAO adminDAO;
+
+    @Override
+    public void init() {
+
+        adminDAO = new AdminDAO();
+    }
 
     @Override
     protected void doGet(
@@ -38,7 +46,7 @@ public class AdminServlet extends HttpServlet {
             return;
         }
 
-        // Logged in but not an admin
+        // Not an admin
         if (!"ADMIN".equalsIgnoreCase(user.getRole())) {
 
             sendError(
@@ -50,13 +58,97 @@ public class AdminServlet extends HttpServlet {
             return;
         }
 
+        String path =
+                request.getPathInfo();
+
+        // GET /api/admin/
+        if (path == null
+                || path.equals("/")
+                || path.isEmpty()) {
+
+            sendAdminAccessResponse(
+                    response,
+                    user
+            );
+
+            return;
+        }
+
+        // GET /api/admin/dashboard
+        if (path.equals("/dashboard")) {
+
+            try {
+
+                Map<String, Object> stats =
+                        adminDAO.getDashboardStats();
+
+                Map<String, Object> result =
+                        new HashMap<>();
+
+                result.put(
+                        "success",
+                        true
+                );
+
+                result.put(
+                        "stats",
+                        stats
+                );
+
+                sendJson(
+                        response,
+                        HttpServletResponse.SC_OK,
+                        result
+                );
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+                sendError(
+                        response,
+                        HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                        "Failed to load dashboard statistics."
+                );
+            }
+
+            return;
+        }
+
+        sendError(
+                response,
+                HttpServletResponse.SC_NOT_FOUND,
+                "Admin endpoint not found."
+        );
+    }
+
+    private void sendAdminAccessResponse(
+            HttpServletResponse response,
+            User user
+    ) throws IOException {
+
         Map<String, Object> result =
                 new HashMap<>();
 
-        result.put("success", true);
-        result.put("message", "Admin access granted.");
-        result.put("admin", user.getUsername());
-        result.put("role", user.getRole());
+        result.put(
+                "success",
+                true
+        );
+
+        result.put(
+                "message",
+                "Admin access granted."
+        );
+
+        result.put(
+                "admin",
+                user.getUsername()
+        );
+
+        result.put(
+                "role",
+                user.getRole()
+        );
 
         sendJson(
                 response,
@@ -92,8 +184,14 @@ public class AdminServlet extends HttpServlet {
             Object data
     ) throws IOException {
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+        response.setContentType(
+                "application/json"
+        );
+
+        response.setCharacterEncoding(
+                "UTF-8"
+        );
+
         response.setStatus(status);
 
         response.getWriter().write(
@@ -110,8 +208,15 @@ public class AdminServlet extends HttpServlet {
         Map<String, Object> result =
                 new HashMap<>();
 
-        result.put("success", false);
-        result.put("message", message);
+        result.put(
+                "success",
+                false
+        );
+
+        result.put(
+                "message",
+                message
+        );
 
         sendJson(
                 response,
