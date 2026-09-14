@@ -1612,40 +1612,29 @@ footer {
 
     <div class="header-actions">
 
-        <button
-            class="header-btn"
-            onclick="openWishlist()"
-        >
-            ♡ <strong>wishlist</strong>
-        </button>
+        <div class="header-actions">
 
-        <button
-            class="header-btn account-btn"
-            id="accountButton"
-            onclick="handleAccountClick()"
-        >
-            account
-        </button>
+    <button class="header-btn" onclick="openWishlist()">
+        ♡ <strong>wishlist</strong>
+    </button>
 
-        <button
-            class="header-btn"
-            onclick="window.location.href='seller.html'"
-        >
-            sell
-        </button>
+    <button class="header-btn" onclick="openOrders()">
+        orders
+    </button>
 
-        <button
-            class="header-btn cart-button"
-            onclick="openCart()"
-        >
-            bag
+    <button class="header-btn account-btn" id="accountButton" onclick="handleAccountClick()">
+        account
+    </button>
 
-            <span
-                class="cart-count"
-                id="cartCount"
-            >
-                0
-            </span>
+    <button class="header-btn" onclick="window.location.href='seller.html'">
+        sell
+    </button>
+
+    <button class="header-btn cart-button" onclick="openCart()">
+        bag <span class="cart-count" id="cartCount">0</span>
+    </button>
+
+</div>
 
         </button>
 
@@ -4546,10 +4535,15 @@ setDailyThought();
 checkCurrentUser();
 
 fetchProducts();
-
 fetchCart();
+function openOrders() {
 
+    if (!currentUser) {
+        window.location.href = "login.html";
+        return;
+    }
+    window.location.href = "orders.html";
+}
 </script>
-
 </body>
 </html>
