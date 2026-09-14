@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+```
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Melon Mart — My Orders</title>
+
+<style>
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    :root {
+        --cream: #fffaf5;
+        --paper: #fffdf9;
+        --purple: #7357a5;
+        --purple-dark: #513d7d;
+        --lavender: #eee8f8;
+        --pink: #f5dfe7;
+        --green: #dcebdc;
+        --text: #302936;
+        --muted: #817884;
+        --border: #e8dfe8;
+        --white: #ffffff;
+    }
+
+    html {
+        min-height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    body {
+        min-height: 100vh;
+        background: var(--cream);
+        color: var(--text);
+        font-family:
+            "DM Sans",
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            sans-serif;
+
+        overflow-x: hidden;
+    }
+
+    button {
+        font: inherit;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .page {
+        width: min(1120px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 28px 0 70px;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    .top-note {
+        text-align: center;
+        color: var(--muted);
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        margin-bottom: 20px;
+    }
+
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 18px 0 25px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        background: var(--purple);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 21px;
+    }
+
+    .brand-text strong {
+        display: block;
+        font-family: Georgia, serif;
+        font-size: 22px;
+        font-weight: 600;
+    }
+
+    .brand-text span {
+        display: block;
+        margin-top: 2px;
+        color: var(--muted);
+        font-size: 11px;
+    }
+
+    .back-btn {
+        border: 1px solid var(--border);
+        background: var(--white);
+        border-radius: 999px;
+        padding: 11px 17px;
+        cursor: pointer;
+        color: var(--text);
+        transition: 0.2s ease;
+    }
+
+    .back-btn:hover {
+        transform: translateY(-1px);
+        border-color: var(--purple);
+    }
+
+    /* =========================
+       HERO
+    ========================= */
+
+    .orders-hero {
+        padding: 55px 0 35px;
+    }
+
+    .eyebrow {
+        color: var(--purple);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+    }
+
+    .orders-hero h1 {
+        font-family: Georgia, serif;
+        font-size: clamp(42px, 7vw, 72px);
+        line-height: 0.98;
+        font-weight: 500;
+        letter-spacing: -0.04em;
+        max-width: 720px;
+    }
+
+    .orders-hero p {
+        max-width: 600px;
+        margin-top: 18px;
+        color: var(--muted);
+        line-height: 1.7;
+        font-size: 15px;
+    }
+
+    /* =========================
+       ORDERS
+    ========================= */
+
+    .orders-list {
+        display: grid;
+        gap: 18px;
+    }
+
+    .order-card {
+        background: var(--paper);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 24px;
+        box-shadow:
+            0 10px 35px rgba(70, 45, 80, 0.05);
+    }
+
+    .order-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .order-number {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .order-date {
+        color: var(--muted);
+        font-size: 13px;
+        margin-top: 6px;
+    }
+
+    .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        border-radius: 999px;
+        padding: 8px 13px;
+        background: var(--green);
+        color: #3d6543;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #5c9a66;
+    }
+
+    .order-middle {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 25px;
+        align-items: center;
+        padding: 22px 0;
+    }
+
+    .order-summary {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .mini-product {
+        width: 55px;
+        height: 55px;
+        border-radius: 15px;
+        overflow: hidden;
+        background: var(--lavender);
+        border: 1px solid var(--border);
+    }
+
+    .mini-product img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .more-items {
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+    .order-total {
+        text-align: right;
+    }
+
+    .order-total span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+
+    .order-total strong {
+        font-size: 20px;
+    }
+
+    .order-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .item-count {
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+    .details-btn {
+        border: 0;
+        background: var(--purple);
+        color: white;
+        border-radius: 999px;
+        padding: 11px 18px;
+        cursor: pointer;
+        font-weight: 700;
+        transition: 0.2s ease;
+    }
+
+    .details-btn:hover {
+        background: var(--purple-dark);
+        transform: translateY(-1px);
+    }
+
+    /* =========================
+       DETAILS
+    ========================= */
+
+    .order-details {
+        display: none;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+    }
+
+    .order-details.open {
+        display: block;
+    }
+
+    .detail-title {
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .detail-item {
+        display: grid;
+        grid-template-columns: 60px 1fr auto;
+        align-items: center;
+        gap: 14px;
+        padding: 13px 0;
+        border-bottom: 1px solid #eee7ee;
+    }
+
+    .detail-item:last-child {
+        border-bottom: 0;
+    }
+
+    .detail-image {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        object-fit: cover;
+        background: var(--lavender);
+    }
+
+    .detail-name {
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    .detail-meta {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    .detail-price {
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    /* =========================
+       EMPTY
+    ========================= */
+
+    .empty-state {
+        text-align: center;
+        padding: 80px 25px;
+        background: var(--paper);
+        border: 1px solid var(--border);
+        border-radius: 28px;
+    }
+
+    .empty-icon {
+        font-size: 48px;
+        margin-bottom: 18px;
+    }
+
+    .empty-state h2 {
+        font-family: Georgia, serif;
+        font-size: 30px;
+        font-weight: 500;
+    }
+
+    .empty-state p {
+        color: var(--muted);
+        margin: 12px auto 24px;
+        max-width: 430px;
+        line-height: 1.6;
+    }
+
+    .shop-btn {
+        display: inline-block;
+        background: var(--purple);
+        color: white;
+        border-radius: 999px;
+        padding: 12px 20px;
+        font-weight: 700;
+    }
+
+    /* =========================
+       LOADING
+    ========================= */
+
+    .loading {
+        text-align: center;
+        padding: 70px 20px;
+        color: var(--muted);
+    }
+
+    .loading-symbol {
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+
+    /* =========================
+       ERROR
+    ========================= */
+
+    .error-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: var(--pink);
+        border-radius: 25px;
+    }
+
+    .error-state strong {
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .retry-btn {
+        margin-top: 18px;
+        border: 0;
+        background: var(--purple);
+        color: white;
+        border-radius: 999px;
+        padding: 11px 18px;
+        cursor: pointer;
+    }
+
+    /* =========================
+       TOAST
+    ========================= */
+
+    .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 25px;
+        transform: translate(-50%, 20px);
+        opacity: 0;
+        pointer-events: none;
+        background: #302936;
+        color: white;
+        padding: 12px 18px;
+        border-radius: 999px;
+        font-size: 13px;
+        transition: 0.25s ease;
+        z-index: 100;
+    }
+
+    .toast.show {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 700px) {
+
+        .page {
+            width: min(100% - 24px, 1120px);
+            padding-top: 18px;
+        }
+
+        header {
+            align-items: flex-start;
+        }
+
+        .brand-text span {
+            display: none;
+        }
+
+        .orders-hero {
+            padding: 40px 0 25px;
+        }
+
+        .orders-hero h1 {
+            font-size: 48px;
+        }
+
+        .order-top {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .order-middle {
+            grid-template-columns: 1fr;
+        }
+
+        .order-total {
+            text-align: left;
+        }
+
+        .order-bottom {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .details-btn {
+            width: 100%;
+        }
+
+        .detail-item {
+            grid-template-columns: 52px 1fr;
+        }
+
+        .detail-price {
+            grid-column: 2;
+        }
+
+    }
+
+</style>
+```
+
+</head>
+
+<body>
+
+<div class="page">
+
+```
+<div class="top-note">
+    good things, gathered. ✦
+</div>
+
+<header>
+
+    <a
+        class="brand"
+        href="index.html"
+    >
+        <div class="brand-mark">
+            ✦
+        </div>
+
+        <div class="brand-text">
+            <strong>Melon Mart</strong>
+            <span>little things, thoughtfully gathered</span>
+        </div>
+    </a>
+
+    <button
+        class="back-btn"
+        onclick="window.location.href='index.html'"
+    >
+        ← back to shop
+    </button>
+
+</header>
+
+
+<section class="orders-hero">
+
+    <div class="eyebrow">
+        your little history
+    </div>
+
+    <h1>
+        my orders.
+    </h1>
+
+    <p>
+        Everything you've ordered from Melon Mart,
+        all in one place. No detective work required. ✦
+    </p>
+
+</section>
+
+
+<main id="ordersContainer">
+
+    <div class="loading">
+
+        <div class="loading-symbol">
+            ✦
+        </div>
+
+        Loading your orders...
+
+    </div>
+
+</main>
+```
+
+</div>
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+<script>
+
+const API_BASE =
+    window.location.protocol === "file:"
+        ? "http://localhost:8080/melonmart"
+        : window.location.origin + "/melonmart";
+
+
+let products = [];
+
+let orders = [];
+
+
+/* ==========================================
+   LOAD CURRENT USER
+========================================== */
+
+async function checkLogin() {
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE + "/api/auth/me"
+            );
+
+        if (
+            !response.ok
+        ) {
+
+            window.location.href =
+                "login.html";
+
+            return false;
+
+        }
+
+        const data =
+            await response.json();
+
+        if (
+            !data.authenticated
+            ||
+            !data.user
+        ) {
+
+            window.location.href =
+                "login.html";
+
+            return false;
+
+        }
+
+        return true;
+
+    } catch (error) {
+
+        console.error(error);
+
+        window.location.href =
+            "login.html";
+
+        return false;
+
+    }
+
+}
+
+
+/* ==========================================
+   LOAD PRODUCTS
+========================================== */
+
+async function fetchProducts() {
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE + "/api/products"
+            );
+
+        if (!response.ok) {
+            return;
+        }
+
+        products =
+            await response.json();
+
+    } catch (error) {
+
+        console.error(
+            "Could not load products:",
+            error
+        );
+
+    }
+
+}
+
+
+/* ==========================================
+   LOAD ORDERS
+========================================== */
+
+async function fetchOrders() {
+
+    const container =
+        document.getElementById(
+            "ordersContainer"
+        );
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE + "/api/orders"
+            );
+
+        if (
+            response.status === 401
+        ) {
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Could not load orders"
+            );
+
+        }
+
+        orders =
+            await response.json();
+
+        renderOrders();
+
+    } catch (error) {
+
+        console.error(error);
+
+        container.innerHTML = `
+
+            <div class="error-state">
+
+                <strong>
+                    Hmm. Your orders are hiding.
+                </strong>
+
+                <span>
+                    We couldn't load them right now.
+                </span>
+
+                <br>
+
+                <button
+                    class="retry-btn"
+                    onclick="fetchOrders()"
+                >
+                    try again
+                </button>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* ==========================================
+   RENDER ORDERS
+========================================== */
+
+function renderOrders() {
+
+    const container =
+        document.getElementById(
+            "ordersContainer"
+        );
+
+    if (!orders.length) {
+
+        container.innerHTML = `
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    🛍️
+                </div>
+
+                <h2>
+                    No orders yet.
+                </h2>
+
+                <p>
+                    Your future little treats will
+                    appear here once you place an order.
+                </p>
+
+                <a
+                    class="shop-btn"
+                    href="index.html"
+                >
+                    explore the shop ✦
+                </a>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML = `
+
+        <div class="orders-list">
+
+            ${
+                orders
+                    .map(
+                        order =>
+                            renderOrderCard(order)
+                    )
+                    .join("")
+            }
+
+        </div>
+
+    `;
+
+}
+
+
+/* ==========================================
+   ORDER CARD
+========================================== */
+
+function renderOrderCard(order) {
+
+    const orderId =
+        Number(order.id);
+
+    const total =
+        Number(
+            order.totalAmount || 0
+        );
+
+    const status =
+        order.status
+        ||
+        "PLACED";
+
+    const date =
+        formatDate(
+            order.createdAt
+        );
+
+    return `
+
+        <article
+            class="order-card"
+            id="order-${orderId}"
+        >
+
+            <div class="order-top">
+
+                <div>
+
+                    <div class="order-number">
+                        Order #${orderId}
+                    </div>
+
+                    <div class="order-date">
+                        ${date}
+                    </div>
+
+                </div>
+
+                <div class="status">
+
+                    <span class="status-dot"></span>
+
+                    ${escapeHtml(
+                        formatStatus(status)
+                    )}
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="order-middle"
+                id="summary-${orderId}"
+            >
+
+                <div class="order-summary">
+
+                    <div class="more-items">
+                        Loading items...
+                    </div>
+
+                </div>
+
+                <div class="order-total">
+
+                    <span>
+                        order total
+                    </span>
+
+                    <strong>
+                        ₹${total.toFixed(2)}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="order-bottom">
+
+                <div
+                    class="item-count"
+                    id="count-${orderId}"
+                >
+                    Loading item count...
+                </div>
+
+                <button
+                    class="details-btn"
+                    onclick="toggleOrderDetails(${orderId})"
+                >
+                    view details →
+                </button>
+
+            </div>
+
+
+            <div
+                class="order-details"
+                id="details-${orderId}"
+            >
+            </div>
+
+        </article>
+
+    `;
+
+}
+
+
+/* ==========================================
+   ORDER DETAILS
+========================================== */
+
+async function toggleOrderDetails(
+    orderId
+) {
+
+    const details =
+        document.getElementById(
+            "details-" + orderId
+        );
+
+    if (
+        details.classList.contains("open")
+    ) {
+
+        details.classList.remove("open");
+
+        return;
+
+    }
+
+    details.classList.add("open");
+
+    details.innerHTML = `
+
+        <div class="loading">
+            Loading order details...
+        </div>
+
+    `;
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE
+                +
+                "/api/orders/"
+                +
+                orderId
+            );
+
+        if (
+            response.status === 401
+        ) {
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Could not load order details"
+            );
+
+        }
+
+        const data =
+            await response.json();
+
+        renderOrderDetails(
+            orderId,
+            data
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        details.innerHTML = `
+
+            <div class="error-state">
+
+                Could not load this order.
+
+                <br>
+
+                <button
+                    class="retry-btn"
+                    onclick="toggleOrderDetails(${orderId})"
+                >
+                    try again
+                </button>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* ==========================================
+   RENDER ORDER DETAILS
+========================================== */
+
+function renderOrderDetails(
+    orderId,
+    data
+) {
+
+    const details =
+        document.getElementById(
+            "details-" + orderId
+        );
+
+    const items =
+        data.items || [];
+
+    const count =
+        items.reduce(
+            (sum, item) =>
+                sum +
+                Number(item.quantity || 0),
+            0
+        );
+
+    document.getElementById(
+        "count-" + orderId
+    )
+    .textContent =
+        count
+        +
+        (
+            count === 1
+                ? " item"
+                : " items"
+        );
+
+
+    const summary =
+        document.getElementById(
+            "summary-" + orderId
+        );
+
+    const previewItems =
+        items.slice(0, 4);
+
+    summary.innerHTML = `
+
+        <div class="order-summary">
+
+            ${
+                previewItems
+                    .map(
+                        item =>
+                            renderMiniProduct(item)
+                    )
+                    .join("")
+            }
+
+            ${
+                items.length > 4
+                    ? `
+                        <div class="more-items">
+                            +${items.length - 4} more
+                        </div>
+                    `
+                    : ""
+            }
+
+        </div>
+
+        <div class="order-total">
+
+            <span>
+                order total
+            </span>
+
+            <strong>
+                ₹${Number(
+                    data.order.totalAmount || 0
+                ).toFixed(2)}
+            </strong>
+
+        </div>
+
+    `;
+
+
+    if (!items.length) {
+
+        details.innerHTML = `
+
+            <div class="detail-title">
+                items
+            </div>
+
+            <div class="more-items">
+                No item details available.
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    details.innerHTML = `
+
+        <div class="detail-title">
+            items in this order
+        </div>
+
+        ${
+            items
+                .map(
+                    item =>
+                        renderDetailItem(item)
+                )
+                .join("")
+        }
+
+    `;
+
+}
+
+
+/* ==========================================
+   MINI PRODUCT
+========================================== */
+
+function renderMiniProduct(item) {
+
+    const product =
+        findProduct(
+            item.productId
+        );
+
+    const image =
+        product
+        && product.imageUrl
+            ? product.imageUrl
+            : getFallbackImage();
+
+    const name =
+        product
+        && product.name
+            ? product.name
+            : "Product #" + item.productId;
+
+    return `
+
+        <div
+            class="mini-product"
+            title="${escapeHtml(name)}"
+        >
+
+            <img
+                src="${escapeHtml(image)}"
+                alt="${escapeHtml(name)}"
+                onerror="this.src='${getFallbackImage()}'"
+            >
+
+        </div>
+
+    `;
+
+}
+
+
+/* ==========================================
+   DETAIL ITEM
+========================================== */
+
+function renderDetailItem(item) {
+
+    const product =
+        findProduct(
+            item.productId
+        );
+
+    const image =
+        product
+        && product.imageUrl
+            ? product.imageUrl
+            : getFallbackImage();
+
+    const name =
+        product
+        && product.name
+            ? product.name
+            : "Product #" + item.productId;
+
+    const price =
+        Number(
+            item.price || 0
+        );
+
+    const quantity =
+        Number(
+            item.quantity || 0
+        );
+
+    const lineTotal =
+        price * quantity;
+
+    return `
+
+        <div class="detail-item">
+
+            <img
+                class="detail-image"
+                src="${escapeHtml(image)}"
+                alt="${escapeHtml(name)}"
+                onerror="this.src='${getFallbackImage()}'"
+            >
+
+            <div>
+
+                <div class="detail-name">
+                    ${escapeHtml(name)}
+                </div>
+
+                <div class="detail-meta">
+                    ${quantity} × ₹${price.toFixed(2)}
+                </div>
+
+            </div>
+
+            <div class="detail-price">
+                ₹${lineTotal.toFixed(2)}
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ==========================================
+   FIND PRODUCT
+========================================== */
+
+function findProduct(
+    productId
+) {
+
+    return products.find(
+        product =>
+            Number(product.id)
+            ===
+            Number(productId)
+    );
+
+}
+
+
+/* ==========================================
+   DATE
+========================================== */
+
+function formatDate(
+    value
+) {
+
+    if (!value) {
+        return "Date unavailable";
+    }
+
+    const date =
+        new Date(value);
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return String(value);
+
+    }
+
+    return date.toLocaleString(
+        "en-IN",
+        {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            hour: "numeric",
+            minute: "2-digit"
+        }
+    );
+
+}
+
+
+/* ==========================================
+   STATUS
+========================================== */
+
+function formatStatus(
+    status
+) {
+
+    return String(status)
+        .toLowerCase()
+        .replace(
+            /_/g,
+            " "
+        );
+
+}
+
+
+/* ==========================================
+   FALLBACK IMAGE
+========================================== */
+
+function getFallbackImage() {
+
+    return "https://images.unsplash.com/photo-1621939514649-280e2aa3f8f?auto=format&fit=crop&w=900&q=85";
+
+}
+
+
+/* ==========================================
+   ESCAPE HTML
+========================================== */
+
+function escapeHtml(
+    value
+) {
+
+    return String(value ?? "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* ==========================================
+   START
+========================================== */
+
+async function startPage() {
+
+    const loggedIn =
+        await checkLogin();
+
+    if (!loggedIn) {
+        return;
+    }
+
+    await fetchProducts();
+
+    await fetchOrders();
+
+}
+
+startPage();
+
+</script>
+
+</body>
+
+</html>
