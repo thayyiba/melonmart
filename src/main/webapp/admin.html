@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melon Mart — Admin</title>
+    
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: "DM Sans", sans-serif;
+        background: #FFF6D8;
+        color: #382A34;
+        min-height: 100vh;
+    }
+
+    button,
+    input {
+        font: inherit;
+    }
+
+    button {
+        cursor: pointer;
+    }
+
+    .page {
+        width: min(1200px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 28px 0 60px;
+    }
+
+    /* TOP BAR */
+
+    .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .brand-icon {
+        width: 46px;
+        height: 46px;
+        display: grid;
+        place-items: center;
+        background: #F9DDDD;
+        border: 1px solid #E7DACB;
+        border-radius: 14px;
+        font-size: 23px;
+    }
+
+    .brand-text h1 {
+        font-family: "Fraunces", serif;
+        font-size: 25px;
+        line-height: 1;
+    }
+
+    .brand-text p {
+        margin-top: 5px;
+        font-size: 12px;
+        color: #806C77;
+    }
+
+    .admin-pill {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 10px 14px;
+        background: #FFFDF5;
+        border: 1px solid #E7DACB;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .admin-dot {
+        width: 8px;
+        height: 8px;
+        background: #A65B70;
+        border-radius: 50%;
+    }
+
+    /* HERO */
+
+    .hero {
+        background: #594052;
+        color: #FFFDF5;
+        border-radius: 24px;
+        padding: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 25px;
+        margin-bottom: 22px;
+    }
+
+    .hero-text {
+        max-width: 650px;
+    }
+
+    .eyebrow {
+        font-size: 12px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        opacity: 0.7;
+        margin-bottom: 9px;
+        font-weight: 700;
+    }
+
+    .hero h2 {
+        font-family: "Fraunces", serif;
+        font-size: clamp(30px, 4vw, 44px);
+        line-height: 1.05;
+        margin-bottom: 10px;
+    }
+
+    .hero p {
+        font-size: 14px;
+        line-height: 1.6;
+        opacity: 0.82;
+    }
+
+    .hero-badge {
+        background: #F2D477;
+        color: #382A34;
+        padding: 13px 16px;
+        border-radius: 14px;
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    /* STATS */
+
+    .section-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        margin: 28px 0 13px;
+    }
+
+    .section-title h3 {
+        font-family: "Fraunces", serif;
+        font-size: 22px;
+    }
+
+    .section-title span {
+        font-size: 12px;
+        color: #806C77;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+    }
+
+    .stat-card {
+        background: #FFFDF5;
+        border: 1px solid #E7DACB;
+        border-radius: 18px;
+        padding: 19px;
+    }
+
+    .stat-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 13px;
+    }
+
+    .stat-label {
+        font-size: 12px;
+        color: #806C77;
+        font-weight: 600;
+    }
+
+    .stat-icon {
+        width: 32px;
+        height: 32px;
+        display: grid;
+        place-items: center;
+        border-radius: 10px;
+        background: #F9DDDD;
+        font-size: 15px;
+    }
+
+    .stat-value {
+        font-family: "Fraunces", serif;
+        font-size: 28px;
+    }
+
+    .stat-card:nth-child(2) .stat-icon {
+        background: #E1E5F7;
+    }
+
+    .stat-card:nth-child(3) .stat-icon {
+        background: #F2D477;
+    }
+
+    .stat-card:nth-child(4) .stat-icon {
+        background: #E1E5F7;
+    }
+
+    .stat-card:nth-child(5) .stat-icon {
+        background: #F9DDDD;
+    }
+
+    .stat-card:nth-child(6) .stat-icon {
+        background: #F2D477;
+    }
+
+    /* USERS */
+
+    .users-section {
+        background: #FFFDF5;
+        border: 1px solid #E7DACB;
+        border-radius: 22px;
+        overflow: hidden;
+        margin-top: 22px;
+    }
+
+    .users-header {
+        padding: 22px;
+        border-bottom: 1px solid #E7DACB;
+    }
+
+    .users-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 18px;
+    }
+
+    .users-heading h3 {
+        font-family: "Fraunces", serif;
+        font-size: 23px;
+    }
+
+    .user-count {
+        font-size: 12px;
+        color: #806C77;
+    }
+
+    .controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .search-box {
+        flex: 1;
+        min-width: 220px;
+        position: relative;
+    }
+
+    .search-box input {
+        width: 100%;
+        padding: 12px 14px 12px 38px;
+        border: 1px solid #E7DACB;
+        border-radius: 11px;
+        outline: none;
+        background: #FFF6D8;
+        color: #382A34;
+    }
+
+    .search-box input:focus {
+        border-color: #A65B70;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 13px;
+        top: 11px;
+        color: #806C77;
+    }
+
+    .filter-buttons {
+        display: flex;
+        gap: 6px;
+    }
+
+    .filter-btn {
+        border: 1px solid #E7DACB;
+        background: #FFF6D8;
+        color: #594052;
+        padding: 10px 13px;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .filter-btn.active {
+        background: #594052;
+        color: #FFFDF5;
+        border-color: #594052;
+    }
+
+    /* USER LIST */
+
+    .user-list {
+        width: 100%;
+    }
+
+    .user-row {
+        display: grid;
+        grid-template-columns: 50px 1.3fr 1.5fr 120px;
+        align-items: center;
+        gap: 15px;
+        padding: 17px 22px;
+        border-bottom: 1px solid #EEE5D9;
+    }
+
+    .user-row:last-child {
+        border-bottom: none;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        background: #F9DDDD;
+        border-radius: 12px;
+        font-family: "Fraunces", serif;
+        font-weight: 700;
+        color: #594052;
+    }
+
+    .user-name {
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .user-id {
+        font-size: 11px;
+        color: #9A858F;
+        margin-top: 3px;
+    }
+
+    .user-email {
+        font-size: 13px;
+        color: #665660;
+        word-break: break-word;
+    }
+
+    .role-badge {
+        display: inline-flex;
+        justify-content: center;
+        min-width: 78px;
+        padding: 7px 10px;
+        border-radius: 9px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .role-buyer {
+        background: #E1E5F7;
+        color: #514F78;
+    }
+
+    .role-seller {
+        background: #F9DDDD;
+        color: #874D62;
+    }
+
+    .role-admin {
+        background: #F2D477;
+        color: #594B20;
+    }
+
+    .empty-state {
+        padding: 45px 20px;
+        text-align: center;
+        color: #806C77;
+        font-size: 14px;
+    }
+
+    .empty-icon {
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+
+    /* LOADING */
+
+    .loading {
+        padding: 40px;
+        text-align: center;
+        color: #806C77;
+        font-size: 13px;
+    }
+
+    /* TOAST */
+
+    .toast {
+        position: fixed;
+        right: 22px;
+        bottom: 22px;
+        background: #382A34;
+        color: #FFFDF5;
+        padding: 13px 17px;
+        border-radius: 12px;
+        font-size: 13px;
+        opacity: 0;
+        transform: translateY(10px);
+        pointer-events: none;
+        transition: 0.2s ease;
+    }
+
+    .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 800px) {
+        .stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .hero {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .user-row {
+            grid-template-columns: 45px 1fr auto;
+        }
+
+        .user-email {
+            grid-column: 2 / 3;
+        }
+
+        .role-badge {
+            grid-column: 3;
+            grid-row: 1 / 3;
+        }
+    }
+
+    @media (max-width: 560px) {
+        .page {
+            width: min(100% - 24px, 1200px);
+            padding-top: 16px;
+        }
+
+        .topbar {
+            align-items: flex-start;
+        }
+
+        .admin-pill {
+            font-size: 0;
+            padding: 10px;
+        }
+
+        .admin-dot {
+            width: 9px;
+            height: 9px;
+        }
+
+        .stats {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .stats .stat-card {
+            padding: 15px;
+        }
+
+        .stat-value {
+            font-size: 23px;
+        }
+
+        .users-heading {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .filter-buttons {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .filter-btn {
+            white-space: nowrap;
+        }
+
+        .user-row {
+            grid-template-columns: 42px 1fr;
+            gap: 10px;
+        }
+
+        .user-email {
+            grid-column: 2;
+        }
+
+        .role-badge {
+            grid-column: 2;
+            grid-row: auto;
+            justify-self: start;
+        }
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+<div class="page">
+
+```
+<header class="topbar">
+
+    <div class="brand">
+        <div class="brand-icon">🍉</div>
+
+        <div class="brand-text">
+            <h1>Melon Mart</h1>
+            <p>Admin workspace</p>
+        </div>
+    </div>
+
+    <div class="admin-pill">
+        <span class="admin-dot"></span>
+        Administrator
+    </div>
+
+</header>
+
+
+<section class="hero">
+
+    <div class="hero-text">
+        <div class="eyebrow">Melon Mart control room</div>
+
+        <h2>Everything in one place.</h2>
+
+        <p>
+            Keep an eye on your marketplace, users, products and orders
+            from one simple dashboard.
+        </p>
+    </div>
+
+    <div class="hero-badge">
+        🛡️ Admin access
+    </div>
+
+</section>
+
+
+<div class="section-title">
+    <h3>Marketplace overview</h3>
+    <span>Live from your database</span>
+</div>
+
+
+<section class="stats">
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span class="stat-label">Total users</span>
+            <span class="stat-icon">👥</span>
+        </div>
+        <div class="stat-value" id="totalUsers">—</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span class="stat-label">Buyers</span>
+            <span class="stat-icon">🛍️</span>
+        </div>
+        <div class="stat-value" id="totalBuyers">—</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span class="stat-label">Sellers</span>
+            <span class="stat-icon">🏪</span>
+        </div>
+        <div class="stat-value" id="totalSellers">—</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span class="stat-label">Admins</span>
+            <span class="stat-icon">🛡️</span>
+        </div>
+        <div class="stat-value" id="totalAdmins">—</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span class="stat-label">Products</span>
+            <span class="stat-icon">📦</span>
+        </div>
+        <div class="stat-value" id="totalProducts">—</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span class="stat-label">Order value</span>
+            <span class="stat-icon">₹</span>
+        </div>
+        <div class="stat-value" id="totalOrderValue">—</div>
+    </div>
+
+</section>
+
+
+<section class="users-section">
+
+    <div class="users-header">
+
+        <div class="users-heading">
+            <div>
+                <h3>User management</h3>
+                <span class="user-count" id="userCount">
+                    Loading users...
+                </span>
+            </div>
+        </div>
+
+        <div class="controls">
+
+            <div class="search-box">
+                <span class="search-icon">⌕</span>
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search by name or email..."
+                >
+            </div>
+
+            <div class="filter-buttons">
+
+                <button
+                    class="filter-btn active"
+                    data-role="ALL"
+                >
+                    All
+                </button>
+
+                <button
+                    class="filter-btn"
+                    data-role="BUYER"
+                >
+                    Buyers
+                </button>
+
+                <button
+                    class="filter-btn"
+                    data-role="SELLER"
+                >
+                    Sellers
+                </button>
+
+                <button
+                    class="filter-btn"
+                    data-role="ADMIN"
+                >
+                    Admins
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div id="userList" class="user-list">
+
+        <div class="loading">
+            Loading your users...
+        </div>
+
+    </div>
+
+</section>
+```
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+
+    let allUsers = [];
+    let currentRole = "ALL";
+
+
+    async function loadDashboard() {
+
+        try {
+
+            const response =
+                await fetch("/melonmart/api/admin/dashboard");
+
+            if (!response.ok) {
+                throw new Error("Dashboard request failed");
+            }
+
+            const data =
+                await response.json();
+
+            if (!data.success) {
+                throw new Error(data.message || "Failed to load dashboard");
+            }
+
+            const stats = data.stats;
+
+            document.getElementById("totalUsers").textContent =
+                stats.totalUsers;
+
+            document.getElementById("totalBuyers").textContent =
+                stats.totalBuyers;
+
+            document.getElementById("totalSellers").textContent =
+                stats.totalSellers;
+
+            document.getElementById("totalAdmins").textContent =
+                stats.totalAdmins;
+
+            document.getElementById("totalProducts").textContent =
+                stats.totalProducts;
+
+            document.getElementById("totalOrderValue").textContent =
+                "₹" + Number(stats.totalOrderValue).toLocaleString("en-IN", {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
+                });
+
+        } catch (error) {
+
+            console.error(error);
+
+            showToast("Could not load dashboard statistics.");
+
+        }
+    }
+
+
+    async function loadUsers() {
+
+        const userList =
+            document.getElementById("userList");
+
+        try {
+
+            const response =
+                await fetch("/melonmart/api/admin/users");
+
+            if (!response.ok) {
+
+                if (response.status === 401) {
+                    window.location.href = "login.html";
+                    return;
+                }
+
+                if (response.status === 403) {
+                    userList.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">🔒</div>
+                            Admin access is required.
+                        </div>
+                    `;
+                    return;
+                }
+
+                throw new Error("Users request failed");
+            }
+
+            const data =
+                await response.json();
+
+            if (!data.success) {
+                throw new Error(data.message || "Failed to load users");
+            }
+
+            allUsers = data.users || [];
+
+            renderUsers();
+
+        } catch (error) {
+
+            console.error(error);
+
+            userList.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">🍉</div>
+                    Could not load users.
+                </div>
+            `;
+
+            showToast("Could not load users.");
+
+        }
+    }
+
+
+    function renderUsers() {
+
+        const userList =
+            document.getElementById("userList");
+
+        const search =
+            document.getElementById("searchInput")
+                .value
+                .trim()
+                .toLowerCase();
+
+        const filteredUsers =
+            allUsers.filter(user => {
+
+                const matchesRole =
+                    currentRole === "ALL"
+                    || user.role === currentRole;
+
+                const matchesSearch =
+                    user.name.toLowerCase().includes(search)
+                    || user.email.toLowerCase().includes(search);
+
+                return matchesRole && matchesSearch;
+            });
+
+
+        document.getElementById("userCount").textContent =
+            `${filteredUsers.length} user${filteredUsers.length === 1 ? "" : "s"} shown`;
+
+
+        if (filteredUsers.length === 0) {
+
+            userList.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">🍃</div>
+                    No users found.
+                </div>
+            `;
+
+            return;
+        }
+
+
+        userList.innerHTML =
+            filteredUsers.map(user => {
+
+                const initial =
+                    user.name
+                        ? user.name.charAt(0).toUpperCase()
+                        : "?";
+
+                let roleClass = "role-buyer";
+
+                if (user.role === "SELLER") {
+                    roleClass = "role-seller";
+                }
+
+                if (user.role === "ADMIN") {
+                    roleClass = "role-admin";
+                }
+
+                return `
+                    <div class="user-row">
+
+                        <div class="user-avatar">
+                            ${escapeHtml(initial)}
+                        </div>
+
+                        <div>
+                            <div class="user-name">
+                                ${escapeHtml(user.name)}
+                            </div>
+
+                            <div class="user-id">
+                                User #${user.id}
+                            </div>
+                        </div>
+
+                        <div class="user-email">
+                            ${escapeHtml(user.email)}
+                        </div>
+
+                        <div>
+                            <span class="role-badge ${roleClass}">
+                                ${escapeHtml(user.role)}
+                            </span>
+                        </div>
+
+                    </div>
+                `;
+
+            }).join("");
+    }
+
+
+    function escapeHtml(value) {
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    function showToast(message) {
+
+        const toast =
+            document.getElementById("toast");
+
+        toast.textContent = message;
+
+        toast.classList.add("show");
+
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, 2500);
+    }
+
+
+    document.querySelectorAll(".filter-btn")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                document.querySelectorAll(".filter-btn")
+                    .forEach(btn => {
+                        btn.classList.remove("active");
+                    });
+
+                button.classList.add("active");
+
+                currentRole =
+                    button.dataset.role;
+
+                renderUsers();
+            });
+
+        });
+
+
+    document.getElementById("searchInput")
+        .addEventListener("input", renderUsers);
+
+
+    loadDashboard();
+    loadUsers();
+
+</script>
+
+</body>
+</html>
