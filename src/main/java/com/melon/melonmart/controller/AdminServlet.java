@@ -2,6 +2,7 @@ package com.melon.melonmart.controller;
 
 import com.google.gson.Gson;
 import com.melon.melonmart.dao.AdminDAO;
+import com.melon.melonmart.dto.AdminUserDTO;
 import com.melon.melonmart.model.User;
 
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @WebServlet("/api/admin/*")
@@ -73,6 +75,47 @@ public class AdminServlet extends HttpServlet {
 
             return;
         }
+        
+        // GET /api/admin/users
+if (path.equals("/users")) {
+
+    try {
+
+        List<AdminUserDTO> users =
+                adminDAO.getAllUsers();
+
+        Map<String, Object> result =
+                new HashMap<>();
+
+        result.put(
+                "success",
+                true
+        );
+
+        result.put(
+                "users",
+                users
+        );
+
+        sendJson(
+                response,
+                HttpServletResponse.SC_OK,
+                result
+        );
+
+    } catch (Exception e) {
+
+        e.printStackTrace();
+
+        sendError(
+                response,
+                HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                "Failed to load users."
+        );
+    }
+
+    return;
+}
 
         // GET /api/admin/dashboard
         if (path.equals("/dashboard")) {

@@ -1,5 +1,6 @@
 package com.melon.melonmart.dao;
 
+import com.melon.melonmart.dto.AdminUserDTO;
 import com.melon.melonmart.listener.DbContextListener;
 
 import javax.sql.DataSource;
@@ -7,7 +8,9 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AdminDAO {
@@ -74,6 +77,61 @@ public class AdminDAO {
 
         return stats;
     }
+
+    public List<AdminUserDTO> getAllUsers()
+        throws Exception {
+
+    String sql = """
+            SELECT
+                id,
+                name,
+                email,
+                role
+            FROM users
+            ORDER BY id ASC
+            """;
+
+    List<AdminUserDTO> users =
+            new ArrayList<>();
+
+    try (
+            Connection connection =
+                    dataSource.getConnection();
+
+            PreparedStatement statement =
+                    connection.prepareStatement(sql);
+
+            ResultSet result =
+                    statement.executeQuery()
+    ) {
+
+        while (result.next()) {
+
+            AdminUserDTO user =
+                    new AdminUserDTO();
+
+            user.setId(
+                    result.getInt("id")
+            );
+
+            user.setName(
+                    result.getString("name")
+            );
+
+            user.setEmail(
+                    result.getString("email")
+            );
+
+            user.setRole(
+                    result.getString("role")
+            );
+
+            users.add(user);
+        }
+    }
+
+    return users;
+}
 
     private int getCount(String sql)
             throws Exception {
