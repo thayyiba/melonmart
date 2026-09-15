@@ -1,800 +1,793 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Melon Mart — Admin</title>
-    
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
 
-<style>
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
-
-    body {
-        font-family: "DM Sans", sans-serif;
-        background: #FFF6D8;
-        color: #382A34;
-        min-height: 100vh;
-    }
-
-    button,
-    input {
-        font: inherit;
-    }
-
-    button {
-        cursor: pointer;
-    }
-
-    .page {
-        width: min(1200px, calc(100% - 40px));
-        margin: 0 auto;
-        padding: 28px 0 60px;
-    }
-
-    /* TOP BAR */
-
-    .topbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-    }
-
-    .brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .brand-icon {
-        width: 46px;
-        height: 46px;
-        display: grid;
-        place-items: center;
-        background: #F9DDDD;
-        border: 1px solid #E7DACB;
-        border-radius: 14px;
-        font-size: 23px;
-    }
-
-    .brand-text h1 {
-        font-family: "Fraunces", serif;
-        font-size: 25px;
-        line-height: 1;
-    }
-
-    .brand-text p {
-        margin-top: 5px;
-        font-size: 12px;
-        color: #806C77;
-    }
-
-    .admin-pill {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        padding: 10px 14px;
-        background: #FFFDF5;
-        border: 1px solid #E7DACB;
-        border-radius: 12px;
-        font-size: 13px;
-        font-weight: 600;
-    }
-
-    .admin-dot {
-        width: 8px;
-        height: 8px;
-        background: #A65B70;
-        border-radius: 50%;
-    }
-
-    /* HERO */
-
-    .hero {
-        background: #594052;
-        color: #FFFDF5;
-        border-radius: 24px;
-        padding: 30px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 25px;
-        margin-bottom: 22px;
-    }
-
-    .hero-text {
-        max-width: 650px;
-    }
-
-    .eyebrow {
-        font-size: 12px;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        opacity: 0.7;
-        margin-bottom: 9px;
-        font-weight: 700;
-    }
-
-    .hero h2 {
-        font-family: "Fraunces", serif;
-        font-size: clamp(30px, 4vw, 44px);
-        line-height: 1.05;
-        margin-bottom: 10px;
-    }
-
-    .hero p {
-        font-size: 14px;
-        line-height: 1.6;
-        opacity: 0.82;
-    }
-
-    .hero-badge {
-        background: #F2D477;
-        color: #382A34;
-        padding: 13px 16px;
-        border-radius: 14px;
-        font-size: 13px;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    /* STATS */
-
-    .section-title {
-        display: flex;
-        justify-content: space-between;
-        align-items: end;
-        margin: 28px 0 13px;
-    }
-
-    .section-title h3 {
-        font-family: "Fraunces", serif;
-        font-size: 22px;
-    }
-
-    .section-title span {
-        font-size: 12px;
-        color: #806C77;
-    }
-
-    .stats {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 14px;
-    }
-
-    .stat-card {
-        background: #FFFDF5;
-        border: 1px solid #E7DACB;
-        border-radius: 18px;
-        padding: 19px;
-    }
-
-    .stat-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 13px;
-    }
-
-    .stat-label {
-        font-size: 12px;
-        color: #806C77;
-        font-weight: 600;
-    }
-
-    .stat-icon {
-        width: 32px;
-        height: 32px;
-        display: grid;
-        place-items: center;
-        border-radius: 10px;
-        background: #F9DDDD;
-        font-size: 15px;
-    }
-
-    .stat-value {
-        font-family: "Fraunces", serif;
-        font-size: 28px;
-    }
-
-    .stat-card:nth-child(2) .stat-icon {
-        background: #E1E5F7;
-    }
-
-    .stat-card:nth-child(3) .stat-icon {
-        background: #F2D477;
-    }
-
-    .stat-card:nth-child(4) .stat-icon {
-        background: #E1E5F7;
-    }
-
-    .stat-card:nth-child(5) .stat-icon {
-        background: #F9DDDD;
-    }
-
-    .stat-card:nth-child(6) .stat-icon {
-        background: #F2D477;
-    }
-
-    /* USERS */
-
-    .users-section {
-        background: #FFFDF5;
-        border: 1px solid #E7DACB;
-        border-radius: 22px;
-        overflow: hidden;
-        margin-top: 22px;
-    }
-
-    .users-header {
-        padding: 22px;
-        border-bottom: 1px solid #E7DACB;
-    }
-
-    .users-heading {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 18px;
-    }
-
-    .users-heading h3 {
-        font-family: "Fraunces", serif;
-        font-size: 23px;
-    }
-
-    .user-count {
-        font-size: 12px;
-        color: #806C77;
-    }
-
-    .controls {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .search-box {
-        flex: 1;
-        min-width: 220px;
-        position: relative;
-    }
-
-    .search-box input {
-        width: 100%;
-        padding: 12px 14px 12px 38px;
-        border: 1px solid #E7DACB;
-        border-radius: 11px;
-        outline: none;
-        background: #FFF6D8;
-        color: #382A34;
-    }
-
-    .search-box input:focus {
-        border-color: #A65B70;
-    }
-
-    .search-icon {
-        position: absolute;
-        left: 13px;
-        top: 11px;
-        color: #806C77;
-    }
-
-    .filter-buttons {
-        display: flex;
-        gap: 6px;
-    }
-
-    .filter-btn {
-        border: 1px solid #E7DACB;
-        background: #FFF6D8;
-        color: #594052;
-        padding: 10px 13px;
-        border-radius: 10px;
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-    .filter-btn.active {
-        background: #594052;
-        color: #FFFDF5;
-        border-color: #594052;
-    }
-
-    /* USER LIST */
-
-    .user-list {
-        width: 100%;
-    }
-
-    .user-row {
-        display: grid;
-        grid-template-columns: 50px 1.3fr 1.5fr 120px;
-        align-items: center;
-        gap: 15px;
-        padding: 17px 22px;
-        border-bottom: 1px solid #EEE5D9;
-    }
-
-    .user-row:last-child {
-        border-bottom: none;
-    }
-
-    .user-avatar {
-        width: 40px;
-        height: 40px;
-        display: grid;
-        place-items: center;
-        background: #F9DDDD;
-        border-radius: 12px;
-        font-family: "Fraunces", serif;
-        font-weight: 700;
-        color: #594052;
-    }
-
-    .user-name {
-        font-size: 14px;
-        font-weight: 700;
-    }
-
-    .user-id {
-        font-size: 11px;
-        color: #9A858F;
-        margin-top: 3px;
-    }
-
-    .user-email {
-        font-size: 13px;
-        color: #665660;
-        word-break: break-word;
-    }
-
-    .role-badge {
-        display: inline-flex;
-        justify-content: center;
-        min-width: 78px;
-        padding: 7px 10px;
-        border-radius: 9px;
-        font-size: 11px;
-        font-weight: 700;
-    }
-
-    .role-buyer {
-        background: #E1E5F7;
-        color: #514F78;
-    }
-
-    .role-seller {
-        background: #F9DDDD;
-        color: #874D62;
-    }
-
-    .role-admin {
-        background: #F2D477;
-        color: #594B20;
-    }
-
-    .empty-state {
-        padding: 45px 20px;
-        text-align: center;
-        color: #806C77;
-        font-size: 14px;
-    }
-
-    .empty-icon {
-        font-size: 30px;
-        margin-bottom: 10px;
-    }
-
-    /* LOADING */
-
-    .loading {
-        padding: 40px;
-        text-align: center;
-        color: #806C77;
-        font-size: 13px;
-    }
-
-    /* TOAST */
-
-    .toast {
-        position: fixed;
-        right: 22px;
-        bottom: 22px;
-        background: #382A34;
-        color: #FFFDF5;
-        padding: 13px 17px;
-        border-radius: 12px;
-        font-size: 13px;
-        opacity: 0;
-        transform: translateY(10px);
-        pointer-events: none;
-        transition: 0.2s ease;
-    }
-
-    .toast.show {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    /* MOBILE */
-
-    @media (max-width: 800px) {
-        .stats {
-            grid-template-columns: repeat(2, 1fr);
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        .hero {
-            align-items: flex-start;
-            flex-direction: column;
-        }
-
-        .user-row {
-            grid-template-columns: 45px 1fr auto;
-        }
-
-        .user-email {
-            grid-column: 2 / 3;
-        }
-
-        .role-badge {
-            grid-column: 3;
-            grid-row: 1 / 3;
-        }
-    }
-
-    @media (max-width: 560px) {
-        .page {
-            width: min(100% - 24px, 1200px);
-            padding-top: 16px;
+        body {
+            font-family: "DM Sans", sans-serif;
+            background: #FFF6D8;
+            color: #382A34;
+            min-height: 100vh;
         }
 
         .topbar {
-            align-items: flex-start;
+            height: 76px;
+            background: #FFFDF5;
+            border-bottom: 1px solid #E7DACB;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 60px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
-        .admin-pill {
-            font-size: 0;
-            padding: 10px;
+        .brand {
+            font-family: "Fraunces", serif;
+            font-size: 28px;
+            font-weight: 600;
         }
 
-        .admin-dot {
-            width: 9px;
-            height: 9px;
+        .brand span {
+            color: #A65B70;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .admin-label {
+            font-size: 14px;
+            color: #594052;
+        }
+
+        .logout-btn {
+            border: 1px solid #E7DACB;
+            background: #F9DDDD;
+            color: #382A34;
+            padding: 9px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+        }
+
+        .page {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 48px 0 70px;
+        }
+
+        .hero {
+            background: #E1E5F7;
+            border: 1px solid #D4D9EE;
+            padding: 38px;
+            border-radius: 18px;
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.6px;
+            font-weight: 700;
+            color: #594052;
+            margin-bottom: 10px;
+        }
+
+        .hero h1 {
+            font-family: "Fraunces", serif;
+            font-size: 42px;
+            line-height: 1.1;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            color: #594052;
+            max-width: 650px;
+            line-height: 1.7;
+        }
+
+        .section {
+            background: #FFFDF5;
+            border: 1px solid #E7DACB;
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 28px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 22px;
+        }
+
+        .section-heading h2 {
+            font-family: "Fraunces", serif;
+            font-size: 26px;
+        }
+
+        .section-heading p {
+            color: #806F79;
+            font-size: 14px;
+            margin-top: 5px;
         }
 
         .stats {
-            grid-template-columns: 1fr 1fr;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
         }
 
-        .stats .stat-card {
-            padding: 15px;
+        .stat-card {
+            padding: 22px;
+            border: 1px solid #E7DACB;
+            border-radius: 14px;
+            background: #FFF6D8;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #806F79;
+            margin-bottom: 8px;
         }
 
         .stat-value {
-            font-size: 23px;
+            font-family: "Fraunces", serif;
+            font-size: 30px;
+            font-weight: 600;
         }
 
-        .users-heading {
-            align-items: flex-start;
-            flex-direction: column;
+        .stat-card:nth-child(2) {
+            background: #F9DDDD;
         }
 
-        .filter-buttons {
-            width: 100%;
-            overflow-x: auto;
+        .stat-card:nth-child(3) {
+            background: #E1E5F7;
+        }
+
+        .stat-card:nth-child(4) {
+            background: #F7EAC0;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
         .filter-btn {
-            white-space: nowrap;
+            border: 1px solid #E7DACB;
+            background: #FFFDF5;
+            color: #594052;
+            padding: 9px 15px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
         }
 
-        .user-row {
-            grid-template-columns: 42px 1fr;
+        .filter-btn.active {
+            background: #594052;
+            color: white;
+            border-color: #594052;
+        }
+
+        .search {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #E7DACB;
+            border-radius: 10px;
+            background: #FFFDF5;
+            color: #382A34;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 18px;
+        }
+
+        .search:focus {
+            border-color: #A65B70;
+        }
+
+        .user-list {
+            display: flex;
+            flex-direction: column;
             gap: 10px;
         }
 
+        .user-row {
+            display: grid;
+            grid-template-columns: 60px 1.3fr 1.5fr 110px;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border: 1px solid #E7DACB;
+            border-radius: 12px;
+            background: #FFFDF5;
+        }
+
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #F9DDDD;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #594052;
+        }
+
+        .user-name {
+            font-weight: 700;
+        }
+
         .user-email {
-            grid-column: 2;
+            color: #806F79;
+            font-size: 13px;
+            word-break: break-word;
+        }
+
+        .role-badge,
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: fit-content;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .4px;
         }
 
         .role-badge {
-            grid-column: 2;
-            grid-row: auto;
-            justify-self: start;
+            background: #E1E5F7;
+            color: #594052;
         }
-    }
-</style>
-```
 
+        .role-badge.admin {
+            background: #F7EAC0;
+        }
+
+        .role-badge.seller {
+            background: #F9DDDD;
+        }
+
+        .role-badge.buyer {
+            background: #E8F0D8;
+        }
+
+        .loading,
+        .empty {
+            padding: 35px;
+            text-align: center;
+            color: #806F79;
+        }
+
+        .products-section {
+            background: #FFFDF5;
+            border: 1px solid #E7DACB;
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 28px;
+        }
+
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 20px;
+            margin-bottom: 22px;
+        }
+
+        .products-heading h3 {
+            font-family: "Fraunces", serif;
+            font-size: 26px;
+        }
+
+        .products-heading p {
+            color: #806F79;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .product-count {
+            display: block;
+            margin-top: 5px;
+            color: #806F79;
+            font-size: 13px;
+        }
+
+        .product-search {
+            width: 330px;
+            padding: 12px 14px;
+            border: 1px solid #E7DACB;
+            border-radius: 10px;
+            background: #FFFDF5;
+            color: #382A34;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .product-search:focus {
+            border-color: #A65B70;
+        }
+
+        .product-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .product-row {
+            display: grid;
+            grid-template-columns: 64px minmax(180px, 1.6fr) minmax(140px, 1fr) 100px 90px 100px;
+            align-items: center;
+            gap: 15px;
+            padding: 13px;
+            border: 1px solid #E7DACB;
+            border-radius: 12px;
+            background: #FFFDF5;
+        }
+
+        .product-image {
+            width: 58px;
+            height: 58px;
+            object-fit: cover;
+            border-radius: 10px;
+            background: #F9DDDD;
+            border: 1px solid #E7DACB;
+        }
+
+        .product-name {
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        .product-id {
+            font-size: 12px;
+            color: #9A858F;
+            margin-top: 4px;
+        }
+
+        .product-seller {
+            font-size: 13px;
+            color: #594052;
+        }
+
+        .product-price {
+            font-weight: 700;
+        }
+
+        .product-stock {
+            font-size: 13px;
+        }
+
+        .category-badge {
+            background: #E1E5F7;
+            color: #594052;
+        }
+
+        .toast {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            background: #382A34;
+            color: white;
+            padding: 13px 17px;
+            border-radius: 10px;
+            font-size: 14px;
+            opacity: 0;
+            transform: translateY(15px);
+            pointer-events: none;
+            transition: .25s ease;
+            z-index: 50;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 900px) {
+            .topbar {
+                padding: 0 25px;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .user-row {
+                grid-template-columns: 50px 1fr 90px;
+            }
+
+            .user-email {
+                grid-column: 2;
+            }
+
+            .product-row {
+                grid-template-columns: 58px 1fr 100px;
+            }
+
+            .product-seller,
+            .product-price,
+            .product-stock,
+            .category-badge {
+                grid-column: 2 / -1;
+            }
+
+            .products-header {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .product-search {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .topbar {
+                height: auto;
+                min-height: 70px;
+                padding: 14px 18px;
+            }
+
+            .admin-label {
+                display: none;
+            }
+
+            .page {
+                width: min(100% - 24px, 1180px);
+                padding-top: 25px;
+            }
+
+            .hero,
+            .section,
+            .products-section {
+                padding: 20px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .user-row {
+                grid-template-columns: 48px 1fr;
+            }
+
+            .user-email,
+            .user-row .role-badge {
+                grid-column: 2;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="page">
-
-```
 <header class="topbar">
-
     <div class="brand">
-        <div class="brand-icon">🍉</div>
-
-        <div class="brand-text">
-            <h1>Melon Mart</h1>
-            <p>Admin workspace</p>
-        </div>
+        Melon <span>Mart</span>
     </div>
 
-    <div class="admin-pill">
-        <span class="admin-dot"></span>
-        Administrator
+    <div class="topbar-right">
+        <span class="admin-label">Admin Studio</span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
-
 </header>
 
+<main class="page">
 
-<section class="hero">
+    <section class="hero">
+        <div class="eyebrow">Melon Mart • Administration</div>
 
-    <div class="hero-text">
-        <div class="eyebrow">Melon Mart control room</div>
-
-        <h2>Everything in one place.</h2>
+        <h1>Marketplace overview.</h1>
 
         <p>
-            Keep an eye on your marketplace, users, products and orders
-            from one simple dashboard.
+            Keep an eye on users, sellers, products and orders
+            from one simple place.
         </p>
-    </div>
+    </section>
 
-    <div class="hero-badge">
-        🛡️ Admin access
-    </div>
+    <section class="section">
 
-</section>
-
-
-<div class="section-title">
-    <h3>Marketplace overview</h3>
-    <span>Live from your database</span>
-</div>
-
-
-<section class="stats">
-
-    <div class="stat-card">
-        <div class="stat-top">
-            <span class="stat-label">Total users</span>
-            <span class="stat-icon">👥</span>
-        </div>
-        <div class="stat-value" id="totalUsers">—</div>
-    </div>
-
-    <div class="stat-card">
-        <div class="stat-top">
-            <span class="stat-label">Buyers</span>
-            <span class="stat-icon">🛍️</span>
-        </div>
-        <div class="stat-value" id="totalBuyers">—</div>
-    </div>
-
-    <div class="stat-card">
-        <div class="stat-top">
-            <span class="stat-label">Sellers</span>
-            <span class="stat-icon">🏪</span>
-        </div>
-        <div class="stat-value" id="totalSellers">—</div>
-    </div>
-
-    <div class="stat-card">
-        <div class="stat-top">
-            <span class="stat-label">Admins</span>
-            <span class="stat-icon">🛡️</span>
-        </div>
-        <div class="stat-value" id="totalAdmins">—</div>
-    </div>
-
-    <div class="stat-card">
-        <div class="stat-top">
-            <span class="stat-label">Products</span>
-            <span class="stat-icon">📦</span>
-        </div>
-        <div class="stat-value" id="totalProducts">—</div>
-    </div>
-
-    <div class="stat-card">
-        <div class="stat-top">
-            <span class="stat-label">Order value</span>
-            <span class="stat-icon">₹</span>
-        </div>
-        <div class="stat-value" id="totalOrderValue">—</div>
-    </div>
-
-</section>
-
-
-<section class="users-section">
-
-    <div class="users-header">
-
-        <div class="users-heading">
+        <div class="section-heading">
             <div>
-                <h3>User management</h3>
-                <span class="user-count" id="userCount">
-                    Loading users...
-                </span>
+                <h2>Marketplace overview</h2>
+                <p>A quick look at what is happening in Melon Mart.</p>
             </div>
         </div>
+
+        <div class="stats">
+
+            <div class="stat-card">
+                <div class="stat-label">Total users</div>
+                <div class="stat-value" id="totalUsers">—</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Sellers</div>
+                <div class="stat-value" id="totalSellers">—</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Products</div>
+                <div class="stat-value" id="totalProducts">—</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Orders</div>
+                <div class="stat-value" id="totalOrders">—</div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="section">
+
+        <div class="section-heading">
+            <div>
+                <h2>User management</h2>
+                <p>View buyers, sellers and administrators.</p>
+            </div>
+        </div>
+
+        <input
+            type="text"
+            id="userSearch"
+            class="search"
+            placeholder="Search by name or email..."
+        >
 
         <div class="controls">
 
-            <div class="search-box">
-                <span class="search-icon">⌕</span>
-                <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="Search by name or email..."
+            <button
+                class="filter-btn active"
+                data-role="ALL"
+                onclick="setUserFilter('ALL', this)"
+            >
+                All
+            </button>
+
+            <button
+                class="filter-btn"
+                data-role="BUYER"
+                onclick="setUserFilter('BUYER', this)"
+            >
+                Buyers
+            </button>
+
+            <button
+                class="filter-btn"
+                data-role="SELLER"
+                onclick="setUserFilter('SELLER', this)"
+            >
+                Sellers
+            </button>
+
+            <button
+                class="filter-btn"
+                data-role="ADMIN"
+                onclick="setUserFilter('ADMIN', this)"
+            >
+                Admins
+            </button>
+
+        </div>
+
+        <div id="userList" class="user-list">
+            <div class="loading">
+                Loading users...
+            </div>
+        </div>
+
+    </section>
+
+    <section class="products-section">
+
+        <div class="products-header">
+
+            <div class="products-heading">
+                <h3>Product management</h3>
+
+                <span
+                    class="product-count"
+                    id="productCount"
                 >
+                    Loading products...
+                </span>
             </div>
 
-            <div class="filter-buttons">
+            <input
+                type="text"
+                id="productSearch"
+                class="product-search"
+                placeholder="Search by product, seller or category..."
+            >
 
-                <button
-                    class="filter-btn active"
-                    data-role="ALL"
-                >
-                    All
-                </button>
+        </div>
 
-                <button
-                    class="filter-btn"
-                    data-role="BUYER"
-                >
-                    Buyers
-                </button>
+        <div id="productList" class="product-list">
 
-                <button
-                    class="filter-btn"
-                    data-role="SELLER"
-                >
-                    Sellers
-                </button>
-
-                <button
-                    class="filter-btn"
-                    data-role="ADMIN"
-                >
-                    Admins
-                </button>
-
+            <div class="loading">
+                Loading products...
             </div>
 
         </div>
 
-    </div>
+    </section>
 
-
-    <div id="userList" class="user-list">
-
-        <div class="loading">
-            Loading your users...
-        </div>
-
-    </div>
-
-</section>
-```
-
-</div>
+</main>
 
 <div id="toast" class="toast"></div>
 
 <script>
 
     let allUsers = [];
-    let currentRole = "ALL";
+    let currentUserFilter = "ALL";
 
+    let allProducts = [];
+
+    async function checkAdmin() {
+
+        try {
+
+            const response =
+                await fetch("/melonmart/api/auth/me");
+
+            if (!response.ok) {
+
+                window.location.href =
+                    "/melonmart/login.html";
+
+                return false;
+            }
+
+            const data =
+                await response.json();
+
+            const user =
+                data.user || data;
+
+            if (!user || user.role !== "ADMIN") {
+
+                alert("Admin access required.");
+
+                window.location.href =
+                    "/melonmart/index.html";
+
+                return false;
+            }
+
+            return true;
+
+        } catch (error) {
+
+            console.error(error);
+
+            window.location.href =
+                "/melonmart/login.html";
+
+            return false;
+        }
+    }
 
     async function loadDashboard() {
 
         try {
 
             const response =
-                await fetch("/melonmart/api/admin/dashboard");
+                await fetch(
+                    "/melonmart/api/admin/dashboard"
+                );
 
-            if (!response.ok) {
-                throw new Error("Dashboard request failed");
+            if (response.status === 401 ||
+                response.status === 403) {
+
+                window.location.href =
+                    "/melonmart/login.html";
+
+                return;
             }
 
             const data =
                 await response.json();
 
             if (!data.success) {
-                throw new Error(data.message || "Failed to load dashboard");
+                throw new Error(
+                    "Failed to load dashboard"
+                );
             }
 
             const stats = data.stats;
 
-            document.getElementById("totalUsers").textContent =
-                stats.totalUsers;
+            document.getElementById("totalUsers")
+                .textContent =
+                stats.totalUsers ?? 0;
 
-            document.getElementById("totalBuyers").textContent =
-                stats.totalBuyers;
+            document.getElementById("totalSellers")
+                .textContent =
+                stats.totalSellers ?? 0;
 
-            document.getElementById("totalSellers").textContent =
-                stats.totalSellers;
+            document.getElementById("totalProducts")
+                .textContent =
+                stats.totalProducts ?? 0;
 
-            document.getElementById("totalAdmins").textContent =
-                stats.totalAdmins;
-
-            document.getElementById("totalProducts").textContent =
-                stats.totalProducts;
-
-            document.getElementById("totalOrderValue").textContent =
-                "₹" + Number(stats.totalOrderValue).toLocaleString("en-IN", {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 2
-                });
+            document.getElementById("totalOrders")
+                .textContent =
+                stats.totalOrders ?? 0;
 
         } catch (error) {
 
             console.error(error);
 
-            showToast("Could not load dashboard statistics.");
-
+            showToast(
+                "Could not load dashboard."
+            );
         }
     }
 
-
     async function loadUsers() {
 
-        const userList =
+        const list =
             document.getElementById("userList");
 
         try {
 
             const response =
-                await fetch("/melonmart/api/admin/users");
+                await fetch(
+                    "/melonmart/api/admin/users"
+                );
 
-            if (!response.ok) {
+            if (response.status === 401 ||
+                response.status === 403) {
 
-                if (response.status === 401) {
-                    window.location.href = "login.html";
-                    return;
-                }
+                window.location.href =
+                    "/melonmart/login.html";
 
-                if (response.status === 403) {
-                    userList.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-icon">🔒</div>
-                            Admin access is required.
-                        </div>
-                    `;
-                    return;
-                }
-
-                throw new Error("Users request failed");
+                return;
             }
 
             const data =
                 await response.json();
 
             if (!data.success) {
-                throw new Error(data.message || "Failed to load users");
+                throw new Error(
+                    "Failed to load users"
+                );
             }
 
-            allUsers = data.users || [];
+            allUsers =
+                data.users || [];
 
             renderUsers();
 
@@ -802,54 +795,73 @@
 
             console.error(error);
 
-            userList.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-icon">🍉</div>
+            list.innerHTML = `
+                <div class="empty">
                     Could not load users.
                 </div>
             `;
 
-            showToast("Could not load users.");
-
+            showToast(
+                "Could not load users."
+            );
         }
     }
 
+    function setUserFilter(role, button) {
+
+        currentUserFilter = role;
+
+        document
+            .querySelectorAll(".filter-btn")
+            .forEach(btn => {
+                btn.classList.remove("active");
+            });
+
+        button.classList.add("active");
+
+        renderUsers();
+    }
 
     function renderUsers() {
 
-        const userList =
+        const list =
             document.getElementById("userList");
 
         const search =
-            document.getElementById("searchInput")
+            document
+                .getElementById("userSearch")
                 .value
                 .trim()
                 .toLowerCase();
 
-        const filteredUsers =
+        const filtered =
             allUsers.filter(user => {
 
                 const matchesRole =
-                    currentRole === "ALL"
-                    || user.role === currentRole;
+                    currentUserFilter === "ALL" ||
+                    user.role === currentUserFilter;
+
+                const name =
+                    (user.name || "")
+                        .toLowerCase();
+
+                const email =
+                    (user.email || "")
+                        .toLowerCase();
 
                 const matchesSearch =
-                    user.name.toLowerCase().includes(search)
-                    || user.email.toLowerCase().includes(search);
+                    !search ||
+                    name.includes(search) ||
+                    email.includes(search);
 
-                return matchesRole && matchesSearch;
+                return matchesRole &&
+                       matchesSearch;
             });
 
+        if (filtered.length === 0) {
 
-        document.getElementById("userCount").textContent =
-            `${filteredUsers.length} user${filteredUsers.length === 1 ? "" : "s"} shown`;
-
-
-        if (filteredUsers.length === 0) {
-
-            userList.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-icon">🍃</div>
+            list.innerHTML = `
+                <div class="empty">
                     No users found.
                 </div>
             `;
@@ -857,51 +869,44 @@
             return;
         }
 
+        list.innerHTML =
+            filtered.map(user => {
 
-        userList.innerHTML =
-            filteredUsers.map(user => {
+                const name =
+                    escapeHtml(user.name || "Unknown");
+
+                const email =
+                    escapeHtml(user.email || "");
+
+                const role =
+                    escapeHtml(user.role || "UNKNOWN");
 
                 const initial =
-                    user.name
-                        ? user.name.charAt(0).toUpperCase()
-                        : "?";
+                    name.charAt(0).toUpperCase();
 
-                let roleClass = "role-buyer";
-
-                if (user.role === "SELLER") {
-                    roleClass = "role-seller";
-                }
-
-                if (user.role === "ADMIN") {
-                    roleClass = "role-admin";
-                }
+                const roleClass =
+                    role.toLowerCase();
 
                 return `
                     <div class="user-row">
 
                         <div class="user-avatar">
-                            ${escapeHtml(initial)}
+                            ${initial}
                         </div>
 
                         <div>
                             <div class="user-name">
-                                ${escapeHtml(user.name)}
-                            </div>
-
-                            <div class="user-id">
-                                User #${user.id}
+                                ${name}
                             </div>
                         </div>
 
                         <div class="user-email">
-                            ${escapeHtml(user.email)}
+                            ${email}
                         </div>
 
-                        <div>
-                            <span class="role-badge ${roleClass}">
-                                ${escapeHtml(user.role)}
-                            </span>
-                        </div>
+                        <span class="role-badge ${roleClass}">
+                            ${role}
+                        </span>
 
                     </div>
                 `;
@@ -909,6 +914,191 @@
             }).join("");
     }
 
+    async function loadProducts() {
+
+        const list =
+            document.getElementById("productList");
+
+        try {
+
+            const response =
+                await fetch(
+                    "/melonmart/api/admin/products"
+                );
+
+            if (response.status === 401 ||
+                response.status === 403) {
+
+                window.location.href =
+                    "/melonmart/login.html";
+
+                return;
+            }
+
+            const data =
+                await response.json();
+
+            if (!data.success) {
+                throw new Error(
+                    "Failed to load products"
+                );
+            }
+
+            allProducts =
+                data.products || [];
+
+            renderProducts();
+
+        } catch (error) {
+
+            console.error(error);
+
+            list.innerHTML = `
+                <div class="empty">
+                    Could not load products.
+                </div>
+            `;
+
+            document.getElementById("productCount")
+                .textContent =
+                "Unable to load products.";
+
+            showToast(
+                "Could not load products."
+            );
+        }
+    }
+
+    function renderProducts() {
+
+        const list =
+            document.getElementById("productList");
+
+        const count =
+            document.getElementById("productCount");
+
+        const search =
+            document
+                .getElementById("productSearch")
+                .value
+                .trim()
+                .toLowerCase();
+
+        const filtered =
+            allProducts.filter(product => {
+
+                const name =
+                    (product.name || "")
+                        .toLowerCase();
+
+                const seller =
+                    (product.sellerName || "")
+                        .toLowerCase();
+
+                const category =
+                    (product.category || "")
+                        .toLowerCase();
+
+                return !search ||
+                    name.includes(search) ||
+                    seller.includes(search) ||
+                    category.includes(search);
+            });
+
+        count.textContent =
+            `${filtered.length} of ${allProducts.length} products`;
+
+        if (filtered.length === 0) {
+
+            list.innerHTML = `
+                <div class="empty">
+                    No products found.
+                </div>
+            `;
+
+            return;
+        }
+
+        list.innerHTML =
+            filtered.map(product => {
+
+                const image =
+                    product.imageUrl ||
+                    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&q=80";
+
+                const name =
+                    escapeHtml(
+                        product.name || "Unnamed product"
+                    );
+
+                const seller =
+                    escapeHtml(
+                        product.sellerName ||
+                        "Unknown seller"
+                    );
+
+                const category =
+                    escapeHtml(
+                        product.category ||
+                        "UNCATEGORIZED"
+                    );
+
+                const description =
+                    escapeHtml(
+                        product.description || ""
+                    );
+
+                const price =
+                    Number(product.price || 0)
+                        .toFixed(2);
+
+                const stock =
+                    product.stockQty ?? 0;
+
+                return `
+                    <div
+                        class="product-row"
+                        title="${description}"
+                    >
+
+                        <img
+                            class="product-image"
+                            src="${image}"
+                            alt="${name}"
+                            onerror="this.src='https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&q=80'"
+                        >
+
+                        <div>
+                            <div class="product-name">
+                                ${name}
+                            </div>
+
+                            <div class="product-id">
+                                Product #${product.id}
+                            </div>
+                        </div>
+
+                        <div class="product-seller">
+                            ${seller}
+                        </div>
+
+                        <div class="product-price">
+                            ₹${price}
+                        </div>
+
+                        <div class="product-stock">
+                            ${stock} in stock
+                        </div>
+
+                        <span class="category-badge">
+                            ${category}
+                        </span>
+
+                    </div>
+                `;
+
+            }).join("");
+    }
 
     function escapeHtml(value) {
 
@@ -920,7 +1110,6 @@
             .replace(/'/g, "&#039;");
     }
 
-
     function showToast(message) {
 
         const toast =
@@ -931,38 +1120,62 @@
         toast.classList.add("show");
 
         setTimeout(() => {
+
             toast.classList.remove("show");
+
         }, 2500);
     }
 
+    async function logout() {
 
-    document.querySelectorAll(".filter-btn")
-        .forEach(button => {
+        try {
 
-            button.addEventListener("click", () => {
+            await fetch(
+                "/melonmart/api/auth/logout",
+                {
+                    method: "POST"
+                }
+            );
 
-                document.querySelectorAll(".filter-btn")
-                    .forEach(btn => {
-                        btn.classList.remove("active");
-                    });
+        } catch (error) {
 
-                button.classList.add("active");
+            console.error(error);
 
-                currentRole =
-                    button.dataset.role;
+        }
 
-                renderUsers();
-            });
+        window.location.href =
+            "/melonmart/login.html";
+    }
 
-        });
+    document
+        .getElementById("userSearch")
+        .addEventListener(
+            "input",
+            renderUsers
+        );
 
+    document
+        .getElementById("productSearch")
+        .addEventListener(
+            "input",
+            renderProducts
+        );
 
-    document.getElementById("searchInput")
-        .addEventListener("input", renderUsers);
+    async function initializeAdmin() {
 
+        const allowed =
+            await checkAdmin();
 
-    loadDashboard();
-    loadUsers();
+        if (!allowed) {
+            return;
+        }
+
+        await loadDashboard();
+        await loadUsers();
+        await loadProducts();
+    }
+
+    initializeAdmin();
 
 </script>
 

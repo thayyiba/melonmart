@@ -1,5 +1,6 @@
 package com.melon.melonmart.dao;
 
+import com.melon.melonmart.dto.AdminProductDTO;
 import com.melon.melonmart.dto.AdminUserDTO;
 import com.melon.melonmart.listener.DbContextListener;
 
@@ -132,6 +133,89 @@ public class AdminDAO {
 
     return users;
 }
+
+public List<AdminProductDTO> getAllProducts()
+        throws Exception {
+
+    String sql = """
+            SELECT
+                p.id,
+                p.seller_id,
+                u.name AS seller_name,
+                p.name,
+                p.description,
+                p.price,
+                p.stock_qty,
+                p.category,
+                p.image_url
+            FROM products p
+            LEFT JOIN users u
+                ON p.seller_id = u.id
+            ORDER BY p.id ASC
+            """;
+
+    List<AdminProductDTO> products =
+            new ArrayList<>();
+
+    try (
+            Connection connection =
+                    dataSource.getConnection();
+
+            PreparedStatement statement =
+                    connection.prepareStatement(sql);
+
+            ResultSet result =
+                    statement.executeQuery()
+    ) {
+
+        while (result.next()) {
+
+            AdminProductDTO product =
+                    new AdminProductDTO();
+
+            product.setId(
+                    result.getInt("id")
+            );
+
+            product.setSellerId(
+                    result.getInt("seller_id")
+            );
+
+            product.setSellerName(
+                    result.getString("seller_name")
+            );
+
+            product.setName(
+                    result.getString("name")
+            );
+
+            product.setDescription(
+                    result.getString("description")
+            );
+
+            product.setPrice(
+                    result.getBigDecimal("price")
+            );
+
+            product.setStockQty(
+                    result.getInt("stock_qty")
+            );
+
+            product.setCategory(
+                    result.getString("category")
+            );
+
+            product.setImageUrl(
+                    result.getString("image_url")
+            );
+
+            products.add(product);
+        }
+    }
+
+    return products;
+}
+
 
     private int getCount(String sql)
             throws Exception {

@@ -3,6 +3,7 @@ package com.melon.melonmart.controller;
 import com.google.gson.Gson;
 import com.melon.melonmart.dao.AdminDAO;
 import com.melon.melonmart.dto.AdminUserDTO;
+import com.melon.melonmart.dto.AdminProductDTO;
 import com.melon.melonmart.model.User;
 
 import javax.servlet.annotation.WebServlet;
@@ -111,6 +112,47 @@ if (path.equals("/users")) {
                 response,
                 HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                 "Failed to load users."
+        );
+    }
+
+    return;
+} 
+
+        // GET /api/admin/products
+if (path.equals("/products")) {
+
+    try {
+
+        List<AdminProductDTO> products =
+                adminDAO.getAllProducts();
+
+        Map<String, Object> result =
+                new HashMap<>();
+
+        result.put(
+                "success",
+                true
+        );
+
+        result.put(
+                "products",
+                products
+        );
+
+        sendJson(
+                response,
+                HttpServletResponse.SC_OK,
+                result
+        );
+
+    } catch (Exception e) {
+
+        e.printStackTrace();
+
+        sendError(
+                response,
+                HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                "Failed to load products."
         );
     }
 
