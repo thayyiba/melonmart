@@ -89,6 +89,16 @@
             <version>5.5.0</version>
             <scope>test</scope>
         </dependency>
+         <dependency>
+            <groupId>com.openai</groupId>
+            <artifactId>openai-java</artifactId>
+             <version>4.63.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.genai</groupId>
+            <artifactId>google-genai</artifactId>
+            <version>1.67.0</version>
+        </dependency>
     </dependencies>
 
     <build>

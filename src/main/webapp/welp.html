@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Welp 🍉 — Melon Mart</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #fff6d8;
+            color: #594052;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 650px;
+            height: 750px;
+            background: #fffdf5;
+            border: 2px solid #594052;
+            border-radius: 28px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 8px 8px 0 #f9dddd;
+        }
+
+        .header {
+            background: #e1e5f7;
+            padding: 22px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 2px solid #594052;
+        }
+
+        .welp-icon {
+            width: 52px;
+            height: 52px;
+            background: #f9dddd;
+            border: 2px solid #594052;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 27px;
+        }
+
+        .header h1 {
+            font-size: 25px;
+            margin-bottom: 3px;
+        }
+
+        .header p {
+            font-size: 13px;
+            opacity: 0.75;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 13px 16px;
+            border-radius: 18px;
+            line-height: 1.5;
+            font-size: 15px;
+            white-space: pre-wrap;
+        }
+
+        .welp-message {
+            align-self: flex-start;
+            background: #f9dddd;
+            border-bottom-left-radius: 5px;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: #e1e5f7;
+            border-bottom-right-radius: 5px;
+        }
+
+        .typing {
+            display: none;
+            align-self: flex-start;
+            background: #f9dddd;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+        }
+
+        .input-area {
+            padding: 18px;
+            border-top: 2px solid #594052;
+            background: #fffdf5;
+            display: flex;
+            gap: 10px;
+        }
+
+        #messageInput {
+            flex: 1;
+            border: 2px solid #594052;
+            border-radius: 16px;
+            padding: 13px 15px;
+            font-size: 15px;
+            outline: none;
+            background: white;
+            color: #594052;
+        }
+
+        #messageInput:focus {
+            box-shadow: 3px 3px 0 #f9dddd;
+        }
+
+        #sendButton {
+            border: 2px solid #594052;
+            border-radius: 16px;
+            padding: 0 20px;
+            background: #594052;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        #sendButton:hover {
+            transform: translateY(-1px);
+        }
+
+        #sendButton:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .suggestions {
+            padding: 0 20px 15px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+        }
+
+        .suggestion {
+            flex-shrink: 0;
+            border: 1px solid #594052;
+            background: #fffdf5;
+            color: #594052;
+            border-radius: 20px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .suggestion:hover {
+            background: #f9dddd;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 0;
+            }
+
+            .chat-container {
+                height: 100vh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .message {
+                max-width: 88%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="chat-container">
+
+    <div class="header">
+        <div class="welp-icon">🍉</div>
+
+        <div>
+            <h1>Welp</h1>
+            <p>Just welp for help. 🐾</p>
+        </div>
+    </div>
+
+    <div class="messages" id="messages">
+
+        <div class="message welp-message">
+            Hi! I'm Welp 🍉
+            Tell me what you're looking for and I'll help you find it on Melon Mart!
+        </div>
+
+        <div class="typing" id="typing">
+            Welp is thinking... 🍉
+        </div>
+
+    </div>
+
+    <div class="suggestions">
+        <button class="suggestion"
+                onclick="useSuggestion('I want something sweet under ₹300')">
+            🍰 Something sweet
+        </button>
+
+        <button class="suggestion"
+                onclick="useSuggestion('Show me something under ₹500')">
+            💸 Under ₹500
+        </button>
+
+        <button class="suggestion"
+                onclick="useSuggestion('What products do you have?')">
+            🛍️ Browse products
+        </button>
+    </div>
+
+    <div class="input-area">
+
+        <input
+            type="text"
+            id="messageInput"
+            placeholder="Ask Welp anything..."
+            autocomplete="off"
+        >
+
+        <button id="sendButton" onclick="sendMessage()">
+            Send
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+    const messageInput = document.getElementById("messageInput");
+    const sendButton = document.getElementById("sendButton");
+    const messages = document.getElementById("messages");
+    const typing = document.getElementById("typing");
+
+    messageInput.addEventListener("keydown", function(event) {
+
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+
+    });
+
+    function addMessage(text, type) {
+
+        const message = document.createElement("div");
+
+        message.className = "message " + type;
+        message.textContent = text;
+
+        messages.insertBefore(message, typing);
+
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    function useSuggestion(text) {
+
+        messageInput.value = text;
+
+        sendMessage();
+    }
+
+    async function sendMessage() {
+
+        const message = messageInput.value.trim();
+
+        if (!message) {
+            return;
+        }
+
+        addMessage(message, "user-message");
+
+        messageInput.value = "";
+
+        sendButton.disabled = true;
+        messageInput.disabled = true;
+
+        typing.style.display = "block";
+
+        messages.scrollTop = messages.scrollHeight;
+
+        try {
+
+            const response = await fetch("/melonmart/api/welp", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    message: message
+                })
+
+            });
+
+            const data = await response.json();
+
+            typing.style.display = "none";
+
+            if (data.reply) {
+
+                addMessage(
+                    data.reply,
+                    "welp-message"
+                );
+
+            } else {
+
+                addMessage(
+                    "Welp didn't understand that. Try again! 🍉",
+                    "welp-message"
+                );
+
+            }
+
+        } catch (error) {
+
+            typing.style.display = "none";
+
+            addMessage(
+                "Oops! Welp couldn't connect right now 🍉",
+                "welp-message"
+            );
+
+            console.error(error);
+
+        }
+
+        sendButton.disabled = false;
+        messageInput.disabled = false;
+
+        messageInput.focus();
+
+    }
+
+</script>
+
+</body>
+</html>
