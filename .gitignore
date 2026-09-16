@@ -1,3 +1,5 @@
 target/
 .vscode/
 *.class
+data/*.mv.db
+data/*.trace.db
