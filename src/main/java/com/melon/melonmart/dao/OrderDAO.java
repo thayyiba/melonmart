@@ -4,6 +4,8 @@ import com.melon.melonmart.listener.DbContextListener;
 import com.melon.melonmart.model.Order;
 
 import javax.sql.DataSource;
+
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import com.melon.melonmart.dto.SellerOrderDTO;
 import com.melon.melonmart.dto.SellerOrderItemDTO;
+import com.melon.melonmart.dto.SellerSalesDTO;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -350,5 +354,138 @@ public class OrderDAO {
 
     return false;
    }
+
+   public SellerSalesDTO getSellerSales(
+        int sellerId
+) throws Exception {
+
+    String sql = """
+            SELECT
+                COALESCE(
+                    SUM(
+                        CASE
+                            WHEN o.status = 'DELIVERED'
+                            THEN oi.price * oi.quantity
+                            ELSE 0
+                        END
+                    ),
+                    0
+                ) AS total_revenue,
+
+                COUNT(
+                    DISTINCT
+                    CASE
+                        WHEN o.status = 'DELIVERED'
+                        THEN o.id
+                    END
+                ) AS total_orders,
+
+                COALESCE(
+                    SUM(
+                        CASE
+                            WHEN o.status = 'DELIVERED'
+                            THEN oi.quantity
+                            ELSE 0
+                        END
+                    ),
+                    0
+                ) AS products_sold
+
+            FROM orders o
+
+            JOIN order_items oi
+                ON o.id = oi.order_id
+
+            JOIN products p
+                ON oi.product_id = p.id
+
+            WHERE p.seller_id = ?
+            """;
+
+    try (
+            Connection connection =
+                    dataSource.getConnection();
+
+            PreparedStatement statement =
+                    connection.prepareStatement(sql)
+    ) {
+
+        statement.setInt(1, sellerId);
+
+        try (
+                ResultSet result =
+                        statement.executeQuery()
+        ) {
+
+            if (result.next()) {
+
+                SellerSalesDTO sales =
+                        new SellerSalesDTO();
+
+                sales.setTotalRevenue(
+                        result.getBigDecimal(
+                                "total_revenue"
+                        )
+                );
+
+                sales.setTotalOrders(
+                        result.getInt(
+                                "total_orders"
+                        )
+                );
+
+                sales.setProductsSold(
+                        result.getInt(
+                                "products_sold"
+                        )
+                );
+
+                BigDecimal revenue =
+                        sales.getTotalRevenue();
+
+                int orders =
+                        sales.getTotalOrders();
+
+                BigDecimal averageOrderValue =
+                        BigDecimal.ZERO;
+
+                if (
+                        revenue != null &&
+                        orders > 0
+                ) {
+                    averageOrderValue =
+                            revenue.divide(
+                                    BigDecimal.valueOf(orders),
+                                    2,
+                                    java.math.RoundingMode.HALF_UP
+                            );
+                }
+
+                sales.setAverageOrderValue(
+                        averageOrderValue
+                );
+
+                return sales;
+            }
+        }
+    }
+
+    SellerSalesDTO emptySales =
+            new SellerSalesDTO();
+
+    emptySales.setTotalRevenue(
+            BigDecimal.ZERO
+    );
+
+    emptySales.setTotalOrders(0);
+
+    emptySales.setProductsSold(0);
+
+    emptySales.setAverageOrderValue(
+            BigDecimal.ZERO
+    );
+
+    return emptySales;
+}
 
 }

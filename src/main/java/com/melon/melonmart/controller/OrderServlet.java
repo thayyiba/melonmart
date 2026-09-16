@@ -2,6 +2,7 @@
 package com.melon.melonmart.controller;
 
 import com.melon.melonmart.dto.SellerOrderDTO;
+import com.melon.melonmart.dto.SellerSalesDTO;
 import com.google.gson.Gson;
 import com.melon.melonmart.model.Order;
 import com.melon.melonmart.model.OrderItem;
@@ -127,6 +128,34 @@ public class OrderServlet extends HttpServlet {
         String path = request.getPathInfo();
 
         try {
+
+                // GET /api/orders/seller/sales
+if (path != null && path.equals("/seller/sales")) {
+
+    if (!"SELLER".equals(user.getRole())) {
+
+        sendError(
+                response,
+                HttpServletResponse.SC_FORBIDDEN,
+                "Seller access required"
+        );
+
+        return;
+    }
+
+    SellerSalesDTO sales =
+            orderService.getSellerSales(
+                    user.getId()
+            );
+
+    sendJson(
+            response,
+            HttpServletResponse.SC_OK,
+            sales
+    );
+
+    return;
+}
                 // GET /api/orders/seller
 if (path != null && path.equals("/seller")) {
 

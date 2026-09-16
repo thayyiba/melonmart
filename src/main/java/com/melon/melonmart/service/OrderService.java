@@ -9,6 +9,7 @@ import com.melon.melonmart.model.CartItem;
 import com.melon.melonmart.model.Order;
 import com.melon.melonmart.model.OrderItem;
 import com.melon.melonmart.dto.SellerOrderDTO;
+import com.melon.melonmart.dto.SellerSalesDTO;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -210,6 +211,15 @@ public class OrderService {
     return orderDAO.sellerOwnsOrder(
             sellerId,
             orderId
+    );
+}
+
+public SellerSalesDTO getSellerSales(
+        int sellerId
+) throws Exception {
+
+    return orderDAO.getSellerSales(
+            sellerId
     );
 }
 

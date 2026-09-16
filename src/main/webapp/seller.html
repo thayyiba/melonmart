@@ -1,1426 +1,1623 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Melon Mart — Seller Studio</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
-
-<style>
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
-
-    :root {
-        --cream: #FFF6D8;
-        --paper: #FFFDF5;
-        --pink: #F9DDDD;
-        --lavender: #E1E5F7;
-        --plum: #382A34;
-        --muted: #756873;
-        --accent: #A65B70;
-        --border: #E7DACB;
-        --yellow: #F2D477;
-        --green: #718C6A;
-        --red: #A65B70;
-    }
-
-    body {
-        min-height: 100vh;
-        background: var(--cream);
-        color: var(--plum);
-        font-family: "DM Sans", sans-serif;
-    }
-
-    button,
-    input,
-    select,
-    textarea {
-        font: inherit;
-    }
-
-    button {
-        cursor: pointer;
-    }
-
-    a {
-        color: inherit;
-        text-decoration: none;
-    }
-
-    /* HEADER */
-
-    .topbar {
-        width: 100%;
-        min-height: 76px;
-        padding: 0 6%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-bottom: 1px solid var(--border);
-        background: rgba(255, 253, 245, 0.94);
-        position: sticky;
-        top: 0;
-        z-index: 50;
-        backdrop-filter: blur(12px);
-    }
-
-    .brand {
-        display: flex;
-        align-items: center;
-        gap: 11px;
-        font-weight: 700;
-        font-size: 18px;
-    }
-
-    .brand-icon {
-        width: 38px;
-        height: 38px;
-        border-radius: 13px;
-        background: var(--pink);
-        display: grid;
-        place-items: center;
-        font-size: 20px;
-    }
-
-    .brand-text {
-        letter-spacing: -0.3px;
-    }
-
-    .studio-pill {
-        padding: 9px 15px;
-        border: 1px solid var(--border);
-        background: var(--lavender);
-        border-radius: 999px;
-        font-size: 13px;
-        font-weight: 700;
-    }
-
-    /* MAIN */
-
-    .page {
-        width: min(1240px, 92%);
-        margin: 0 auto;
-        padding: 48px 0 70px;
-    }
-
-    /* HERO */
-
-    .hero {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        gap: 30px;
-        margin-bottom: 34px;
-    }
-
-    .hero-copy {
-        max-width: 720px;
-    }
-
-    .eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 12px;
-        color: var(--accent);
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1.3px;
-    }
-
-    .eyebrow::before {
-        content: "";
-        width: 24px;
-        height: 2px;
-        background: var(--accent);
-    }
-
-    h1 {
-        font-family: "Fraunces", serif;
-        font-size: clamp(42px, 5vw, 66px);
-        line-height: 0.98;
-        letter-spacing: -2px;
-        margin-bottom: 18px;
-    }
-
-    h1 em {
-        color: var(--accent);
-        font-style: normal;
-    }
-
-    .hero-description {
-        max-width: 620px;
-        color: var(--muted);
-        line-height: 1.7;
-        font-size: 15px;
-    }
-
-    .refresh-button {
-        border: 1px solid var(--border);
-        background: var(--paper);
-        color: var(--plum);
-        padding: 12px 17px;
-        border-radius: 12px;
-        font-weight: 700;
-        transition: 0.2s ease;
-        white-space: nowrap;
-    }
-
-    .refresh-button:hover {
-        transform: translateY(-2px);
-        border-color: var(--accent);
-    }
-
-    /* STATS */
-
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-        margin-bottom: 46px;
-    }
-
-    .stat-card {
-        background: var(--paper);
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        padding: 22px;
-        min-height: 130px;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .stat-card:nth-child(1) {
-        background: var(--pink);
-    }
-
-    .stat-card:nth-child(2) {
-        background: var(--lavender);
-    }
-
-    .stat-card:nth-child(3) {
-        background: #F8EBC0;
-    }
-
-    .stat-label {
-        color: var(--muted);
-        font-size: 13px;
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
-
-    .stat-number {
-        font-family: "Fraunces", serif;
-        font-size: 38px;
-        line-height: 1;
-    }
-
-    .stat-small {
-        position: absolute;
-        right: 18px;
-        bottom: 18px;
-        font-size: 24px;
-    }
-
-    /* SECTION HEADERS */
-
-    .section-heading {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        gap: 20px;
-        margin-bottom: 18px;
-    }
-
-    .section-heading h2 {
-        font-family: "Fraunces", serif;
-        font-size: 30px;
-        letter-spacing: -0.7px;
-    }
-
-    .section-heading p {
-        margin-top: 5px;
-        color: var(--muted);
-        font-size: 13px;
-    }
-
-    /* ORDERS */
-
-    .orders-section {
-        margin-bottom: 50px;
-    }
-
-    .order-filters {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-bottom: 18px;
-    }
-
-    .filter-button {
-        border: 1px solid var(--border);
-        background: var(--paper);
-        color: var(--muted);
-        padding: 9px 14px;
-        border-radius: 999px;
-        font-size: 13px;
-        font-weight: 700;
-        transition: 0.2s ease;
-    }
-
-    .filter-button:hover {
-        border-color: var(--accent);
-        color: var(--accent);
-    }
-
-    .filter-button.active {
-        background: var(--plum);
-        color: white;
-        border-color: var(--plum);
-    }
-
-    .orders-list {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-    }
-
-    .order-card {
-        background: var(--paper);
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        overflow: hidden;
-    }
-
-    .order-main {
-        padding: 20px 22px;
-    }
-
-    .order-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 20px;
-        margin-bottom: 18px;
-    }
-
-    .order-number {
-        font-size: 15px;
-        font-weight: 800;
-    }
-
-    .order-meta {
-        color: var(--muted);
-        font-size: 12px;
-        margin-top: 5px;
-    }
-
-    .status {
-        display: inline-flex;
-        align-items: center;
-        padding: 7px 11px;
-        border-radius: 999px;
-        font-size: 11px;
-        font-weight: 800;
-        letter-spacing: 0.4px;
-        text-transform: uppercase;
-    }
-
-    .status.placed {
-        background: var(--yellow);
-        color: #5D4C18;
-    }
-
-    .status.confirmed {
-        background: var(--lavender);
-        color: #4D587C;
-    }
-
-    .status.shipped {
-        background: #DDEBD8;
-        color: #4D6547;
-    }
-
-    .status.delivered {
-        background: #D5E8D2;
-        color: #486341;
-    }
-
-    .order-content {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 25px;
-        align-items: center;
-    }
-
-    .buyer {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 15px;
-    }
-
-    .buyer-avatar {
-        width: 38px;
-        height: 38px;
-        border-radius: 12px;
-        background: var(--lavender);
-        display: grid;
-        place-items: center;
-        font-weight: 800;
-    }
-
-    .buyer-name {
-        font-weight: 700;
-        font-size: 14px;
-    }
-
-    .buyer-email {
-        color: var(--muted);
-        font-size: 12px;
-        margin-top: 2px;
-    }
-
-    .order-items {
-        display: flex;
-        flex-direction: column;
-        gap: 9px;
-    }
-
-    .order-item {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .item-image {
-        width: 52px;
-        height: 52px;
-        border-radius: 12px;
-        object-fit: cover;
-        background: #F1E8DC;
-        border: 1px solid var(--border);
-    }
-
-    .item-placeholder {
-        width: 52px;
-        height: 52px;
-        border-radius: 12px;
-        background: var(--pink);
-        display: grid;
-        place-items: center;
-        font-size: 20px;
-    }
-
-    .item-name {
-        font-size: 13px;
-        font-weight: 700;
-    }
-
-    .item-details {
-        color: var(--muted);
-        font-size: 12px;
-        margin-top: 3px;
-    }
-
-    .order-total-box {
-        min-width: 155px;
-        text-align: right;
-        border-left: 1px solid var(--border);
-        padding-left: 24px;
-    }
-
-    .total-label {
-        color: var(--muted);
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.7px;
-        font-weight: 700;
-    }
-
-    .total-value {
-        font-family: "Fraunces", serif;
-        font-size: 25px;
-        margin-top: 5px;
-    }
-
-    .order-actions {
-        display: flex;
-        justify-content: flex-end;
-        padding-top: 17px;
-        margin-top: 17px;
-        border-top: 1px solid var(--border);
-    }
-
-    .details-button {
-        border: 0;
-        background: transparent;
-        color: var(--accent);
-        font-size: 13px;
-        font-weight: 800;
-    }
-
-    .details-button:hover {
-        text-decoration: underline;
-    }
-
-    /* STATUS CONTROLS */
-
-    .status-controls {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding-top: 17px;
-        margin-top: 17px;
-        border-top: 1px solid var(--border);
-    }
-
-    .status-control-group {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-    }
-
-    .status-control-label {
-        color: var(--muted);
-        font-size: 11px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.6px;
-    }
-
-    .status-select {
-        border: 1px solid var(--border);
-        background: #FFFCF4;
-        color: var(--plum);
-        padding: 9px 11px;
-        border-radius: 10px;
-        font-size: 12px;
-        font-weight: 700;
-        outline: none;
-    }
-
-    .status-select:focus {
-        border-color: var(--accent);
-    }
-
-    .update-status-button {
-        border: 0;
-        background: var(--plum);
-        color: white;
-        padding: 9px 13px;
-        border-radius: 10px;
-        font-size: 12px;
-        font-weight: 800;
-        transition: 0.2s ease;
-    }
-
-    .update-status-button:hover {
-        transform: translateY(-1px);
-        opacity: 0.92;
-    }
-
-    .update-status-button:disabled {
-        opacity: 0.55;
-        cursor: not-allowed;
-        transform: none;
-    }
-
-    .order-details {
-        display: none;
-        background: #FBF6E9;
-        border-top: 1px solid var(--border);
-        padding: 18px 22px;
-    }
-
-    .order-details.open {
-        display: block;
-    }
-
-    .detail-row {
-        display: flex;
-        justify-content: space-between;
-        gap: 20px;
-        font-size: 13px;
-        padding: 6px 0;
-    }
-
-    .detail-row span:first-child {
-        color: var(--muted);
-    }
-
-    .empty-orders {
-        padding: 45px 25px;
-        text-align: center;
-        background: var(--paper);
-        border: 1px dashed var(--border);
-        border-radius: 18px;
-        color: var(--muted);
-    }
-
-    .empty-orders-icon {
-        font-size: 35px;
-        margin-bottom: 10px;
-    }
-
-    .empty-orders strong {
-        display: block;
-        color: var(--plum);
-        margin-bottom: 5px;
-    }
-
-    /* LISTING SECTION */
-
-    .listing-section {
-        margin-top: 10px;
-    }
-
-    .listing-layout {
-        display: grid;
-        grid-template-columns: minmax(310px, 0.75fr) minmax(0, 1.25fr);
-        gap: 20px;
-        align-items: start;
-    }
-
-    .card {
-        background: var(--paper);
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 24px;
-    }
-
-    .card-heading {
-        margin-bottom: 20px;
-    }
-
-    .card-heading h3 {
-        font-family: "Fraunces", serif;
-        font-size: 23px;
-    }
-
-    .card-heading p {
-        color: var(--muted);
-        font-size: 12px;
-        margin-top: 5px;
-        line-height: 1.5;
-    }
-
-    /* FORM */
-
-    .form-group {
-        margin-bottom: 14px;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 7px;
-        font-size: 12px;
-        font-weight: 800;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-        width: 100%;
-        border: 1px solid var(--border);
-        background: #FFFCF4;
-        color: var(--plum);
-        border-radius: 11px;
-        padding: 11px 12px;
-        outline: none;
-        transition: 0.2s ease;
-    }
-
-    .form-group textarea {
-        min-height: 90px;
-        resize: vertical;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(166, 91, 112, 0.08);
-    }
-
-    .form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-    }
-
-    .form-actions {
-        display: flex;
-        gap: 9px;
-        margin-top: 18px;
-    }
-
-    .primary-button {
-        flex: 1;
-        border: 0;
-        background: var(--plum);
-        color: white;
-        padding: 12px 16px;
-        border-radius: 11px;
-        font-weight: 800;
-        transition: 0.2s ease;
-    }
-
-    .primary-button:hover {
-        transform: translateY(-1px);
-        opacity: 0.93;
-    }
-
-    .secondary-button {
-        border: 1px solid var(--border);
-        background: transparent;
-        color: var(--plum);
-        padding: 12px 16px;
-        border-radius: 11px;
-        font-weight: 700;
-    }
-
-    .secondary-button:hover {
-        background: #F8F0E2;
-    }
-
-    .hidden {
-        display: none !important;
-    }
-
-    /* INVENTORY */
-
-    .inventory-tools {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 15px;
-    }
-
-    .search-box {
-        width: 100%;
-        border: 1px solid var(--border);
-        background: #FFFCF4;
-        border-radius: 11px;
-        padding: 11px 13px;
-        outline: none;
-    }
-
-    .search-box:focus {
-        border-color: var(--accent);
-    }
-
-    .inventory-wrapper {
-        overflow-x: auto;
-    }
-
-    .inventory-table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 600px;
-    }
-
-    .inventory-table th {
-        text-align: left;
-        padding: 11px 8px;
-        color: var(--muted);
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: 0.7px;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .inventory-table td {
-        padding: 13px 8px;
-        border-bottom: 1px solid #EEE5D9;
-        font-size: 12px;
-        vertical-align: middle;
-    }
-
-    .inventory-product {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .inventory-image {
-        width: 43px;
-        height: 43px;
-        object-fit: cover;
-        border-radius: 10px;
-        background: #F1E8DC;
-        border: 1px solid var(--border);
-    }
-
-    .inventory-name {
-        font-weight: 800;
-    }
-
-    .category-tag {
-        display: inline-block;
-        background: var(--lavender);
-        padding: 5px 8px;
-        border-radius: 999px;
-        font-size: 10px;
-        font-weight: 800;
-    }
-
-    .stock-good {
-        color: var(--green);
-        font-weight: 800;
-    }
-
-    .stock-low {
-        color: var(--accent);
-        font-weight: 800;
-    }
-
-    .stock-empty {
-        color: #9A4D4D;
-        font-weight: 800;
-    }
-
-    .table-actions {
-        display: flex;
-        gap: 6px;
-    }
-
-    .edit-button,
-    .delete-button {
-        border: 1px solid var(--border);
-        background: transparent;
-        padding: 6px 8px;
-        border-radius: 8px;
-        font-size: 11px;
-        font-weight: 700;
-    }
-
-    .edit-button {
-        color: var(--plum);
-    }
-
-    .delete-button {
-        color: var(--accent);
-    }
-
-    .edit-button:hover,
-    .delete-button:hover {
-        background: #F8F0E2;
-    }
-
-    .empty-inventory {
-        padding: 35px 10px;
-        text-align: center;
-        color: var(--muted);
-    }
-
-    /* NOTE */
-
-    .bottom-note {
-        margin-top: 25px;
-        background: var(--yellow);
-        border: 1px solid #E4C967;
-        border-radius: 15px;
-        padding: 16px 18px;
-        display: flex;
-        align-items: flex-start;
-        gap: 12px;
-        font-size: 12px;
-        line-height: 1.6;
-    }
-
-    .bottom-note strong {
-        display: block;
-        margin-bottom: 2px;
-    }
-
-    /* TOAST */
-
-    .toast {
-        position: fixed;
-        right: 22px;
-        bottom: 22px;
-        max-width: 330px;
-        background: var(--plum);
-        color: white;
-        padding: 13px 17px;
-        border-radius: 12px;
-        font-size: 13px;
-        box-shadow: 0 10px 30px rgba(56, 42, 52, 0.18);
-        transform: translateY(100px);
-        opacity: 0;
-        pointer-events: none;
-        transition: 0.25s ease;
-        z-index: 100;
-    }
-
-    .toast.show {
-        transform: translateY(0);
-        opacity: 1;
-    }
-
-    /* LOADING */
-
-    .loading {
-        padding: 35px;
-        text-align: center;
-        color: var(--muted);
-        font-size: 13px;
-    }
-
-    /* RESPONSIVE */
-
-    @media (max-width: 900px) {
-
-        .listing-layout {
-            grid-template-columns: 1fr;
+    <title>Melon Mart — Seller Studio</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        .order-content {
-            grid-template-columns: 1fr;
+        :root {
+            --cream: #FFF6D8;
+            --paper: #FFFDF5;
+            --pink: #F9DDDD;
+            --lavender: #E1E5F7;
+            --plum: #382A34;
+            --muted: #756873;
+            --accent: #A65B70;
+            --border: #E7DACB;
+            --yellow: #F2D477;
+            --green: #718C6A;
+            --red: #A65B70;
         }
 
-        .order-total-box {
-            border-left: 0;
-            border-top: 1px solid var(--border);
-            padding-left: 0;
-            padding-top: 15px;
-            text-align: left;
+        body {
+            min-height: 100vh;
+            background: var(--cream);
+            color: var(--plum);
+            font-family: "DM Sans", sans-serif;
         }
-    }
 
-    @media (max-width: 650px) {
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* HEADER */
 
         .topbar {
-            padding: 0 4%;
+            width: 100%;
+            min-height: 76px;
+            padding: 0 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            background: rgba(255, 253, 245, 0.94);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(12px);
         }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 13px;
+            background: var(--pink);
+            display: grid;
+            place-items: center;
+            font-size: 20px;
+        }
+
+        .brand-text {
+            letter-spacing: -0.3px;
+        }
+
+        .studio-pill {
+            padding: 9px 15px;
+            border: 1px solid var(--border);
+            background: var(--lavender);
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* MAIN */
 
         .page {
-            width: 92%;
-            padding-top: 30px;
+            width: min(1240px, 92%);
+            margin: 0 auto;
+            padding: 48px 0 70px;
         }
 
+        /* HERO */
+
         .hero {
-            align-items: flex-start;
-            flex-direction: column;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 30px;
+            margin-bottom: 34px;
+        }
+
+        .hero-copy {
+            max-width: 720px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.3px;
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 24px;
+            height: 2px;
+            background: var(--accent);
         }
 
         h1 {
-            font-size: 45px;
+            font-family: "Fraunces", serif;
+            font-size: clamp(42px, 5vw, 66px);
+            line-height: 0.98;
+            letter-spacing: -2px;
+            margin-bottom: 18px;
         }
+
+        h1 em {
+            color: var(--accent);
+            font-style: normal;
+        }
+
+        .hero-description {
+            max-width: 620px;
+            color: var(--muted);
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        .refresh-button {
+            border: 1px solid var(--border);
+            background: var(--paper);
+            color: var(--plum);
+            padding: 12px 17px;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .refresh-button:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+        }
+
+        /* STATS */
 
         .stats-grid {
-            grid-template-columns: 1fr;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 46px;
         }
 
-        .form-row {
-            grid-template-columns: 1fr;
+        .stat-card {
+            background: var(--paper);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 22px;
+            min-height: 130px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .card {
-            padding: 18px;
+        .stat-card:nth-child(1) {
+            background: var(--pink);
+        }
+
+        .stat-card:nth-child(2) {
+            background: var(--lavender);
+        }
+
+        .stat-card:nth-child(3) {
+            background: #F8EBC0;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-family: "Fraunces", serif;
+            font-size: 38px;
+            line-height: 1;
+        }
+
+        .stat-small {
+            position: absolute;
+            right: 18px;
+            bottom: 18px;
+            font-size: 24px;
+        }
+
+        /* SALES DASHBOARD */
+
+        .sales-section {
+            margin-bottom: 50px;
+        }
+
+        .sales-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .sales-card {
+            background: var(--paper);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 22px;
+            min-height: 150px;
+            position: relative;
+            overflow: hidden;
+            transition: 0.2s ease;
+        }
+
+        .sales-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .sales-card:nth-child(1) {
+            background: #F9DDDD;
+        }
+
+        .sales-card:nth-child(2) {
+            background: #E1E5F7;
+        }
+
+        .sales-card:nth-child(3) {
+            background: #F8EBC0;
+        }
+
+        .sales-card:nth-child(4) {
+            background: #DDEBD8;
+        }
+
+        .sales-label {
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .sales-number {
+            font-family: "Fraunces", serif;
+            font-size: 32px;
+            line-height: 1.1;
+            padding-right: 35px;
+            word-break: break-word;
+        }
+
+        .sales-note {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        .sales-icon {
+            position: absolute;
+            right: 18px;
+            bottom: 17px;
+            font-size: 25px;
+        }
+
+        /* SECTION HEADERS */
+
+        .section-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 18px;
+        }
+
+        .section-heading h2 {
+            font-family: "Fraunces", serif;
+            font-size: 30px;
+            letter-spacing: -0.7px;
+        }
+
+        .section-heading p {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* ORDERS */
+
+        .orders-section {
+            margin-bottom: 50px;
+        }
+
+        .order-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .filter-button {
+            border: 1px solid var(--border);
+            background: var(--paper);
+            color: var(--muted);
+            padding: 9px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.2s ease;
+        }
+
+        .filter-button:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .filter-button.active {
+            background: var(--plum);
+            color: white;
+            border-color: var(--plum);
+        }
+
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .order-card {
+            background: var(--paper);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
         }
 
         .order-main {
-            padding: 17px;
+            padding: 20px 22px;
         }
 
         .order-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 18px;
+        }
+
+        .order-number {
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .order-meta {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 11px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        .status.placed {
+            background: var(--yellow);
+            color: #5D4C18;
+        }
+
+        .status.confirmed {
+            background: var(--lavender);
+            color: #4D587C;
+        }
+
+        .status.shipped {
+            background: #DDEBD8;
+            color: #4D6547;
+        }
+
+        .status.delivered {
+            background: #D5E8D2;
+            color: #486341;
+        }
+
+        .order-content {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .buyer {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .buyer-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: var(--lavender);
+            display: grid;
+            place-items: center;
+            font-weight: 800;
+        }
+
+        .buyer-name {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .buyer-email {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .order-items {
+            display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 9px;
+        }
+
+        .order-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .item-image {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: #F1E8DC;
+            border: 1px solid var(--border);
+        }
+
+        .item-placeholder {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            background: var(--pink);
+            display: grid;
+            place-items: center;
+            font-size: 20px;
+        }
+
+        .item-name {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .item-details {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        .order-total-box {
+            min-width: 155px;
+            text-align: right;
+            border-left: 1px solid var(--border);
+            padding-left: 24px;
+        }
+
+        .total-label {
+            color: var(--muted);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            font-weight: 700;
+        }
+
+        .total-value {
+            font-family: "Fraunces", serif;
+            font-size: 25px;
+            margin-top: 5px;
         }
 
         .order-actions {
-            justify-content: flex-start;
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 17px;
+            margin-top: 17px;
+            border-top: 1px solid var(--border);
         }
 
+        .details-button {
+            border: 0;
+            background: transparent;
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .details-button:hover {
+            text-decoration: underline;
+        }
+
+        /* STATUS CONTROLS */
+
         .status-controls {
-            align-items: flex-start;
-            flex-direction: column;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-top: 17px;
+            margin-top: 17px;
+            border-top: 1px solid var(--border);
         }
 
         .status-control-group {
-            width: 100%;
-            flex-wrap: wrap;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .status-control-label {
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
         }
 
         .status-select {
-            flex: 1;
+            border: 1px solid var(--border);
+            background: #FFFCF4;
+            color: var(--plum);
+            padding: 9px 11px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            outline: none;
+        }
+
+        .status-select:focus {
+            border-color: var(--accent);
         }
 
         .update-status-button {
-            width: 100%;
+            border: 0;
+            background: var(--plum);
+            color: white;
+            padding: 9px 13px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 800;
+            transition: 0.2s ease;
         }
-    }
-</style>
 
+        .update-status-button:hover {
+            transform: translateY(-1px);
+            opacity: 0.92;
+        }
+
+        .update-status-button:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .order-details {
+            display: none;
+            background: #FBF6E9;
+            border-top: 1px solid var(--border);
+            padding: 18px 22px;
+        }
+
+        .order-details.open {
+            display: block;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            font-size: 13px;
+            padding: 6px 0;
+        }
+
+        .detail-row span:first-child {
+            color: var(--muted);
+        }
+
+        .empty-orders {
+            padding: 45px 25px;
+            text-align: center;
+            background: var(--paper);
+            border: 1px dashed var(--border);
+            border-radius: 18px;
+            color: var(--muted);
+        }
+
+        .empty-orders-icon {
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+
+        .empty-orders strong {
+            display: block;
+            color: var(--plum);
+            margin-bottom: 5px;
+        }
+
+        /* LISTING SECTION */
+
+        .listing-section {
+            margin-top: 10px;
+        }
+
+        .listing-layout {
+            display: grid;
+            grid-template-columns: minmax(310px, 0.75fr) minmax(0, 1.25fr);
+            gap: 20px;
+            align-items: start;
+        }
+
+        .card {
+            background: var(--paper);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+        }
+
+        .card-heading {
+            margin-bottom: 20px;
+        }
+
+        .card-heading h3 {
+            font-family: "Fraunces", serif;
+            font-size: 23px;
+        }
+
+        .card-heading p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+
+        /* FORM */
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            border: 1px solid var(--border);
+            background: #FFFCF4;
+            color: var(--plum);
+            border-radius: 11px;
+            padding: 11px 12px;
+            outline: none;
+            transition: 0.2s ease;
+        }
+
+        .form-group textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(166, 91, 112, 0.08);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 9px;
+            margin-top: 18px;
+        }
+
+        .primary-button {
+            flex: 1;
+            border: 0;
+            background: var(--plum);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 11px;
+            font-weight: 800;
+            transition: 0.2s ease;
+        }
+
+        .primary-button:hover {
+            transform: translateY(-1px);
+            opacity: 0.93;
+        }
+
+        .secondary-button {
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--plum);
+            padding: 12px 16px;
+            border-radius: 11px;
+            font-weight: 700;
+        }
+
+        .secondary-button:hover {
+            background: #F8F0E2;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* INVENTORY */
+
+        .inventory-tools {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .search-box {
+            width: 100%;
+            border: 1px solid var(--border);
+            background: #FFFCF4;
+            border-radius: 11px;
+            padding: 11px 13px;
+            outline: none;
+        }
+
+        .search-box:focus {
+            border-color: var(--accent);
+        }
+
+        .inventory-wrapper {
+            overflow-x: auto;
+        }
+
+        .inventory-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        .inventory-table th {
+            text-align: left;
+            padding: 11px 8px;
+            color: var(--muted);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .inventory-table td {
+            padding: 13px 8px;
+            border-bottom: 1px solid #EEE5D9;
+            font-size: 12px;
+            vertical-align: middle;
+        }
+
+        .inventory-product {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .inventory-image {
+            width: 43px;
+            height: 43px;
+            object-fit: cover;
+            border-radius: 10px;
+            background: #F1E8DC;
+            border: 1px solid var(--border);
+        }
+
+        .inventory-name {
+            font-weight: 800;
+        }
+
+        .category-tag {
+            display: inline-block;
+            background: var(--lavender);
+            padding: 5px 8px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .stock-good {
+            color: var(--green);
+            font-weight: 800;
+        }
+
+        .stock-low {
+            color: var(--accent);
+            font-weight: 800;
+        }
+
+        .stock-empty {
+            color: #9A4D4D;
+            font-weight: 800;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .edit-button,
+        .delete-button {
+            border: 1px solid var(--border);
+            background: transparent;
+            padding: 6px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .edit-button {
+            color: var(--plum);
+        }
+
+        .delete-button {
+            color: var(--accent);
+        }
+
+        .edit-button:hover,
+        .delete-button:hover {
+            background: #F8F0E2;
+        }
+
+        .empty-inventory {
+            padding: 35px 10px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        /* NOTE */
+
+        .bottom-note {
+            margin-top: 25px;
+            background: var(--yellow);
+            border: 1px solid #E4C967;
+            border-radius: 15px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .bottom-note strong {
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        /* TOAST */
+
+        .toast {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            max-width: 330px;
+            background: var(--plum);
+            color: white;
+            padding: 13px 17px;
+            border-radius: 12px;
+            font-size: 13px;
+            box-shadow: 0 10px 30px rgba(56, 42, 52, 0.18);
+            transform: translateY(100px);
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.25s ease;
+            z-index: 100;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* LOADING */
+
+        .loading {
+            padding: 35px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 900px) {
+
+            .sales-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .listing-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .order-content {
+                grid-template-columns: 1fr;
+            }
+
+            .order-total-box {
+                border-left: 0;
+                border-top: 1px solid var(--border);
+                padding-left: 0;
+                padding-top: 15px;
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 650px) {
+
+            .topbar {
+                padding: 0 4%;
+            }
+
+            .page {
+                width: 92%;
+                padding-top: 30px;
+            }
+
+            .hero {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            h1 {
+                font-size: 45px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sales-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .order-main {
+                padding: 17px;
+            }
+
+            .order-top {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .order-actions {
+                justify-content: flex-start;
+            }
+
+            .status-controls {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .status-control-group {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .status-select {
+                flex: 1;
+            }
+
+            .update-status-button {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
 <header class="topbar">
 
+    <a href="index.html" class="brand">
+        <span class="brand-icon">🍉</span>
+        <span class="brand-text">melon mart</span>
+    </a>
 
-<a href="index.html" class="brand">
-    <span class="brand-icon">🍉</span>
-    <span class="brand-text">melon mart</span>
-</a>
-
-<div class="studio-pill">
-    Seller Studio
-</div>
+    <div class="studio-pill">
+        Seller Studio
+    </div>
 
 </header>
 
 <main class="page">
 
-<!-- HERO -->
+    <!-- HERO -->
 
-<section class="hero">
+    <section class="hero">
 
-    <div class="hero-copy">
+        <div class="hero-copy">
 
-        <div class="eyebrow">
-            Your little corner of Melon Mart
-        </div>
-
-        <h1>
-            Make something<br>
-            <em>worth adding.</em>
-        </h1>
-
-        <p class="hero-description">
-            List your products, keep an eye on your stock,
-            and give shoppers something they didn't know
-            they needed five minutes ago.
-        </p>
-
-    </div>
-
-    <button
-        class="refresh-button"
-        onclick="refreshDashboard()"
-    >
-        ↻ Refresh
-    </button>
-
-</section>
-
-<!-- STATS -->
-
-<section class="stats-grid">
-
-    <div class="stat-card">
-        <div class="stat-label">
-            Incoming orders
-        </div>
-
-        <div
-            class="stat-number"
-            id="orderCount"
-        >
-            —
-        </div>
-
-        <div class="stat-small">
-            📦
-        </div>
-    </div>
-
-    <div class="stat-card">
-
-        <div class="stat-label">
-            Your products
-        </div>
-
-        <div
-            class="stat-number"
-            id="productCount"
-        >
-            —
-        </div>
-
-        <div class="stat-small">
-            🛍️
-        </div>
-
-    </div>
-
-    <div class="stat-card">
-
-        <div class="stat-label">
-            Items in stock
-        </div>
-
-        <div
-            class="stat-number"
-            id="stockCount"
-        >
-            —
-        </div>
-
-        <div class="stat-small">
-            🌱
-        </div>
-
-    </div>
-
-</section>
-
-<!-- INCOMING ORDERS -->
-
-<section class="orders-section">
-
-    <div class="section-heading">
-
-        <div>
-
-            <h2>
-                Incoming orders
-            </h2>
-
-            <p>
-                Orders containing your products.
-            </p>
-
-        </div>
-
-    </div>
-
-    <div class="order-filters">
-
-        <button
-            class="filter-button active"
-            data-filter="ALL"
-            onclick="filterOrders('ALL', this)"
-        >
-            All
-        </button>
-
-        <button
-            class="filter-button"
-            data-filter="PLACED"
-            onclick="filterOrders('PLACED', this)"
-        >
-            Placed
-        </button>
-
-        <button
-            class="filter-button"
-            data-filter="CONFIRMED"
-            onclick="filterOrders('CONFIRMED', this)"
-        >
-            Confirmed
-        </button>
-
-        <button
-            class="filter-button"
-            data-filter="SHIPPED"
-            onclick="filterOrders('SHIPPED', this)"
-        >
-            Shipped
-        </button>
-
-        <button
-            class="filter-button"
-            data-filter="DELIVERED"
-            onclick="filterOrders('DELIVERED', this)"
-        >
-            Delivered
-        </button>
-
-    </div>
-
-    <div
-        id="ordersList"
-        class="orders-list"
-    >
-        <div class="loading">
-            Loading your orders...
-        </div>
-    </div>
-
-</section>
-
-<!-- PRODUCT MANAGEMENT -->
-
-<section class="listing-section">
-
-    <div class="section-heading">
-
-        <div>
-
-            <h2>
-                Manage your listings
-            </h2>
-
-            <p>
-                Add something new or tidy up what you already sell.
-            </p>
-
-        </div>
-
-    </div>
-
-    <div class="listing-layout">
-
-        <!-- ADD / EDIT PRODUCT -->
-
-        <div class="card">
-
-            <div class="card-heading">
-
-                <h3 id="formTitle">
-                    Add a product
-                </h3>
-
-                <p id="formSubtitle">
-                    Give your next little bestseller a home.
-                </p>
-
+            <div class="eyebrow">
+                Your little corner of Melon Mart
             </div>
 
-            <form id="productForm">
+            <h1>
+                Make something<br>
+                <em>worth adding.</em>
+            </h1>
 
-                <div class="form-group">
-
-                    <label for="pName">
-                        Product name
-                    </label>
-
-                    <input
-                        type="text"
-                        id="pName"
-                        placeholder="e.g. Yumzie Tiramisu"
-                        required
-                    >
-
-                </div>
-
-                <div class="form-group">
-
-                    <label for="pCategory">
-                        Category
-                    </label>
-
-                    <select
-                        id="pCategory"
-                        required
-                    >
-
-                        <option value="">
-                            Choose a category
-                        </option>
-
-                        <option value="FRUITS">
-                            Fruits
-                        </option>
-
-                        <option value="JUICES">
-                            Juices
-                        </option>
-
-                        <option value="SNACKS">
-                            Snacks
-                        </option>
-
-                        <option value="RECIPES">
-                            Recipes
-                        </option>
-
-                        <option value="CREATIVE">
-                            Creative
-                        </option>
-
-                        <option value="JEWELLERY">
-                            Jewellery
-                        </option>
-
-                    </select>
-
-                </div>
-
-                <div class="form-row">
-
-                    <div class="form-group">
-
-                        <label for="pPrice">
-                            Price (₹)
-                        </label>
-
-                        <input
-                            type="number"
-                            id="pPrice"
-                            placeholder="120"
-                            min="0"
-                            step="0.01"
-                            required
-                        >
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <label for="pStock">
-                            Stock
-                        </label>
-
-                        <input
-                            type="number"
-                            id="pStock"
-                            placeholder="10"
-                            min="0"
-                            required
-                        >
-
-                    </div>
-
-                </div>
-
-                <div class="form-group">
-
-                    <label for="pImg">
-                        Image URL
-                    </label>
-
-                    <input
-                        type="url"
-                        id="pImg"
-                        placeholder="https://..."
-                    >
-
-                </div>
-
-                <div class="form-group">
-
-                    <label for="pDesc">
-                        Description
-                    </label>
-
-                    <textarea
-                        id="pDesc"
-                        placeholder="Tell shoppers why they need this..."
-                    ></textarea>
-
-                </div>
-
-                <div class="form-actions">
-
-                    <button
-                        type="submit"
-                        class="primary-button"
-                        id="submitButton"
-                    >
-                        Add Product
-                    </button>
-
-                    <button
-                        type="button"
-                        class="secondary-button hidden"
-                        id="cancelEditButton"
-                        onclick="cancelEdit()"
-                    >
-                        Cancel
-                    </button>
-
-                </div>
-
-            </form>
+            <p class="hero-description">
+                List your products, keep an eye on your stock,
+                and give shoppers something they didn't know
+                they needed five minutes ago.
+            </p>
 
         </div>
 
-        <!-- INVENTORY -->
+        <button
+            class="refresh-button"
+            onclick="refreshDashboard()"
+        >
+            ↻ Refresh
+        </button>
 
-        <div class="card">
+    </section>
 
-            <div class="card-heading">
+    <!-- STATS -->
 
-                <h3>
-                    Your inventory
-                </h3>
+    <section class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Incoming orders
+            </div>
+
+            <div
+                class="stat-number"
+                id="orderCount"
+            >
+                —
+            </div>
+
+            <div class="stat-small">
+                📦
+            </div>
+
+        </div>
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Your products
+            </div>
+
+            <div
+                class="stat-number"
+                id="productCount"
+            >
+                —
+            </div>
+
+            <div class="stat-small">
+                🛍️
+            </div>
+
+        </div>
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Items in stock
+            </div>
+
+            <div
+                class="stat-number"
+                id="stockCount"
+            >
+                —
+            </div>
+
+            <div class="stat-small">
+                🌱
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- SALES DASHBOARD -->
+
+    <section class="sales-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <h2>
+                    Sales overview
+                </h2>
 
                 <p>
-                    Keep your little shop stocked and looking lovely.
+                    A little look at how your shop is doing.
                 </p>
 
             </div>
 
-            <div class="inventory-tools">
+        </div>
 
-                <input
-                    type="search"
-                    id="inventorySearch"
-                    class="search-box"
-                    placeholder="Search your products..."
-                    oninput="renderInventory()"
+        <div class="sales-grid">
+
+            <div class="sales-card">
+
+                <div class="sales-label">
+                    Total revenue
+                </div>
+
+                <div
+                    class="sales-number"
+                    id="salesRevenue"
                 >
+                    —
+                </div>
+
+                <div class="sales-note">
+                    From delivered orders
+                </div>
+
+                <div class="sales-icon">
+                    💰
+                </div>
 
             </div>
 
-            <div class="inventory-wrapper">
+            <div class="sales-card">
 
-                <table class="inventory-table">
-
-                    <thead>
-
-                        <tr>
-                            <th>Item</th>
-                            <th>Category</th>
-                            <th>Price</th>
-                            <th>Stock</th>
-                            <th>Actions</th>
-                        </tr>
-
-                    </thead>
-
-                    <tbody id="inventoryBody">
-                    </tbody>
-
-                </table>
+                <div class="sales-label">
+                    Delivered orders
+                </div>
 
                 <div
-                    id="emptyInventory"
-                    class="empty-inventory hidden"
+                    class="sales-number"
+                    id="salesOrders"
                 >
-                    Nothing here yet. Add your first product above.
+                    —
+                </div>
+
+                <div class="sales-note">
+                    Successfully completed
+                </div>
+
+                <div class="sales-icon">
+                    📦
+                </div>
+
+            </div>
+
+            <div class="sales-card">
+
+                <div class="sales-label">
+                    Items sold
+                </div>
+
+                <div
+                    class="sales-number"
+                    id="salesProducts"
+                >
+                    —
+                </div>
+
+                <div class="sales-note">
+                    Across delivered orders
+                </div>
+
+                <div class="sales-icon">
+                    🛍️
+                </div>
+
+            </div>
+
+            <div class="sales-card">
+
+                <div class="sales-label">
+                    Average order value
+                </div>
+
+                <div
+                    class="sales-number"
+                    id="salesAverage"
+                >
+                    —
+                </div>
+
+                <div class="sales-note">
+                    Revenue per delivered order
+                </div>
+
+                <div class="sales-icon">
+                    🧾
                 </div>
 
             </div>
 
         </div>
 
-    </div>
+    </section>
 
-    <div class="bottom-note">
+    <!-- INCOMING ORDERS -->
 
-        <span>
-            💡
-        </span>
+    <section class="orders-section">
 
-        <div>
+        <div class="section-heading">
 
-            <strong>
-                A tiny seller tip
-            </strong>
+            <div>
 
-            Clear photos, honest descriptions and accurate stock
-            make shoppers much happier.
+                <h2>
+                    Incoming orders
+                </h2>
+
+                <p>
+                    Orders containing your products.
+                </p>
+
+            </div>
 
         </div>
 
-    </div>
+        <div class="order-filters">
 
-</section>
+            <button
+                class="filter-button active"
+                data-filter="ALL"
+                onclick="filterOrders('ALL', this)"
+            >
+                All
+            </button>
+
+            <button
+                class="filter-button"
+                data-filter="PLACED"
+                onclick="filterOrders('PLACED', this)"
+            >
+                Placed
+            </button>
+
+            <button
+                class="filter-button"
+                data-filter="CONFIRMED"
+                onclick="filterOrders('CONFIRMED', this)"
+            >
+                Confirmed
+            </button>
+
+            <button
+                class="filter-button"
+                data-filter="SHIPPED"
+                onclick="filterOrders('SHIPPED', this)"
+            >
+                Shipped
+            </button>
+
+            <button
+                class="filter-button"
+                data-filter="DELIVERED"
+                onclick="filterOrders('DELIVERED', this)"
+            >
+                Delivered
+            </button>
+
+        </div>
+
+        <div
+            id="ordersList"
+            class="orders-list"
+        >
+            <div class="loading">
+                Loading your orders...
+            </div>
+        </div>
+
+    </section>
+
+    <!-- PRODUCT MANAGEMENT -->
+
+    <section class="listing-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <h2>
+                    Manage your listings
+                </h2>
+
+                <p>
+                    Add something new or tidy up what you already sell.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="listing-layout">
+
+            <!-- ADD / EDIT PRODUCT -->
+
+            <div class="card">
+
+                <div class="card-heading">
+
+                    <h3 id="formTitle">
+                        Add a product
+                    </h3>
+
+                    <p id="formSubtitle">
+                        Give your next little bestseller a home.
+                    </p>
+
+                </div>
+
+                <form id="productForm">
+
+                    <div class="form-group">
+
+                        <label for="pName">
+                            Product name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="pName"
+                            placeholder="e.g. Yumzie Tiramisu"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="pCategory">
+                            Category
+                        </label>
+
+                        <select
+                            id="pCategory"
+                            required
+                        >
+
+                            <option value="">
+                                Choose a category
+                            </option>
+
+                            <option value="FRUITS">
+                                Fruits
+                            </option>
+
+                            <option value="JUICES">
+                                Juices
+                            </option>
+
+                            <option value="SNACKS">
+                                Snacks
+                            </option>
+
+                            <option value="RECIPES">
+                                Recipes
+                            </option>
+
+                            <option value="CREATIVE">
+                                Creative
+                            </option>
+
+                            <option value="JEWELLERY">
+                                Jewellery
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="pPrice">
+                                Price (₹)
+                            </label>
+
+                            <input
+                                type="number"
+                                id="pPrice"
+                                placeholder="120"
+                                min="0"
+                                step="0.01"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="pStock">
+                                Stock
+                            </label>
+
+                            <input
+                                type="number"
+                                id="pStock"
+                                placeholder="10"
+                                min="0"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="pImg">
+                            Image URL
+                        </label>
+
+                        <input
+                            type="url"
+                            id="pImg"
+                            placeholder="https://..."
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="pDesc">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="pDesc"
+                            placeholder="Tell shoppers why they need this..."
+                        ></textarea>
+
+                    </div>
+
+                    <div class="form-actions">
+
+                        <button
+                            type="submit"
+                            class="primary-button"
+                            id="submitButton"
+                        >
+                            Add Product
+                        </button>
+
+                        <button
+                            type="button"
+                            class="secondary-button hidden"
+                            id="cancelEditButton"
+                            onclick="cancelEdit()"
+                        >
+                            Cancel
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <!-- INVENTORY -->
+
+            <div class="card">
+
+                <div class="card-heading">
+
+                    <h3>
+                        Your inventory
+                    </h3>
+
+                    <p>
+                        Keep your little shop stocked and looking lovely.
+                    </p>
+
+                </div>
+
+                <div class="inventory-tools">
+
+                    <input
+                        type="search"
+                        id="inventorySearch"
+                        class="search-box"
+                        placeholder="Search your products..."
+                        oninput="renderInventory()"
+                    >
+
+                </div>
+
+                <div class="inventory-wrapper">
+
+                    <table class="inventory-table">
+
+                        <thead>
+
+                            <tr>
+                                <th>Item</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Actions</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="inventoryBody">
+                        </tbody>
+
+                    </table>
+
+                    <div
+                        id="emptyInventory"
+                        class="empty-inventory hidden"
+                    >
+                        Nothing here yet. Add your first product above.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="bottom-note">
+
+            <span>
+                💡
+            </span>
+
+            <div>
+
+                <strong>
+                    A tiny seller tip
+                </strong>
+
+                Clear photos, honest descriptions and accurate stock
+                make shoppers much happier.
+
+            </div>
+
+        </div>
+
+    </section>
 
 </main>
 
@@ -1440,6 +1637,7 @@
     let editingProductId = null;
     let sellerProducts = [];
     let sellerOrders = [];
+    let sellerSales = null;
     let currentOrderFilter = "ALL";
 
 
@@ -1514,7 +1712,8 @@
 
         await Promise.all([
             fetchSellerInventory(),
-            fetchSellerOrders()
+            fetchSellerOrders(),
+            fetchSellerSales()
         ]);
 
         updateStats();
@@ -1529,7 +1728,8 @@
 
         await Promise.all([
             fetchSellerInventory(),
-            fetchSellerOrders()
+            fetchSellerOrders(),
+            fetchSellerSales()
         ]);
 
         updateStats();
@@ -1537,6 +1737,134 @@
         showToast(
             "Everything is up to date ✨"
         );
+    }
+
+
+    /* =========================
+       SALES
+    ========================= */
+
+    async function fetchSellerSales() {
+
+        try {
+
+            const response =
+                await fetch(
+                    API_BASE +
+                    "/api/orders/seller/sales"
+                );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Could not load sales."
+                );
+            }
+
+            sellerSales =
+                await response.json();
+
+            renderSales();
+
+        } catch (error) {
+
+            console.error(
+                "Sales error:",
+                error
+            );
+
+            sellerSales = null;
+
+            renderSales();
+
+            showToast(
+                "Could not load sales overview."
+            );
+        }
+    }
+
+
+    function renderSales() {
+
+        const revenueElement =
+            document.getElementById(
+                "salesRevenue"
+            );
+
+        const ordersElement =
+            document.getElementById(
+                "salesOrders"
+            );
+
+        const productsElement =
+            document.getElementById(
+                "salesProducts"
+            );
+
+        const averageElement =
+            document.getElementById(
+                "salesAverage"
+            );
+
+
+        if (!sellerSales) {
+
+            if (revenueElement) {
+                revenueElement.textContent = "—";
+            }
+
+            if (ordersElement) {
+                ordersElement.textContent = "—";
+            }
+
+            if (productsElement) {
+                productsElement.textContent = "—";
+            }
+
+            if (averageElement) {
+                averageElement.textContent = "—";
+            }
+
+            return;
+        }
+
+
+        if (revenueElement) {
+
+            revenueElement.textContent =
+                "₹" +
+                formatMoney(
+                    sellerSales.totalRevenue
+                );
+        }
+
+
+        if (ordersElement) {
+
+            ordersElement.textContent =
+                Number(
+                    sellerSales.totalOrders || 0
+                );
+        }
+
+
+        if (productsElement) {
+
+            productsElement.textContent =
+                Number(
+                    sellerSales.productsSold || 0
+                );
+        }
+
+
+        if (averageElement) {
+
+            averageElement.textContent =
+                "₹" +
+                formatMoney(
+                    sellerSales.averageOrderValue
+                );
+        }
     }
 
 
@@ -2997,7 +3325,10 @@
             );
 
 
-            await fetchSellerOrders();
+            await Promise.all([
+                fetchSellerOrders(),
+                fetchSellerSales()
+            ]);
 
             updateStats();
 
