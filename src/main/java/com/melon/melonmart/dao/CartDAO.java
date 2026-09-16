@@ -113,6 +113,41 @@ public class CartDAO {
         }
     }
 
+    // Increase an existing cart item's quantity.
+    public boolean increaseQuantity(
+            int userId,
+            int productId,
+            int quantity
+    ) {
+
+        String sql = """
+                UPDATE cart_items
+                SET quantity = quantity + ?
+                WHERE user_id = ?
+                  AND product_id = ?
+                """;
+
+        try (
+                Connection connection = getConnection();
+                PreparedStatement statement =
+                        connection.prepareStatement(sql)
+        ) {
+
+            statement.setInt(1, quantity);
+            statement.setInt(2, userId);
+            statement.setInt(3, productId);
+
+            return statement.executeUpdate() > 0;
+
+        } catch (Exception e) {
+
+            System.err.println("Error increasing cart quantity:");
+            e.printStackTrace();
+
+            return false;
+        }
+    }
+
     public boolean updateQuantity(
             int userId,
             int productId,
@@ -206,12 +241,6 @@ public class CartDAO {
         }
     }
 
-    /*
-     * Used during checkout.
-     *
-     * This method uses the connection
-     * already opened by OrderService.
-     */
     public void clearCart(
             Connection connection,
             int userId

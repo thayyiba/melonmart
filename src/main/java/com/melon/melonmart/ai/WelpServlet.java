@@ -3,6 +3,7 @@ package com.melon.melonmart.ai;
 import com.google.gson.Gson;
 import com.melon.melonmart.dao.CartDAO;
 import com.melon.melonmart.dao.ProductDAO;
+import com.melon.melonmart.model.CartItem;
 import com.melon.melonmart.model.Product;
 import com.melon.melonmart.model.User;
 
@@ -68,14 +69,9 @@ public class WelpServlet extends HttpServlet {
             String message =
                     chatRequest.message.trim();
 
-            /*
-             * First check whether the user is
-             * asking Welp to add something
-             * to the cart.
-             */
             if (isAddToCartRequest(message)) {
 
-                String cartReply =
+                String reply =
                         handleAddToCart(
                                 request,
                                 message
@@ -83,16 +79,30 @@ public class WelpServlet extends HttpServlet {
 
                 response.getWriter().write(
                         gson.toJson(
-                                new ChatResponse(cartReply)
+                                new ChatResponse(reply)
                         )
                 );
 
                 return;
             }
 
-            /*
-             * Normal questions continue to Gemini.
-             */
+            if (isRemoveFromCartRequest(message)) {
+
+                String reply =
+                        handleRemoveFromCart(
+                                request,
+                                message
+                        );
+
+                response.getWriter().write(
+                        gson.toJson(
+                                new ChatResponse(reply)
+                        )
+                );
+
+                return;
+            }
+
             List<Product> products =
                     productDAO.getAllProducts();
 
@@ -130,7 +140,7 @@ public class WelpServlet extends HttpServlet {
     }
 
     // =========================
-    // CHECK ADD-TO-CART REQUEST
+    // ADD REQUEST
     // =========================
 
     private boolean isAddToCartRequest(String message) {
@@ -146,7 +156,27 @@ public class WelpServlet extends HttpServlet {
     }
 
     // =========================
-    // HANDLE ADD TO CART
+    // REMOVE REQUEST
+    // =========================
+
+    private boolean isRemoveFromCartRequest(String message) {
+
+        String lower =
+                message.toLowerCase(Locale.ROOT);
+
+        return (
+                lower.contains("remove")
+                || lower.contains("delete")
+                || lower.contains("take out")
+        )
+                && (
+                    lower.contains("cart")
+                    || lower.contains("basket")
+                );
+    }
+
+    // =========================
+    // HANDLE ADD
     // =========================
 
     private String handleAddToCart(
@@ -170,6 +200,9 @@ public class WelpServlet extends HttpServlet {
             return "Tell me which product you'd like me to add! 🍉";
         }
 
+        int quantity =
+                extractQuantity(message);
+
         List<Product> products =
                 productDAO.getAllProducts();
 
@@ -190,11 +223,69 @@ public class WelpServlet extends HttpServlet {
                     + " is currently out of stock. 🍉";
         }
 
+        List<CartItem> cart =
+                cartDAO.getCartByUserId(
+                        user.getId()
+                );
+
+        CartItem existingItem =
+                findCartItem(
+                        cart,
+                        matchedProduct.getId()
+                );
+
+        if (existingItem != null) {
+
+            int newQuantity =
+                    existingItem.getQuantity()
+                            + quantity;
+
+            if (newQuantity >
+                    matchedProduct.getStockQty()) {
+
+                return "I can't add "
+                        + quantity
+                        + " more. There are only "
+                        + matchedProduct.getStockQty()
+                        + " "
+                        + matchedProduct.getName()
+                        + " available. 🍉";
+            }
+
+            boolean success =
+                    cartDAO.increaseQuantity(
+                            user.getId(),
+                            matchedProduct.getId(),
+                            quantity
+                    );
+
+            if (!success) {
+
+                return "I couldn't update your cart. Please try again! 🍉";
+            }
+
+            return "Added "
+                    + quantity
+                    + " more "
+                    + matchedProduct.getName()
+                    + " to your cart! 🍉🛒";
+        }
+
+        if (quantity >
+                matchedProduct.getStockQty()) {
+
+            return "I only have "
+                    + matchedProduct.getStockQty()
+                    + " "
+                    + matchedProduct.getName()
+                    + " available. 🍉";
+        }
+
         boolean success =
                 cartDAO.addToCart(
                         user.getId(),
                         matchedProduct.getId(),
-                        1
+                        quantity
                 );
 
         if (!success) {
@@ -205,8 +296,144 @@ public class WelpServlet extends HttpServlet {
         }
 
         return "Added "
+                + quantity
+                + " "
                 + matchedProduct.getName()
                 + " to your cart! 🍉🛒";
+    }
+
+    // =========================
+    // HANDLE REMOVE
+    // =========================
+
+    private String handleRemoveFromCart(
+            HttpServletRequest request,
+            String message
+    ) {
+
+        User user =
+                getLoggedInUser(request);
+
+        if (user == null) {
+
+            return "Please log in first so I can change your cart! 🍉";
+        }
+
+        String productSearch =
+                extractProductName(message);
+
+        if (productSearch.isEmpty()) {
+
+            return "Tell me which product you'd like me to remove! 🍉";
+        }
+
+        List<Product> products =
+                productDAO.getAllProducts();
+
+        Product matchedProduct =
+                findProduct(
+                        products,
+                        productSearch
+                );
+
+        if (matchedProduct == null) {
+
+            return "I couldn't find that product on Melon Mart. 🍉";
+        }
+
+        List<CartItem> cart =
+                cartDAO.getCartByUserId(
+                        user.getId()
+                );
+
+        CartItem existingItem =
+                findCartItem(
+                        cart,
+                        matchedProduct.getId()
+                );
+
+        if (existingItem == null) {
+
+            return matchedProduct.getName()
+                    + " isn't in your cart. 🍉";
+        }
+
+        boolean removeEntireItem =
+                message.toLowerCase(Locale.ROOT)
+                        .matches(
+                                ".*\\b(delete|remove)\\b.*\\b(cart|basket)\\b.*"
+                        )
+                        && !message.toLowerCase(Locale.ROOT)
+                        .contains("one");
+
+        if (removeEntireItem) {
+
+            boolean success =
+                    cartDAO.removeFromCart(
+                            user.getId(),
+                            matchedProduct.getId()
+                    );
+
+            if (!success) {
+
+                return "I couldn't remove "
+                        + matchedProduct.getName()
+                        + " from your cart. 🍉";
+            }
+
+            return "Removed "
+                    + matchedProduct.getName()
+                    + " from your cart! 🍉🛒";
+        }
+
+        int removeQuantity =
+                extractQuantity(message);
+
+        int currentQuantity =
+                existingItem.getQuantity();
+
+        int newQuantity =
+                currentQuantity - removeQuantity;
+
+        if (newQuantity <= 0) {
+
+            boolean success =
+                    cartDAO.removeFromCart(
+                            user.getId(),
+                            matchedProduct.getId()
+                    );
+
+            if (!success) {
+
+                return "I couldn't remove "
+                        + matchedProduct.getName()
+                        + " from your cart. 🍉";
+            }
+
+            return "Removed "
+                    + matchedProduct.getName()
+                    + " from your cart! 🍉🛒";
+        }
+
+        boolean success =
+                cartDAO.updateQuantity(
+                        user.getId(),
+                        matchedProduct.getId(),
+                        newQuantity
+                );
+
+        if (!success) {
+
+            return "I couldn't update your cart. Please try again! 🍉";
+        }
+
+        return "Removed "
+                + removeQuantity
+                + " "
+                + matchedProduct.getName()
+                + " from your cart. You now have "
+                + newQuantity
+                + ". 🍉🛒";
     }
 
     // =========================
@@ -215,56 +442,95 @@ public class WelpServlet extends HttpServlet {
 
     private String extractProductName(String message) {
 
-        String lower =
-                message.toLowerCase(Locale.ROOT);
-
-        int addIndex =
-                lower.indexOf("add");
-
-        if (addIndex == -1) {
-            return "";
-        }
-
         String productName =
-                message.substring(addIndex + 3).trim();
+                message.replaceFirst(
+                        "(?i)^.*?\\b(add|remove|delete|take out)\\b",
+                        ""
+                ).trim();
 
         productName =
                 productName.replaceAll(
-                        "(?i)\\bto\\s+(my\\s+)?cart\\b",
+                        "(?i)\\b\\d+\\b",
                         ""
                 );
 
         productName =
                 productName.replaceAll(
-                        "(?i)\\bin\\s+(my\\s+)?cart\\b",
+                        "(?i)\\b(one|two|three|four|five|six|seven|eight|nine|ten)\\b",
                         ""
                 );
 
         productName =
                 productName.replaceAll(
-                        "(?i)\\binto\\s+(my\\s+)?cart\\b",
-                        ""
-                );
-
-        productName =
-                productName.replaceAll(
-                        "(?i)\\bto\\s+(my\\s+)?basket\\b",
-                        ""
-                );
-
-        productName =
-                productName.replaceAll(
-                        "(?i)\\bin\\s+(my\\s+)?basket\\b",
-                        ""
-                );
-
-        productName =
-                productName.replaceAll(
-                        "(?i)\\binto\\s+(my\\s+)?basket\\b",
+                        "(?i)\\b(to|from|in|out of|into)\\s+(my\\s+)?(cart|basket)\\b",
                         ""
                 );
 
         return productName.trim();
+    }
+
+    // =========================
+    // EXTRACT QUANTITY
+    // =========================
+
+    private int extractQuantity(String message) {
+
+        String lower =
+                message.toLowerCase(Locale.ROOT);
+
+        String[] words = {
+                "one",
+                "two",
+                "three",
+                "four",
+                "five",
+                "six",
+                "seven",
+                "eight",
+                "nine",
+                "ten"
+        };
+
+        int[] values = {
+                1, 2, 3, 4, 5,
+                6, 7, 8, 9, 10
+        };
+
+        for (int i = 0; i < words.length; i++) {
+
+            if (lower.matches(
+                    ".*\\b"
+                            + words[i]
+                            + "\\b.*"
+            )) {
+
+                return values[i];
+            }
+        }
+
+        java.util.regex.Matcher matcher =
+                java.util.regex.Pattern
+                        .compile("\\b(\\d+)\\b")
+                        .matcher(lower);
+
+        if (matcher.find()) {
+
+            try {
+
+                int quantity =
+                        Integer.parseInt(
+                                matcher.group(1)
+                        );
+
+                if (quantity > 0) {
+                    return quantity;
+                }
+
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        return 1;
     }
 
     // =========================
@@ -280,9 +546,6 @@ public class WelpServlet extends HttpServlet {
                 search.toLowerCase(Locale.ROOT)
                         .trim();
 
-        /*
-         * First try an exact product-name match.
-         */
         for (Product product : products) {
 
             if (product.getName() == null) {
@@ -297,15 +560,6 @@ public class WelpServlet extends HttpServlet {
             }
         }
 
-        /*
-         * If there is no exact match,
-         * allow a partial match.
-         *
-         * Example:
-         * "yumzie"
-         * matches
-         * "Yumzie Tiramisu"
-         */
         Product possibleMatch = null;
 
         for (Product product : products) {
@@ -321,11 +575,6 @@ public class WelpServlet extends HttpServlet {
             if (productName.contains(searchText)) {
 
                 if (possibleMatch != null) {
-
-                    /*
-                     * More than one product matched,
-                     * so don't guess.
-                     */
                     return null;
                 }
 
@@ -334,6 +583,25 @@ public class WelpServlet extends HttpServlet {
         }
 
         return possibleMatch;
+    }
+
+    // =========================
+    // FIND CART ITEM
+    // =========================
+
+    private CartItem findCartItem(
+            List<CartItem> cart,
+            int productId
+    ) {
+
+        for (CartItem item : cart) {
+
+            if (item.getProductId() == productId) {
+                return item;
+            }
+        }
+
+        return null;
     }
 
     // =========================
@@ -406,12 +674,7 @@ public class WelpServlet extends HttpServlet {
         return context.toString();
     }
 
-    // =========================
-    // REQUEST / RESPONSE
-    // =========================
-
     private static class ChatRequest {
-
         String message;
     }
 
@@ -420,7 +683,6 @@ public class WelpServlet extends HttpServlet {
         String reply;
 
         ChatResponse(String reply) {
-
             this.reply = reply;
         }
     }
