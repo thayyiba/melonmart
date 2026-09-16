@@ -202,4 +202,15 @@ public class OrderService {
                 status
         );
     }
+    public boolean sellerOwnsOrder(
+        int sellerId,
+        int orderId
+) throws Exception {
+
+    return orderDAO.sellerOwnsOrder(
+            sellerId,
+            orderId
+    );
+}
+
 }

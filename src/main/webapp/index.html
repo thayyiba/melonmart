@@ -197,6 +197,16 @@ header {
     font-weight: 700;
 }
 
+.admin-btn {
+    background: var(--blue-light);
+    color: var(--plum-dark);
+    font-weight: 700;
+}
+
+.admin-btn:hover {
+    background: var(--blue);
+}
+
 .account-btn.logged-in:hover {
     background: var(--pink);
 }
@@ -715,6 +725,29 @@ header {
     font-size: 12px;
     color: var(--muted);
     min-height: 36px;
+}
+.product-rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 9px;
+    font-size: 12px;
+}
+
+.product-rating-stars {
+    color: var(--plum);
+    letter-spacing: 1px;
+    font-size: 13px;
+}
+
+.product-rating-text {
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.product-rating.empty {
+    color: var(--muted);
+    opacity: 0.75;
 }
 
 .product-bottom {
@@ -1612,34 +1645,58 @@ footer {
 
     <div class="header-actions">
 
-        <div class="header-actions">
-
-    <button class="header-btn" onclick="openWishlist()">
+    <button
+        class="header-btn"
+        onclick="openWishlist()"
+    >
         ♡ <strong>wishlist</strong>
     </button>
 
-    <button class="header-btn" onclick="openOrders()">
+    <button
+        class="header-btn"
+        onclick="openOrders()"
+    >
         orders
     </button>
 
-    <button class="header-btn account-btn" id="accountButton" onclick="handleAccountClick()">
+    <button
+        class="header-btn account-btn"
+        id="accountButton"
+        onclick="handleAccountClick()"
+    >
         account
     </button>
 
-    <button class="header-btn" onclick="window.location.href='seller.html'">
+    <button
+        class="header-btn"
+        onclick="window.location.href='seller.html'"
+    >
         sell
     </button>
 
-    <button class="header-btn cart-button" onclick="openCart()">
-        bag <span class="cart-count" id="cartCount">0</span>
+    <button
+        class="header-btn admin-btn"
+        id="adminButton"
+        onclick="window.location.href='admin.html'"
+        style="display: none;"
+    >
+        admin
+    </button>
+
+    <button
+        class="header-btn cart-button"
+        onclick="openCart()"
+    >
+        bag
+        <span
+            class="cart-count"
+            id="cartCount"
+        >
+            0
+        </span>
     </button>
 
 </div>
-
-        </button>
-
-    </div>
-
 </div>
 
 <nav class="mini-nav">
@@ -2576,8 +2633,9 @@ const API_BASE =
 /* ==========================================
    STATE
 ========================================== */
-
 let products = [];
+
+let productRatings = {};
 
 let cart = [];
 
@@ -2782,6 +2840,11 @@ function updateAccountUI() {
             "footerAccountLink"
         );
 
+    const adminButton =
+        document.getElementById(
+            "adminButton"
+        );
+
     if (!button) {
         return;
     }
@@ -2807,6 +2870,20 @@ function updateAccountUI() {
         button.classList.add(
             "logged-in"
         );
+
+        if (adminButton) {
+
+            const role =
+                String(
+                    currentUser.role || ""
+                ).toUpperCase();
+
+            adminButton.style.display =
+                role === "ADMIN"
+                    ? "inline-flex"
+                    : "none";
+
+        }
 
         if (footerLink) {
 
@@ -2836,6 +2913,13 @@ function updateAccountUI() {
             "logged-in"
         );
 
+        if (adminButton) {
+
+            adminButton.style.display =
+                "none";
+
+        }
+
         if (footerLink) {
 
             footerLink.textContent =
@@ -2852,7 +2936,6 @@ function updateAccountUI() {
     }
 
 }
-
 
 function getFirstName(name) {
 
@@ -3057,6 +3140,71 @@ async function fetchProducts() {
 
         products =
             await response.json();
+
+        productRatings = {};
+
+        await Promise.all(
+            products.map(
+                async product => {
+
+                    try {
+
+                        const reviewResponse =
+                            await fetch(
+                                API_BASE
+                                +
+                                "/api/reviews/product?productId="
+                                +
+                                encodeURIComponent(
+                                    Number(product.id)
+                                )
+                            );
+
+                        if (!reviewResponse.ok) {
+                            return;
+                        }
+
+                        const reviewData =
+                            await reviewResponse.json();
+
+                        productRatings[
+                            Number(product.id)
+                        ] = {
+
+                            averageRating:
+                                Number(
+                                    reviewData.averageRating || 0
+                                ),
+
+                            reviewCount:
+                                Number(
+                                    reviewData.reviewCount || 0
+                                )
+
+                        };
+
+                    } catch (error) {
+
+                        console.error(
+                            "Could not load rating for product:",
+                            product.id,
+                            error
+                        );
+
+                        productRatings[
+                            Number(product.id)
+                        ] = {
+
+                            averageRating: 0,
+                            reviewCount: 0
+
+                        };
+
+                    }
+
+                }
+            )
+        );
 
         renderProducts();
 
@@ -3283,6 +3431,31 @@ function renderProducts() {
             const price =
                 Number(product.price || 0);
 
+            const rating =
+    productRatings[id]
+    ||
+    {
+        averageRating: 0,
+        reviewCount: 0
+    };
+
+    const averageRating =
+    Number(
+        rating.averageRating || 0
+    );
+
+    const reviewCount =
+    Number(
+        rating.reviewCount || 0
+    );
+
+    const ratingStars =
+    reviewCount > 0
+    ? "★".repeat(
+        Math.round(averageRating)
+    )
+    : "";    
+
             const cartItem =
                 cart.find(
                     item =>
@@ -3327,13 +3500,46 @@ function renderProducts() {
                             ${escapeHtml(product.name || "Something good")}
                         </div>
 
-                        <div class="product-description">
+                       <div class="product-description">
 
-                            ${escapeHtml(
-                                product.description
-                                ||
-                                "Looks good. Probably is."
-                            )}
+    ${escapeHtml(
+        product.description
+        ||
+        "Looks good. Probably is."
+    )}
+
+</div>
+
+${
+    reviewCount > 0
+    ? `
+        <div class="product-rating">
+
+            <span class="product-rating-stars">
+                ${ratingStars}
+            </span>
+
+            <span class="product-rating-text">
+                ${averageRating.toFixed(1)}
+                ·
+                ${reviewCount}
+                ${
+                    reviewCount === 1
+                    ? "review"
+                    : "reviews"
+                }
+            </span>
+
+        </div>
+    `
+    : `
+        <div class="product-rating empty">
+            ☆ No reviews yet
+        </div>
+    `
+}
+
+<div class="product-bottom">
 
                         </div>
 

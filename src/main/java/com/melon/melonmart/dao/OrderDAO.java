@@ -313,4 +313,42 @@ public class OrderDAO {
             statement.executeUpdate();
         }
     }
+
+    public boolean sellerOwnsOrder(
+        int sellerId,
+        int orderId
+) throws Exception {
+
+    String sql = """
+            SELECT COUNT(*)
+            FROM order_items oi
+            JOIN products p
+                ON oi.product_id = p.id
+            WHERE oi.order_id = ?
+              AND p.seller_id = ?
+            """;
+
+    try (
+            Connection connection =
+                    dataSource.getConnection();
+
+            PreparedStatement statement =
+                    connection.prepareStatement(sql)
+    ) {
+
+        statement.setInt(1, orderId);
+        statement.setInt(2, sellerId);
+
+        try (ResultSet result =
+                     statement.executeQuery()) {
+
+            if (result.next()) {
+                return result.getInt(1) > 0;
+            }
+        }
+    }
+
+    return false;
+   }
+
 }

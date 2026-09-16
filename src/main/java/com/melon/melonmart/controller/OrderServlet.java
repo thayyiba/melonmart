@@ -245,6 +245,202 @@ if (path != null && path.equals("/seller")) {
         }
     }
 
+    @Override
+protected void doPut(
+        HttpServletRequest request,
+        HttpServletResponse response
+) throws ServletException, IOException {
+
+    User user = getLoggedInUser(request);
+
+    if (user == null) {
+
+        sendError(
+                response,
+                HttpServletResponse.SC_UNAUTHORIZED,
+                "Please login first"
+        );
+
+        return;
+    }
+
+    String path = request.getPathInfo();
+
+    if (path == null || path.equals("/")) {
+
+        sendError(
+                response,
+                HttpServletResponse.SC_BAD_REQUEST,
+                "Order ID is required"
+        );
+
+        return;
+    }
+
+    String[] parts =
+            path.split("/");
+
+    if (parts.length != 3 ||
+            !parts[2].equals("status")) {
+
+        sendError(
+                response,
+                HttpServletResponse.SC_NOT_FOUND,
+                "Status endpoint not found"
+        );
+
+        return;
+    }
+
+    int orderId;
+
+    try {
+
+        orderId =
+                Integer.parseInt(parts[1]);
+
+    } catch (NumberFormatException e) {
+
+        sendError(
+                response,
+                HttpServletResponse.SC_BAD_REQUEST,
+                "Invalid order ID"
+        );
+
+        return;
+    }
+
+    if (
+            !"SELLER".equals(user.getRole()) &&
+            !"ADMIN".equals(user.getRole())
+    ) {
+
+        sendError(
+                response,
+                HttpServletResponse.SC_FORBIDDEN,
+                "Seller or admin access required"
+        );
+
+        return;
+    }
+
+    String status =
+            request.getParameter("status");
+
+    if (status == null ||
+            status.trim().isEmpty()) {
+
+        sendError(
+                response,
+                HttpServletResponse.SC_BAD_REQUEST,
+                "Order status is required"
+        );
+
+        return;
+    }
+
+    status =
+            status.trim().toUpperCase();
+
+    if (
+            !status.equals("PLACED") &&
+            !status.equals("CONFIRMED") &&
+            !status.equals("SHIPPED") &&
+            !status.equals("DELIVERED")
+    ) {
+
+        sendError(
+                response,
+                HttpServletResponse.SC_BAD_REQUEST,
+                "Invalid order status"
+        );
+
+        return;
+    }
+
+    try {
+
+        if ("SELLER".equals(user.getRole())) {
+
+            boolean ownsOrder =
+                    orderService.sellerOwnsOrder(
+                            user.getId(),
+                            orderId
+                    );
+
+            if (!ownsOrder) {
+
+                sendError(
+                        response,
+                        HttpServletResponse.SC_FORBIDDEN,
+                        "You cannot update this order"
+                );
+
+                return;
+            }
+        }
+
+        Order order =
+                orderService.getOrderById(orderId);
+
+        if (order == null) {
+
+            sendError(
+                    response,
+                    HttpServletResponse.SC_NOT_FOUND,
+                    "Order not found"
+            );
+
+            return;
+        }
+
+        orderService.updateOrderStatus(
+                orderId,
+                status
+        );
+
+        Map<String, Object> result =
+                new HashMap<>();
+
+        result.put(
+                "success",
+                true
+        );
+
+        result.put(
+                "message",
+                "Order status updated successfully"
+        );
+
+        result.put(
+                "orderId",
+                orderId
+        );
+
+        result.put(
+                "status",
+                status
+        );
+
+        sendJson(
+                response,
+                HttpServletResponse.SC_OK,
+                result
+        );
+
+    } catch (Exception e) {
+
+        e.printStackTrace();
+
+        sendError(
+                response,
+                HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                "Could not update order status"
+        );
+    }
+}
+
+
     private User getLoggedInUser(
             HttpServletRequest request
     ) {

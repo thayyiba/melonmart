@@ -2,9 +2,11 @@ package com.melon.melonmart.controller;
 
 import com.google.gson.Gson;
 import com.melon.melonmart.dao.AdminDAO;
+import com.melon.melonmart.dao.OrderDAO;
 import com.melon.melonmart.dto.AdminUserDTO;
 import com.melon.melonmart.dto.AdminProductDTO;
 import com.melon.melonmart.model.User;
+import com.melon.melonmart.model.Order;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,12 +23,14 @@ import java.util.Map;
 public class AdminServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
+
     private AdminDAO adminDAO;
+    private OrderDAO orderDAO;
 
     @Override
     public void init() {
-
         adminDAO = new AdminDAO();
+        orderDAO = new OrderDAO();
     }
 
     @Override
@@ -61,8 +65,7 @@ public class AdminServlet extends HttpServlet {
             return;
         }
 
-        String path =
-                request.getPathInfo();
+        String path = request.getPathInfo();
 
         // GET /api/admin/
         if (path == null
@@ -76,88 +79,129 @@ public class AdminServlet extends HttpServlet {
 
             return;
         }
-        
+
         // GET /api/admin/users
-if (path.equals("/users")) {
+        if (path.equals("/users")) {
 
-    try {
+            try {
 
-        List<AdminUserDTO> users =
-                adminDAO.getAllUsers();
+                List<AdminUserDTO> users =
+                        adminDAO.getAllUsers();
 
-        Map<String, Object> result =
-                new HashMap<>();
+                Map<String, Object> result =
+                        new HashMap<>();
 
-        result.put(
-                "success",
-                true
-        );
+                result.put(
+                        "success",
+                        true
+                );
 
-        result.put(
-                "users",
-                users
-        );
+                result.put(
+                        "users",
+                        users
+                );
 
-        sendJson(
-                response,
-                HttpServletResponse.SC_OK,
-                result
-        );
+                sendJson(
+                        response,
+                        HttpServletResponse.SC_OK,
+                        result
+                );
 
-    } catch (Exception e) {
+            } catch (Exception e) {
 
-        e.printStackTrace();
+                e.printStackTrace();
 
-        sendError(
-                response,
-                HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                "Failed to load users."
-        );
-    }
+                sendError(
+                        response,
+                        HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                        "Failed to load users."
+                );
+            }
 
-    return;
-} 
+            return;
+        }
 
         // GET /api/admin/products
-if (path.equals("/products")) {
+        if (path.equals("/products")) {
 
-    try {
+            try {
 
-        List<AdminProductDTO> products =
-                adminDAO.getAllProducts();
+                List<AdminProductDTO> products =
+                        adminDAO.getAllProducts();
 
-        Map<String, Object> result =
-                new HashMap<>();
+                Map<String, Object> result =
+                        new HashMap<>();
 
-        result.put(
-                "success",
-                true
-        );
+                result.put(
+                        "success",
+                        true
+                );
 
-        result.put(
-                "products",
-                products
-        );
+                result.put(
+                        "products",
+                        products
+                );
 
-        sendJson(
-                response,
-                HttpServletResponse.SC_OK,
-                result
-        );
+                sendJson(
+                        response,
+                        HttpServletResponse.SC_OK,
+                        result
+                );
 
-    } catch (Exception e) {
+            } catch (Exception e) {
 
-        e.printStackTrace();
+                e.printStackTrace();
 
-        sendError(
-                response,
-                HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                "Failed to load products."
-        );
-    }
+                sendError(
+                        response,
+                        HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                        "Failed to load products."
+                );
+            }
 
-    return;
-}
+            return;
+        }
+
+        // GET /api/admin/orders
+        if (path.equals("/orders")) {
+
+            try {
+
+                List<Order> orders =
+                        orderDAO.getAllOrders();
+
+                Map<String, Object> result =
+                        new HashMap<>();
+
+                result.put(
+                        "success",
+                        true
+                );
+
+                result.put(
+                        "orders",
+                        orders
+                );
+
+                sendJson(
+                        response,
+                        HttpServletResponse.SC_OK,
+                        result
+                );
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+                sendError(
+                        response,
+                        HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                        "Failed to load orders."
+                );
+            }
+
+            return;
+        }
 
         // GET /api/admin/dashboard
         if (path.equals("/dashboard")) {

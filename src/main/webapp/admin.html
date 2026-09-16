@@ -143,6 +143,13 @@
             border: 1px solid #E7DACB;
             border-radius: 14px;
             background: #FFF6D8;
+            cursor: pointer;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(56, 42, 52, .08);
         }
 
         .stat-label {
@@ -250,7 +257,8 @@
         }
 
         .role-badge,
-        .category-badge {
+        .category-badge,
+        .status-badge {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -390,6 +398,96 @@
             color: #594052;
         }
 
+        .orders-section {
+            background: #FFFDF5;
+            border: 1px solid #E7DACB;
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 28px;
+        }
+
+        .orders-header {
+            margin-bottom: 22px;
+        }
+
+        .orders-heading h3 {
+            font-family: "Fraunces", serif;
+            font-size: 26px;
+        }
+
+        .orders-heading p {
+            color: #806F79;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .order-count {
+            display: block;
+            margin-top: 5px;
+            color: #806F79;
+            font-size: 13px;
+        }
+
+        .order-search {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #E7DACB;
+            border-radius: 10px;
+            background: #FFFDF5;
+            color: #382A34;
+            font-family: inherit;
+            outline: none;
+            margin-bottom: 18px;
+        }
+
+        .order-search:focus {
+            border-color: #A65B70;
+        }
+
+        .order-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .order-row {
+            display: grid;
+            grid-template-columns: 100px 110px 1fr 130px 150px;
+            align-items: center;
+            gap: 18px;
+            padding: 16px;
+            border: 1px solid #E7DACB;
+            border-radius: 12px;
+            background: #FFFDF5;
+        }
+
+        .order-id {
+            font-weight: 700;
+        }
+
+        .order-user {
+            font-size: 13px;
+            color: #806F79;
+        }
+
+        .order-amount {
+            font-weight: 700;
+        }
+
+        .order-date {
+            font-size: 13px;
+            color: #806F79;
+        }
+
+        .status-badge {
+            background: #F9DDDD;
+            color: #594052;
+        }
+
+        .status-badge.placed {
+            background: #E8F0D8;
+        }
+
         .toast {
             position: fixed;
             right: 24px;
@@ -412,6 +510,7 @@
         }
 
         @media (max-width: 900px) {
+
             .topbar {
                 padding: 0 25px;
             }
@@ -447,9 +546,18 @@
             .product-search {
                 width: 100%;
             }
+
+            .order-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .order-date {
+                grid-column: 1 / -1;
+            }
         }
 
         @media (max-width: 600px) {
+
             .topbar {
                 height: auto;
                 min-height: 70px;
@@ -467,7 +575,8 @@
 
             .hero,
             .section,
-            .products-section {
+            .products-section,
+            .orders-section {
                 padding: 20px;
             }
 
@@ -487,6 +596,15 @@
             .user-row .role-badge {
                 grid-column: 2;
             }
+
+            .order-row {
+                grid-template-columns: 1fr;
+                gap: 9px;
+            }
+
+            .order-date {
+                grid-column: auto;
+            }
         }
     </style>
 </head>
@@ -494,71 +612,166 @@
 <body>
 
 <header class="topbar">
+
     <div class="brand">
         Melon <span>Mart</span>
     </div>
 
     <div class="topbar-right">
         <span class="admin-label">Admin Studio</span>
-        <button class="logout-btn" onclick="logout()">Logout</button>
+
+        <button
+            class="logout-btn"
+            onclick="logout()"
+        >
+            Logout
+        </button>
     </div>
+
 </header>
 
 <main class="page">
 
     <section class="hero">
-        <div class="eyebrow">Melon Mart • Administration</div>
 
-        <h1>Marketplace overview.</h1>
+        <div class="eyebrow">
+            Melon Mart • Administration
+        </div>
+
+        <h1>
+            Marketplace overview.
+        </h1>
 
         <p>
             Keep an eye on users, sellers, products and orders
             from one simple place.
         </p>
+
     </section>
+
+    <!-- MARKETPLACE OVERVIEW -->
 
     <section class="section">
 
         <div class="section-heading">
+
             <div>
-                <h2>Marketplace overview</h2>
-                <p>A quick look at what is happening in Melon Mart.</p>
+
+                <h2>
+                    Marketplace overview
+                </h2>
+
+                <p>
+                    A quick look at what is happening in Melon Mart.
+                </p>
+
             </div>
+
         </div>
 
         <div class="stats">
 
-            <div class="stat-card">
-                <div class="stat-label">Total users</div>
-                <div class="stat-value" id="totalUsers">—</div>
+            <div
+                class="stat-card"
+                onclick="goToSection('users')"
+                title="View all users"
+            >
+
+                <div class="stat-label">
+                    Total users
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="totalUsers"
+                >
+                    —
+                </div>
+
             </div>
 
-            <div class="stat-card">
-                <div class="stat-label">Sellers</div>
-                <div class="stat-value" id="totalSellers">—</div>
+            <div
+                class="stat-card"
+                onclick="goToSection('sellers')"
+                title="View sellers"
+            >
+
+                <div class="stat-label">
+                    Sellers
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="totalSellers"
+                >
+                    —
+                </div>
+
             </div>
 
-            <div class="stat-card">
-                <div class="stat-label">Products</div>
-                <div class="stat-value" id="totalProducts">—</div>
+            <div
+                class="stat-card"
+                onclick="goToSection('products')"
+                title="View products"
+            >
+
+                <div class="stat-label">
+                    Products
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="totalProducts"
+                >
+                    —
+                </div>
+
             </div>
 
-            <div class="stat-card">
-                <div class="stat-label">Orders</div>
-                <div class="stat-value" id="totalOrders">—</div>
+            <div
+                class="stat-card"
+                onclick="goToSection('orders')"
+                title="View orders"
+            >
+
+                <div class="stat-label">
+                    Orders
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="totalOrders"
+                >
+                    —
+                </div>
+
             </div>
 
         </div>
 
     </section>
 
-    <section class="section">
+    <!-- USERS -->
+
+    <section
+        class="section"
+        id="usersSection"
+    >
 
         <div class="section-heading">
+
             <div>
-                <h2>User management</h2>
-                <p>View buyers, sellers and administrators.</p>
+
+                <h2>
+                    User management
+                </h2>
+
+                <p>
+                    View buyers, sellers and administrators.
+                </p>
+
             </div>
+
         </div>
 
         <input
@@ -604,20 +817,33 @@
 
         </div>
 
-        <div id="userList" class="user-list">
+        <div
+            id="userList"
+            class="user-list"
+        >
+
             <div class="loading">
                 Loading users...
             </div>
+
         </div>
 
     </section>
 
-    <section class="products-section">
+    <!-- PRODUCTS -->
+
+    <section
+        class="products-section"
+        id="productsSection"
+    >
 
         <div class="products-header">
 
             <div class="products-heading">
-                <h3>Product management</h3>
+
+                <h3>
+                    Product management
+                </h3>
 
                 <span
                     class="product-count"
@@ -625,6 +851,7 @@
                 >
                     Loading products...
                 </span>
+
             </div>
 
             <input
@@ -636,7 +863,10 @@
 
         </div>
 
-        <div id="productList" class="product-list">
+        <div
+            id="productList"
+            class="product-list"
+        >
 
             <div class="loading">
                 Loading products...
@@ -646,9 +876,101 @@
 
     </section>
 
+    <!-- ORDERS -->
+
+    <section
+        class="orders-section"
+        id="ordersSection"
+    >
+
+        <div class="orders-header">
+
+            <div class="orders-heading">
+
+                <h3>
+                    Order management
+                </h3>
+
+                <p>
+                    View every order placed across Melon Mart.
+                </p>
+
+                <span
+                    class="order-count"
+                    id="orderCount"
+                >
+                    Loading orders...
+                </span>
+
+            </div>
+
+        </div>
+
+        <input
+            type="text"
+            id="orderSearch"
+            class="order-search"
+            placeholder="Search by order ID, user ID or status..."
+        >
+
+        <div class="controls">
+
+            <button
+                class="filter-btn active"
+                onclick="setOrderFilter('ALL', this)"
+            >
+                All
+            </button>
+
+            <button
+                class="filter-btn"
+                onclick="setOrderFilter('PLACED', this)"
+            >
+                Placed
+            </button>
+
+            <button
+                class="filter-btn"
+                onclick="setOrderFilter('CONFIRMED', this)"
+            >
+                Confirmed
+            </button>
+
+            <button
+                class="filter-btn"
+                onclick="setOrderFilter('SHIPPED', this)"
+            >
+                Shipped
+            </button>
+
+            <button
+                class="filter-btn"
+                onclick="setOrderFilter('DELIVERED', this)"
+            >
+                Delivered
+            </button>
+
+        </div>
+
+        <div
+            id="orderList"
+            class="order-list"
+        >
+
+            <div class="loading">
+                Loading orders...
+            </div>
+
+        </div>
+
+    </section>
+
 </main>
 
-<div id="toast" class="toast"></div>
+<div
+    id="toast"
+    class="toast"
+></div>
 
 <script>
 
@@ -657,12 +979,17 @@
 
     let allProducts = [];
 
+    let allOrders = [];
+    let currentOrderFilter = "ALL";
+
     async function checkAdmin() {
 
         try {
 
             const response =
-                await fetch("/melonmart/api/auth/me");
+                await fetch(
+                    "/melonmart/api/auth/me"
+                );
 
             if (!response.ok) {
 
@@ -678,7 +1005,8 @@
             const user =
                 data.user || data;
 
-            if (!user || user.role !== "ADMIN") {
+            if (!user ||
+                String(user.role).toUpperCase() !== "ADMIN") {
 
                 alert("Admin access required.");
 
@@ -728,7 +1056,8 @@
                 );
             }
 
-            const stats = data.stats;
+            const stats =
+                data.stats;
 
             document.getElementById("totalUsers")
                 .textContent =
@@ -812,7 +1141,9 @@
         currentUserFilter = role;
 
         document
-            .querySelectorAll(".filter-btn")
+            .querySelectorAll(
+                "#usersSection .filter-btn"
+            )
             .forEach(btn => {
                 btn.classList.remove("active");
             });
@@ -855,7 +1186,7 @@
                     email.includes(search);
 
                 return matchesRole &&
-                       matchesSearch;
+                    matchesSearch;
             });
 
         if (filtered.length === 0) {
@@ -873,13 +1204,19 @@
             filtered.map(user => {
 
                 const name =
-                    escapeHtml(user.name || "Unknown");
+                    escapeHtml(
+                        user.name || "Unknown"
+                    );
 
                 const email =
-                    escapeHtml(user.email || "");
+                    escapeHtml(
+                        user.email || ""
+                    );
 
                 const role =
-                    escapeHtml(user.role || "UNKNOWN");
+                    escapeHtml(
+                        user.role || "UNKNOWN"
+                    );
 
                 const initial =
                     name.charAt(0).toUpperCase();
@@ -904,7 +1241,9 @@
                             ${email}
                         </div>
 
-                        <span class="role-badge ${roleClass}">
+                        <span
+                            class="role-badge ${roleClass}"
+                        >
                             ${role}
                         </span>
 
@@ -1028,7 +1367,8 @@
 
                 const name =
                     escapeHtml(
-                        product.name || "Unnamed product"
+                        product.name ||
+                        "Unnamed product"
                     );
 
                 const seller =
@@ -1069,6 +1409,7 @@
                         >
 
                         <div>
+
                             <div class="product-name">
                                 ${name}
                             </div>
@@ -1076,6 +1417,7 @@
                             <div class="product-id">
                                 Product #${product.id}
                             </div>
+
                         </div>
 
                         <div class="product-seller">
@@ -1100,6 +1442,271 @@
             }).join("");
     }
 
+    async function loadOrders() {
+
+        const list =
+            document.getElementById("orderList");
+
+        try {
+
+            const response =
+                await fetch(
+                    "/melonmart/api/admin/orders"
+                );
+
+            if (response.status === 401 ||
+                response.status === 403) {
+
+                window.location.href =
+                    "/melonmart/login.html";
+
+                return;
+            }
+
+            const data =
+                await response.json();
+
+            if (!data.success) {
+                throw new Error(
+                    "Failed to load orders"
+                );
+            }
+
+            allOrders =
+                data.orders || [];
+
+            renderOrders();
+
+        } catch (error) {
+
+            console.error(error);
+
+            list.innerHTML = `
+                <div class="empty">
+                    Could not load orders.
+                </div>
+            `;
+
+            document.getElementById("orderCount")
+                .textContent =
+                "Unable to load orders.";
+
+            showToast(
+                "Could not load orders."
+            );
+        }
+    }
+
+    function setOrderFilter(status, button) {
+
+        currentOrderFilter =
+            status;
+
+        document
+            .querySelectorAll(
+                "#ordersSection .filter-btn"
+            )
+            .forEach(btn => {
+                btn.classList.remove("active");
+            });
+
+        button.classList.add("active");
+
+        renderOrders();
+    }
+
+    function renderOrders() {
+
+        const list =
+            document.getElementById("orderList");
+
+        const count =
+            document.getElementById("orderCount");
+
+        const search =
+            document
+                .getElementById("orderSearch")
+                .value
+                .trim()
+                .toLowerCase();
+
+        const filtered =
+            allOrders.filter(order => {
+
+                const status =
+                    String(
+                        order.status || ""
+                    ).toUpperCase();
+
+                const matchesStatus =
+                    currentOrderFilter === "ALL" ||
+                    status === currentOrderFilter;
+
+                const orderId =
+                    String(
+                        order.id ?? ""
+                    ).toLowerCase();
+
+                const userId =
+                    String(
+                        order.userId ?? ""
+                    ).toLowerCase();
+
+                const matchesSearch =
+                    !search ||
+                    orderId.includes(search) ||
+                    userId.includes(search) ||
+                    status.toLowerCase()
+                        .includes(search);
+
+                return matchesStatus &&
+                    matchesSearch;
+            });
+
+        count.textContent =
+            `${filtered.length} of ${allOrders.length} orders`;
+
+        if (filtered.length === 0) {
+
+            list.innerHTML = `
+                <div class="empty">
+                    No orders found.
+                </div>
+            `;
+
+            return;
+        }
+
+        list.innerHTML =
+            filtered.map(order => {
+
+                const id =
+                    escapeHtml(
+                        order.id
+                    );
+
+                const userId =
+                    escapeHtml(
+                        order.userId
+                    );
+
+                const status =
+                    escapeHtml(
+                        String(
+                            order.status ||
+                            "UNKNOWN"
+                        ).toUpperCase()
+                    );
+
+                const statusClass =
+                    status.toLowerCase();
+
+                const amount =
+                    Number(
+                        order.totalAmount || 0
+                    ).toFixed(2);
+
+                const createdAt =
+                    escapeHtml(
+                        order.createdAt ||
+                        "—"
+                    );
+
+                return `
+                    <div class="order-row">
+
+                        <div class="order-id">
+                            Order #${id}
+                        </div>
+
+                        <div class="order-user">
+                            Buyer #${userId}
+                        </div>
+
+                        <div class="order-amount">
+                            ₹${amount}
+                        </div>
+
+                        <span
+                            class="status-badge ${statusClass}"
+                        >
+                            ${status}
+                        </span>
+
+                        <div class="order-date">
+                            ${createdAt}
+                        </div>
+
+                    </div>
+                `;
+
+            }).join("");
+    }
+
+    function goToSection(section) {
+
+        if (section === "users") {
+
+            document
+                .getElementById("usersSection")
+                .scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+            return;
+        }
+
+        if (section === "sellers") {
+
+            document
+                .getElementById("usersSection")
+                .scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+            const sellerButton =
+                document.querySelector(
+                    '#usersSection .filter-btn[data-role="SELLER"]'
+                );
+
+            if (sellerButton) {
+
+                setUserFilter(
+                    "SELLER",
+                    sellerButton
+                );
+            }
+
+            return;
+        }
+
+        if (section === "products") {
+
+            document
+                .getElementById("productsSection")
+                .scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+            return;
+        }
+
+        if (section === "orders") {
+
+            document
+                .getElementById("ordersSection")
+                .scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+            return;
+        }
+    }
+
     function escapeHtml(value) {
 
         return String(value)
@@ -1115,7 +1722,8 @@
         const toast =
             document.getElementById("toast");
 
-        toast.textContent = message;
+        toast.textContent =
+            message;
 
         toast.classList.add("show");
 
@@ -1140,7 +1748,6 @@
         } catch (error) {
 
             console.error(error);
-
         }
 
         window.location.href =
@@ -1161,6 +1768,13 @@
             renderProducts
         );
 
+    document
+        .getElementById("orderSearch")
+        .addEventListener(
+            "input",
+            renderOrders
+        );
+
     async function initializeAdmin() {
 
         const allowed =
@@ -1173,6 +1787,7 @@
         await loadDashboard();
         await loadUsers();
         await loadProducts();
+        await loadOrders();
     }
 
     initializeAdmin();
