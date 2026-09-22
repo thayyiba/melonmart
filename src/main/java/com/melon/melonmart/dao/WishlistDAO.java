@@ -1,0 +1,9 @@
+package com.melon.melonmart.dao;
+import com.melon.melonmart.model.Product; import java.sql.*; import java.util.*;
+public class WishlistDAO extends BaseDAO {
+ public boolean addToWishlist(int u,int p){try(Connection c=getConnection();PreparedStatement s=c.prepareStatement("INSERT INTO wishlist(user_id,product_id) VALUES(?,?)")){s.setInt(1,u);s.setInt(2,p);return s.executeUpdate()>0;}catch(SQLException e){return isInWishlist(u,p);}}
+ public boolean removeFromWishlist(int u,int p){try(Connection c=getConnection();PreparedStatement s=c.prepareStatement("DELETE FROM wishlist WHERE user_id=? AND product_id=?")){s.setInt(1,u);s.setInt(2,p);return s.executeUpdate()>0;}catch(SQLException e){return false;}}
+ public boolean isInWishlist(int u,int p){try(Connection c=getConnection();PreparedStatement s=c.prepareStatement("SELECT 1 FROM wishlist WHERE user_id=? AND product_id=?")){s.setInt(1,u);s.setInt(2,p);try(ResultSet r=s.executeQuery()){return r.next();}}catch(SQLException e){return false;}}
+ public boolean clearWishlist(int u){try(Connection c=getConnection();PreparedStatement s=c.prepareStatement("DELETE FROM wishlist WHERE user_id=?")){s.setInt(1,u);s.executeUpdate();return true;}catch(SQLException e){return false;}}
+ public List<Product> getWishlistProducts(int u){List<Product> o=new ArrayList<>();String q="SELECT p.id,p.seller_id,p.name,p.description,p.price,p.stock_qty,p.category,p.image_url FROM wishlist w JOIN products p ON p.id=w.product_id WHERE w.user_id=? ORDER BY w.created_at DESC";try(Connection c=getConnection();PreparedStatement s=c.prepareStatement(q)){s.setInt(1,u);try(ResultSet r=s.executeQuery()){while(r.next())o.add(new Product(r.getInt("id"),r.getInt("seller_id"),r.getString("name"),r.getString("description"),r.getBigDecimal("price"),r.getInt("stock_qty"),r.getString("category"),r.getString("image_url"),r.getTimestamp("created_at")));}}catch(SQLException e){e.printStackTrace();}return o;}
+}
