@@ -1,5 +1,7 @@
 target/
-.vscode/
-*.class
 data/*.mv.db
 data/*.trace.db
+.idea/
+.vscode/
+*.log
+.env
