@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Melon Mart — Order Confirmed</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --burgundy: #6b1f2b;
+            --burgundy-dark: #4e1520;
+            --cream: #faf6ef;
+            --cream-light: #fffdf9;
+            --beige: #eee4d6;
+            --text: #30272a;
+            --muted: #817477;
+            --border: #ded3c7;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--cream);
+
+            font-family: "Poppins", sans-serif;
+            color: var(--text);
+
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            height: 78px;
+
+            background: var(--cream-light);
+            border-bottom: 1px solid var(--border);
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 5%;
+        }
+
+        .brand {
+            font-family: "Playfair Display", serif;
+
+            color: var(--burgundy);
+
+            font-size: 28px;
+            font-weight: 600;
+
+            text-decoration: none;
+        }
+
+        .secure {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .secure i {
+            color: var(--burgundy);
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        main {
+            flex: 1;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 60px 20px;
+        }
+
+        .success-card {
+            width: 100%;
+            max-width: 620px;
+
+            background: var(--cream-light);
+
+            border: 1px solid var(--border);
+
+            text-align: center;
+
+            padding: 55px 45px;
+        }
+
+        /* =========================
+           ICON
+        ========================= */
+
+        .success-icon {
+            width: 76px;
+            height: 76px;
+
+            margin: 0 auto 25px;
+
+            border-radius: 50%;
+
+            background: var(--burgundy);
+
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 29px;
+        }
+
+        /* =========================
+           TEXT
+        ========================= */
+
+        .success-card h1 {
+            font-family: "Playfair Display", serif;
+
+            color: var(--burgundy);
+
+            font-size: 40px;
+            font-weight: 600;
+
+            margin-bottom: 10px;
+        }
+
+        .success-card > p {
+            color: var(--muted);
+
+            font-size: 13px;
+            line-height: 1.7;
+
+            max-width: 450px;
+
+            margin: 0 auto 30px;
+        }
+
+        /* =========================
+           ORDER NUMBER
+        ========================= */
+
+        .order-number {
+            background: #f7efe6;
+
+            border: 1px solid var(--border);
+
+            padding: 18px 20px;
+
+            margin: 0 auto 28px;
+
+            max-width: 360px;
+        }
+
+        .order-number-label {
+            color: var(--muted);
+
+            font-size: 9px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 6px;
+        }
+
+        .order-number-value {
+            color: var(--burgundy);
+
+            font-family: "Playfair Display", serif;
+
+            font-size: 23px;
+            font-weight: 600;
+        }
+
+        /* =========================
+           INFO
+        ========================= */
+
+        .success-info {
+            display: flex;
+
+            justify-content: center;
+
+            gap: 35px;
+
+            padding: 25px 0;
+
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+
+            margin-bottom: 30px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+
+            gap: 5px;
+        }
+
+        .info-item i {
+            color: var(--burgundy);
+
+            font-size: 16px;
+
+            margin-bottom: 3px;
+        }
+
+        .info-item span:first-of-type {
+            color: var(--text);
+
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .info-item span:last-of-type {
+            color: var(--muted);
+
+            font-size: 9px;
+        }
+
+        /* =========================
+           BUTTONS
+        ========================= */
+
+        .actions {
+            display: flex;
+
+            justify-content: center;
+
+            gap: 12px;
+        }
+
+        .btn {
+            min-width: 150px;
+
+            padding: 13px 20px;
+
+            border: 1px solid var(--burgundy);
+
+            font-size: 10px;
+            font-weight: 600;
+
+            letter-spacing: 0.8px;
+
+            text-transform: uppercase;
+
+            text-decoration: none;
+
+            transition:
+                background 0.2s ease,
+                color 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--burgundy);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--burgundy-dark);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--burgundy);
+        }
+
+        .btn-secondary:hover {
+            background: var(--burgundy);
+            color: white;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            border-top: 1px solid var(--border);
+
+            background: var(--cream-light);
+
+            text-align: center;
+
+            padding: 23px 20px;
+
+            color: var(--muted);
+
+            font-size: 10px;
+        }
+
+        footer span {
+            color: var(--burgundy);
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            header {
+                height: 68px;
+
+                padding: 0 20px;
+            }
+
+            .brand {
+                font-size: 23px;
+            }
+
+            .secure {
+                font-size: 9px;
+            }
+
+            main {
+                padding: 35px 16px;
+            }
+
+            .success-card {
+                padding: 40px 22px;
+            }
+
+            .success-card h1 {
+                font-size: 32px;
+            }
+
+            .success-info {
+                gap: 18px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+    <!-- HEADER -->
+
+    <header>
+
+        <a
+            href="index.html"
+            class="brand"
+        >
+            Melon Mart
+        </a>
+
+
+        <div class="secure">
+
+            <i class="fa-solid fa-lock"></i>
+
+            Secure Checkout
+
+        </div>
+
+    </header>
+
+
+
+    <!-- MAIN -->
+
+    <main>
+
+        <div class="success-card">
+
+
+            <!-- SUCCESS ICON -->
+
+            <div class="success-icon">
+
+                <i class="fa-solid fa-check"></i>
+
+            </div>
+
+
+            <!-- TITLE -->
+
+            <h1>
+                Order Confirmed!
+            </h1>
+
+
+            <p>
+                Thank you for shopping with Melon Mart.
+                Your order has been placed successfully
+                and we're getting it ready for you.
+            </p>
+
+
+
+            <!-- ORDER NUMBER -->
+
+            <div class="order-number">
+
+                <div class="order-number-label">
+                    Order Number
+                </div>
+
+                <div
+                    class="order-number-value"
+                    id="orderId"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+
+            <!-- INFO -->
+
+            <div class="success-info">
+
+
+                <div class="info-item">
+
+                    <i class="fa-solid fa-box"></i>
+
+                    <span>
+                        Order Received
+                    </span>
+
+                    <span>
+                        We're preparing it
+                    </span>
+
+                </div>
+
+
+
+                <div class="info-item">
+
+                    <i class="fa-solid fa-truck"></i>
+
+                    <span>
+                        Delivery
+                    </span>
+
+                    <span>
+                        On its way soon
+                    </span>
+
+                </div>
+
+
+
+                <div class="info-item">
+
+                    <i class="fa-solid fa-heart"></i>
+
+                    <span>
+                        Thank You
+                    </span>
+
+                    <span>
+                        For choosing us
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- BUTTONS -->
+
+            <div class="actions">
+
+                <a
+                    href="index.html"
+                    class="btn btn-primary"
+                >
+                    Continue Shopping
+                </a>
+
+
+                <a
+                    href="index.html"
+                    class="btn btn-secondary"
+                >
+                    Back to Home
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        © 2026
+        <span>Melon Mart</span>.
+        Made with care.
+
+    </footer>
+
+
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                const orderIdElement =
+                    document.getElementById(
+                        "orderId"
+                    );
+
+
+                const orderId =
+                    sessionStorage.getItem(
+                        "melonMartOrderId"
+                    );
+
+
+                if (orderId) {
+
+                    orderIdElement.textContent =
+                        "#" + orderId;
+
+                } else {
+
+                    orderIdElement.textContent =
+                        "Confirmed";
+
+                }
+
+            }
+        );
+
+    </script>
+
+</body>
+</html>
