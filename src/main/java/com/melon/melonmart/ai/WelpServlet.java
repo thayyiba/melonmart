@@ -69,6 +69,27 @@ public class WelpServlet extends HttpServlet {
             String message =
                     chatRequest.message.trim();
 
+            if (message.length() > 500) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write(gson.toJson(new ChatResponse("Please keep your message under 500 characters.")));
+                return;
+            }
+
+            HttpSession rateSession = request.getSession(true);
+            Long windowStart = (Long) rateSession.getAttribute("chatWindowStart");
+            Integer messageCount = (Integer) rateSession.getAttribute("chatMessageCount");
+            long now = System.currentTimeMillis();
+            if (windowStart == null || now - windowStart >= 60_000) {
+                windowStart = now; messageCount = 0;
+            }
+            if (messageCount >= 10) {
+                response.setStatus(429);
+                response.getWriter().write(gson.toJson(new ChatResponse("You’ve reached the demo chat limit. Please try again in a minute.")));
+                return;
+            }
+            rateSession.setAttribute("chatWindowStart", windowStart);
+            rateSession.setAttribute("chatMessageCount", messageCount + 1);
+
             if (isAddToCartRequest(message)) {
 
                 String reply =
