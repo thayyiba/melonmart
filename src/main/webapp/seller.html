@@ -1662,13 +1662,14 @@
                 return false;
             }
 
-            const user =
+            const payload =
                 await response.json();
 
-            if (
-                !user ||
-                user.role !== "SELLER"
-            ) {
+            // Accept both {user:{...}} and top-level /api/auth/me response shapes.
+            const user = payload.user || payload || {};
+            const role = String(user.role || "").toUpperCase();
+
+            if (role !== "SELLER") {
 
                 alert(
                     "Seller access required."

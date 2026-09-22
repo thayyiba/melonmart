@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet("/api/admin/*")
+@WebServlet({"/api/admin/*", "/api/v1/admin/*"})
 public class AdminServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
