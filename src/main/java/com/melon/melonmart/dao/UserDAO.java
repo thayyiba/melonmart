@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 public class UserDAO {
 
     private Connection getConnection() throws Exception {
@@ -17,7 +19,7 @@ public class UserDAO {
     public boolean registerUser(User user) {
 
         String sql = """
-                INSERT INTO users (name, email, password, role)
+                INSERT INTO users (name, email, password_hash, role)
                 VALUES (?, ?, ?, ?)
                 """;
 
@@ -28,7 +30,13 @@ public class UserDAO {
 
             statement.setString(1, user.getUsername());
             statement.setString(2, user.getEmail());
-            statement.setString(3, user.getPassword());
+            statement.setString(
+        3,
+        BCrypt.hashpw(
+                user.getPassword(),
+                BCrypt.gensalt(12)
+        )
+);
 
             String role = user.getRole();
 
@@ -55,7 +63,7 @@ public class UserDAO {
     public User findByEmail(String email) {
 
         String sql = """
-                SELECT id, name, email, password, role
+                SELECT id, name, email, password_hash, role
                 FROM users
                 WHERE email = ?
                 """;
@@ -87,7 +95,7 @@ public class UserDAO {
     public User findById(int id) {
 
         String sql = """
-                SELECT id, name, email, password, role
+                SELECT id, name, email, password_hash, role
                 FROM users
                 WHERE id = ?
                 """;
@@ -127,7 +135,7 @@ public class UserDAO {
         user.setUsername(result.getString("name"));
 
         user.setEmail(result.getString("email"));
-        user.setPassword(result.getString("password"));
+        user.setPassword(result.getString("password_hash"));
         user.setRole(result.getString("role"));
 
         return user;

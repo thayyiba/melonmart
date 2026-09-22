@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebFilter("/seller.html")
+@WebFilter(urlPatterns = {"/seller.html", "/admin.html"})
 public class AuthFilter implements Filter {
 
     @Override
@@ -56,14 +56,16 @@ public class AuthFilter implements Filter {
             return;
         }
 
-        // Logged in but not a seller
-        if (!"SELLER".equalsIgnoreCase(user.getRole())) {
+        String page = httpRequest.getServletPath();
+        String role = user.getRole() == null ? "" : user.getRole().toUpperCase();
 
-            httpResponse.sendError(
-                    HttpServletResponse.SC_FORBIDDEN,
-                    "Seller access required."
-            );
+        if ("/admin.html".equals(page) && !"ADMIN".equals(role)) {
+            httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Admin access required.");
+            return;
+        }
 
+        if ("/seller.html".equals(page) && !"SELLER".equals(role)) {
+            httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Seller access required.");
             return;
         }
 

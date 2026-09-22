@@ -3,6 +3,7 @@ package com.melon.melonmart.controller;
 import com.google.gson.Gson;
 import com.melon.melonmart.dao.UserDAO;
 import com.melon.melonmart.model.User;
+import org.mindrot.jbcrypt.BCrypt;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,324 +11,122 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet("/api/auth/*")
+@WebServlet({"/api/auth/*", "/api/v1/auth/*"})
 public class AuthServlet extends HttpServlet {
-
     private final UserDAO userDAO = new UserDAO();
     private final Gson gson = new Gson();
 
-    @Override
-    protected void doPost(
-            HttpServletRequest request,
-            HttpServletResponse response
-    ) throws ServletException, IOException {
-
-        String path = request.getPathInfo();
-
-        if ("/login".equals(path)) {
-            handleLogin(request, response);
-        } else if ("/register".equals(path)) {
-            handleRegister(request, response);
-        } else if ("/logout".equals(path)) {
-            handleLogout(request, response);
-        } else {
-            response.sendError(
-                    HttpServletResponse.SC_NOT_FOUND,
-                    "Authentication endpoint not found."
-            );
-        }
+    @Override protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String path = req.getPathInfo();
+        if ("/login".equals(path)) handleLogin(req, resp);
+        else if ("/register".equals(path)) handleRegister(req, resp);
+        else if ("/logout".equals(path)) handleLogout(req, resp);
+        else sendError(resp, 404, "Authentication endpoint not found.");
     }
 
-    @Override
-    protected void doGet(
-            HttpServletRequest request,
-            HttpServletResponse response
-    ) throws ServletException, IOException {
-
-        String path = request.getPathInfo();
-
-        if ("/me".equals(path)) {
-            handleCurrentUser(request, response);
-        } else {
-            response.sendError(
-                    HttpServletResponse.SC_NOT_FOUND,
-                    "Authentication endpoint not found."
-            );
-        }
+    @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        if ("/me".equals(req.getPathInfo())) handleCurrentUser(req, resp);
+        else sendError(resp, 404, "Authentication endpoint not found.");
     }
 
-    private void handleLogin(
-            HttpServletRequest request,
-            HttpServletResponse response
-    ) throws IOException {
-
-        Map<String, String> data = readJson(request);
-
+    private void handleLogin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Map<String,String> data = readJson(req);
         String email = data.get("email");
         String password = data.get("password");
-
-        if (email == null || email.isBlank()
-                || password == null || password.isBlank()) {
-
-            sendError(
-                    response,
-                    HttpServletResponse.SC_BAD_REQUEST,
-                    "Email and password are required."
-            );
-            return;
+        if (email == null || email.isBlank() || password == null || password.isBlank()) {
+            sendError(resp, 400, "Email and password are required."); return;
+        }
+        User user = userDAO.findByEmail(email.trim().toLowerCase());
+        if (user == null || user.getPassword() == null || !BCrypt.checkpw(password, user.getPassword())) {
+            sendError(resp, 401, "Invalid email or password."); return;
         }
 
-        User user = userDAO.findByEmail(email);
-
-        if (user == null || !user.getPassword().equals(password)) {
-
-            sendError(
-                    response,
-                    HttpServletResponse.SC_UNAUTHORIZED,
-                    "Invalid email or password."
-            );
-            return;
-        }
-
-        HttpSession session = request.getSession(true);
+        HttpSession old = req.getSession(false);
+        if (old != null) old.invalidate();
+        HttpSession session = req.getSession(true);
+        session.setMaxInactiveInterval(30 * 60);
         session.setAttribute("user", user);
-
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setStatus(HttpServletResponse.SC_OK);
-
-        Map<String, Object> result = new HashMap<>();
-
-        result.put("success", true);
-        result.put("message", "Login successful.");
-        result.put("user", user);
-
-        // Also provide user information at the top level
-        result.put("id", user.getId());
-        result.put("name", user.getUsername());
-        result.put("username", user.getUsername());
-        result.put("email", user.getEmail());
-        result.put("role", user.getRole());
-
-        response.getWriter().write(gson.toJson(result));
+        sendUserResponse(resp, user, "Login successful.", 200);
     }
 
-    private void handleRegister(
-            HttpServletRequest request,
-            HttpServletResponse response
-    ) throws IOException {
-
-        Map<String, String> data = readJson(request);
-
+    private void handleRegister(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Map<String,String> data = readJson(req);
         String name = data.get("name");
         String email = data.get("email");
         String password = data.get("password");
         String role = data.get("role");
-
-        if (name == null || name.isBlank()
-                || email == null || email.isBlank()
-                || password == null || password.isBlank()) {
-
-            sendError(
-                    response,
-                    HttpServletResponse.SC_BAD_REQUEST,
-                    "Name, email and password are required."
-            );
-            return;
+        if (name == null || name.isBlank() || email == null || email.isBlank() || password == null || password.length() < 6) {
+            sendError(resp, 400, "Name, email and a password of at least 6 characters are required."); return;
         }
-
-        if (!"SELLER".equalsIgnoreCase(role)
-                && !"BUYER".equalsIgnoreCase(role)) {
-
-            role = "BUYER";
-
-        } else {
-            role = role.toUpperCase();
-        }
-
+        // Never trust a role sent by the browser. Registration can create only BUYER or SELLER.
+        role = "SELLER".equalsIgnoreCase(role) ? "SELLER" : "BUYER";
+        email = email.trim().toLowerCase();
         if (userDAO.findByEmail(email) != null) {
-
-            sendError(
-                    response,
-                    HttpServletResponse.SC_CONFLICT,
-                    "An account with this email already exists."
-            );
-            return;
+            sendError(resp, 409, "An account with this email already exists."); return;
         }
-
-        User user = new User(
-                0,
-                name,
-                email,
-                password,
-                role
-        );
-
-        boolean registered = userDAO.registerUser(user);
-
-        if (!registered) {
-
-            sendError(
-                    response,
-                    HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "Registration failed."
-            );
-            return;
+        User user = new User(0, name.trim(), email, password, role);
+        if (!userDAO.registerUser(user)) {
+            sendError(resp, 500, "Registration failed."); return;
         }
-
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setStatus(HttpServletResponse.SC_CREATED);
-
-        Map<String, Object> result = new HashMap<>();
-
-        result.put("success", true);
-        result.put("message", "Account created successfully.");
-
-        response.getWriter().write(gson.toJson(result));
+        Map<String,Object> out = new HashMap<>();
+        out.put("success", true); out.put("message", "Account created successfully.");
+        sendJson(resp, 201, out);
     }
 
-    private void handleCurrentUser(
-            HttpServletRequest request,
-            HttpServletResponse response
-    ) throws IOException {
-
-        HttpSession session = request.getSession(false);
-
-        User user = null;
-
-        if (session != null) {
-            Object sessionUser = session.getAttribute("user");
-
-            if (sessionUser instanceof User) {
-                user = (User) sessionUser;
-            }
-        }
-
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
+    private void handleCurrentUser(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        HttpSession session = req.getSession(false);
+        User user = session == null ? null : (User) session.getAttribute("user");
         if (user == null) {
-
-            response.setStatus(
-                    HttpServletResponse.SC_UNAUTHORIZED
-            );
-
-            Map<String, Object> result = new HashMap<>();
-
-            result.put("authenticated", false);
-
-            response.getWriter().write(
-                    gson.toJson(result)
-            );
-
-            return;
+            Map<String,Object> out = new HashMap<>(); out.put("success", false); out.put("authenticated", false);
+            sendJson(resp, 401, out); return;
         }
-
-        response.setStatus(
-                HttpServletResponse.SC_OK
-        );
-
-        Map<String, Object> result = new HashMap<>();
-
-        result.put("authenticated", true);
-
-        // Original nested user object
-        result.put("user", user);
-
-        // Top-level fields for frontend compatibility
-        result.put("id", user.getId());
-        result.put("name", user.getUsername());
-        result.put("username", user.getUsername());
-        result.put("email", user.getEmail());
-        result.put("role", user.getRole());
-
-        response.getWriter().write(
-                gson.toJson(result)
-        );
+        Map<String,Object> out = new HashMap<>();
+        out.put("success", true);
+        out.put("authenticated", true);
+        Map<String,Object> safe = safeUser(user);
+        out.put("user", safe);
+        // Keep user/role fields at the top level for existing pages that consume /api/auth/me.
+        out.putAll(safe);
+        sendJson(resp, 200, out);
     }
 
-    private void handleLogout(
-            HttpServletRequest request,
-            HttpServletResponse response
-    ) throws IOException {
-
-        HttpSession session =
-                request.getSession(false);
-
-        if (session != null) {
-            session.invalidate();
-        }
-
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setStatus(HttpServletResponse.SC_OK);
-
-        Map<String, Object> result = new HashMap<>();
-
-        result.put("success", true);
-        result.put(
-                "message",
-                "Logged out successfully."
-        );
-
-        response.getWriter().write(
-                gson.toJson(result)
-        );
+    private void handleLogout(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        HttpSession session = req.getSession(false);
+        if (session != null) session.invalidate();
+        Map<String,Object> out = new HashMap<>(); out.put("success", true); out.put("message", "Logged out successfully.");
+        sendJson(resp, 200, out);
     }
 
-    private Map<String, String> readJson(
-            HttpServletRequest request
-    ) throws IOException {
-
-        StringBuilder json =
-                new StringBuilder();
-
-        try (BufferedReader reader =
-                     request.getReader()) {
-
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                json.append(line);
-            }
-        }
-
-        Map<String, String> data =
-                gson.fromJson(
-                        json.toString(),
-                        Map.class
-                );
-
-        return data != null
-                ? data
-                : new HashMap<>();
+    private Map<String,Object> safeUser(User user) {
+        Map<String,Object> out = new HashMap<>();
+        out.put("id", user.getId()); out.put("name", user.getUsername()); out.put("username", user.getUsername());
+        out.put("email", user.getEmail()); out.put("role", user.getRole());
+        return out;
     }
 
-    private void sendError(
-            HttpServletResponse response,
-            int status,
-            String message
-    ) throws IOException {
+    private void sendUserResponse(HttpServletResponse resp, User user, String message, int status) throws IOException {
+        Map<String,Object> out = new HashMap<>(); out.put("success", true); out.put("message", message); out.put("user", safeUser(user));
+        out.putAll(safeUser(user)); sendJson(resp, status, out);
+    }
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setStatus(status);
+    private Map<String,String> readJson(HttpServletRequest req) throws IOException {
+        StringBuilder json = new StringBuilder();
+        try (BufferedReader reader = req.getReader()) { String line; while ((line = reader.readLine()) != null) json.append(line); }
+        Map<String,String> data = gson.fromJson(json.toString(), Map.class);
+        return data == null ? new HashMap<>() : data;
+    }
 
-        Map<String, Object> result =
-                new HashMap<>();
+    private void sendJson(HttpServletResponse resp, int status, Object body) throws IOException {
+        resp.setContentType("application/json"); resp.setCharacterEncoding("UTF-8"); resp.setStatus(status);
+        resp.getWriter().write(gson.toJson(body));
+    }
 
-        result.put("success", false);
-        result.put("message", message);
-
-        response.getWriter().write(
-                gson.toJson(result)
-        );
+    private void sendError(HttpServletResponse resp, int status, String message) throws IOException {
+        Map<String,Object> out = new HashMap<>(); out.put("success", false); out.put("message", message); sendJson(resp, status, out);
     }
 }
