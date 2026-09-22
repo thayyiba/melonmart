@@ -22,9 +22,11 @@ public class ProductDAO {
         List<Product> products = new ArrayList<>();
 
         String sql = """
-                SELECT id, seller_id, name, description, price,
-                       stock_qty, category, image_url, created_at
-                FROM products
+                SELECT p.id, p.seller_id, p.name, p.description, p.price,
+                       p.stock_qty, p.category, p.image_url, p.created_at,
+                       COALESCE((SELECT AVG(r.rating) FROM reviews r WHERE r.product_id = p.id), 0) AS rating,
+                       (SELECT COUNT(*) FROM reviews r2 WHERE r2.product_id = p.id) AS review_count
+                FROM products p
                 ORDER BY id DESC
                 """;
 
@@ -52,9 +54,11 @@ public class ProductDAO {
         List<Product> products = new ArrayList<>();
 
         String sql = """
-                SELECT id, seller_id, name, description, price,
-                       stock_qty, category, image_url, created_at
-                FROM products
+                SELECT p.id, p.seller_id, p.name, p.description, p.price,
+                       p.stock_qty, p.category, p.image_url, p.created_at,
+                       COALESCE((SELECT AVG(r.rating) FROM reviews r WHERE r.product_id = p.id), 0) AS rating,
+                       (SELECT COUNT(*) FROM reviews r2 WHERE r2.product_id = p.id) AS review_count
+                FROM products p
                 WHERE UPPER(category) = UPPER(?)
                 ORDER BY id DESC
                 """;
@@ -87,9 +91,11 @@ public class ProductDAO {
         List<Product> products = new ArrayList<>();
 
         String sql = """
-                SELECT id, seller_id, name, description, price,
-                       stock_qty, category, image_url, created_at
-                FROM products
+                SELECT p.id, p.seller_id, p.name, p.description, p.price,
+                       p.stock_qty, p.category, p.image_url, p.created_at,
+                       COALESCE((SELECT AVG(r.rating) FROM reviews r WHERE r.product_id = p.id), 0) AS rating,
+                       (SELECT COUNT(*) FROM reviews r2 WHERE r2.product_id = p.id) AS review_count
+                FROM products p
                 WHERE seller_id = ?
                 ORDER BY id DESC
                 """;
@@ -227,6 +233,8 @@ public class ProductDAO {
         product.setStockQty(result.getInt("stock_qty"));
         product.setCategory(result.getString("category"));
         product.setImageUrl(result.getString("image_url"));
+        product.setRating(result.getDouble("rating"));
+        product.setReviewCount(result.getInt("review_count"));
         product.setCreatedAt(result.getTimestamp("created_at"));
 
         return product;

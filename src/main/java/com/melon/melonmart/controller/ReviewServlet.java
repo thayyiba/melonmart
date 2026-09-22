@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet("/api/reviews/*")
+@WebServlet({"/api/reviews/*", "/api/v1/reviews/*"})
 public class ReviewServlet extends HttpServlet {
 
     private ReviewDAO reviewDAO;

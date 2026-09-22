@@ -10,6 +10,7 @@ public class Review {
     private int orderId;
     private int rating;
     private String comment;
+    private String userName;
     private Timestamp createdAt;
 
     public Review() {
@@ -80,6 +81,9 @@ public class Review {
     public void setComment(String comment) {
         this.comment = comment;
     }
+
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
 
     public Timestamp getCreatedAt() {
         return createdAt;

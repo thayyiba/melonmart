@@ -30,7 +30,7 @@ public class ReviewDAO {
             JOIN order_items oi
                 ON o.id = oi.order_id
             WHERE o.id = ?
-              AND o.user_id = ?
+              AND o.buyer_id = ?
               AND oi.product_id = ?
               AND o.status = 'DELIVERED'
             """;
@@ -160,15 +160,17 @@ public class ReviewDAO {
 
         String sql = """
                 SELECT
-                    id,
-                    user_id,
-                    product_id,
-                    order_id,
-                    rating,
-                    comment,
-                    created_at
-                FROM reviews
-                WHERE product_id = ?
+                    r.id,
+                    r.user_id,
+                    r.product_id,
+                    r.order_id,
+                    r.rating,
+                    r.comment,
+                    r.created_at,
+                    u.name AS user_name
+                FROM reviews r
+                JOIN users u ON u.id = r.user_id
+                WHERE r.product_id = ?
                 ORDER BY created_at DESC
                 """;
 
@@ -218,6 +220,9 @@ public class ReviewDAO {
 
                     review.setComment(
                             result.getString("comment")
+                    );
+                    review.setUserName(
+                            result.getString("user_name")
                     );
 
                     review.setCreatedAt(

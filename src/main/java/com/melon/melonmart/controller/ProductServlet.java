@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet("/api/products/*")
+@WebServlet({"/api/products/*", "/api/v1/products/*"})
 public class ProductServlet extends HttpServlet {
 
     private final ProductDAO productDAO = new ProductDAO();
