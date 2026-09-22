@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet("/api/orders/*")
+@WebServlet({"/api/orders/*", "/api/v1/orders/*"})
 public class OrderServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
@@ -372,7 +372,7 @@ protected void doPut(
             status.trim().toUpperCase();
 
     if (
-            !status.equals("PLACED") &&
+            !status.equals("PENDING") &&
             !status.equals("CONFIRMED") &&
             !status.equals("SHIPPED") &&
             !status.equals("DELIVERED")

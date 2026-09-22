@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet("/api/cart")
+@WebServlet({"/api/cart", "/api/cart/*", "/api/v1/cart", "/api/v1/cart/*"})
 public class CartServlet extends HttpServlet {
 
     private final CartDAO cartDAO = new CartDAO();

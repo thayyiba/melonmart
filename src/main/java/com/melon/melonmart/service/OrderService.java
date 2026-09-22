@@ -81,7 +81,7 @@ public class OrderService {
 
                 order.setUserId(userId);
                 order.setTotalAmount(totalAmount);
-                order.setStatus("PLACED");
+                order.setStatus("PENDING");
 
                 // Insert order and get generated ID
                 int orderId =

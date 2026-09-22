@@ -38,7 +38,7 @@ public class OrderDAO {
 
         String sql = """
                 INSERT INTO orders
-                (user_id, total_amount, status)
+                (buyer_id, total_amount, status)
                 VALUES (?, ?, ?)
                 """;
 
@@ -66,7 +66,7 @@ public class OrderDAO {
     public Order getOrderById(int orderId) throws Exception {
 
         String sql = """
-                SELECT id, user_id, total_amount, status, created_at
+                SELECT id, buyer_id AS user_id, total_amount, status, created_at
                 FROM orders
                 WHERE id = ?
                 """;
@@ -103,9 +103,9 @@ public class OrderDAO {
     public List<Order> getOrdersByUserId(int userId) throws Exception {
 
         String sql = """
-                SELECT id, user_id, total_amount, status, created_at
+                SELECT id, buyer_id AS user_id, total_amount, status, created_at
                 FROM orders
-                WHERE user_id = ?
+                WHERE buyer_id = ?
                 ORDER BY created_at DESC
                 """;
 
@@ -143,7 +143,7 @@ public class OrderDAO {
     public List<Order> getAllOrders() throws Exception {
 
         String sql = """
-                SELECT id, user_id, total_amount, status, created_at
+                SELECT id, buyer_id AS user_id, total_amount, status, created_at
                 FROM orders
                 ORDER BY created_at DESC
                 """;
@@ -181,7 +181,7 @@ public class OrderDAO {
     String sql = """
             SELECT
                 o.id AS order_id,
-                o.user_id AS buyer_id,
+                o.buyer_id AS buyer_id,
                 u.name AS buyer_name,
                 u.email AS buyer_email,
                 o.total_amount AS order_total,
@@ -191,10 +191,10 @@ public class OrderDAO {
                 p.name AS product_name,
                 p.image_url,
                 oi.quantity,
-                oi.price
+                oi.unit_price
             FROM orders o
             JOIN users u
-                ON o.user_id = u.id
+                ON o.buyer_id = u.id
             JOIN order_items oi
                 ON o.id = oi.order_id
             JOIN products p
@@ -365,7 +365,7 @@ public class OrderDAO {
                     SUM(
                         CASE
                             WHEN o.status = 'DELIVERED'
-                            THEN oi.price * oi.quantity
+                            THEN oi.unit_price * oi.quantity
                             ELSE 0
                         END
                     ),

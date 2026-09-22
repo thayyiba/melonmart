@@ -33,7 +33,7 @@ public class OrderItemDAO {
 
         String sql = """
                 INSERT INTO order_items
-                (order_id, product_id, quantity, price)
+                (order_id, product_id, quantity, unit_price)
                 VALUES (?, ?, ?, ?)
                 """;
 
@@ -61,7 +61,7 @@ public class OrderItemDAO {
                     order_id,
                     product_id,
                     quantity,
-                    price
+                    unit_price
                 FROM order_items
                 WHERE order_id = ?
                 """;
@@ -101,7 +101,7 @@ public class OrderItemDAO {
                     );
 
                     item.setPrice(
-                            result.getBigDecimal("price")
+                            result.getBigDecimal("unit_price")
                     );
 
                     items.add(item);
