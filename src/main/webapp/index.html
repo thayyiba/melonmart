@@ -1,33 +1,46 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Melon Mart — good things, gathered.</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
 
+<link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap"
+    rel="stylesheet"
+>
 <style>
 
 :root {
     --cream: #FFF6D8;
     --paper: #FFFDF5;
+
     --butter: #F2D477;
     --butter-light: #FAE9A9;
+
     --pink: #F2B8B8;
     --pink-light: #F9DDDD;
+
     --blue: #A7B2E2;
     --blue-light: #E1E5F7;
+
     --plum: #594052;
     --plum-dark: #382A34;
+
     --text: #302A30;
     --muted: #756C73;
+
     --line: #E7DACB;
+
     --white: #FFFFFF;
-    --shadow: 0 18px 45px rgba(56,42,52,0.08);
-    --soft-shadow: 0 10px 25px rgba(56,42,52,0.06);
+
+    --shadow: 0 18px 45px rgba(56, 42, 52, 0.08);
+    --soft-shadow: 0 10px 25px rgba(56, 42, 52, 0.06);
+
     --radius: 24px;
 }
 
@@ -89,7 +102,7 @@ header {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(255,253,247,0.95);
+    background: rgba(255, 253, 247, 0.95);
     backdrop-filter: blur(15px);
     border-bottom: 1px solid var(--line);
 }
@@ -142,7 +155,7 @@ header {
 
 .search-box input:focus {
     border-color: var(--plum);
-    box-shadow: 0 0 0 3px rgba(89,64,82,0.06);
+    box-shadow: 0 0 0 3px rgba(89, 64, 82, 0.06);
 }
 
 .search-icon {
@@ -184,19 +197,28 @@ header {
     font-weight: 700;
 }
 
-.admin-btn {
-    background: var(--blue-light);
-    color: var(--plum-dark);
-    font-weight: 700;
-}
-
-.admin-btn:hover {
-    background: var(--blue);
-}
-
 .account-btn.logged-in:hover {
     background: var(--pink);
 }
+
+.account-wrap { position: relative; }
+.account-dropdown { position:absolute; right:0; top:calc(100% + 10px); width:310px; max-height:70vh; overflow:auto; background:var(--paper); border:1px solid var(--line); border-radius:20px; box-shadow:var(--shadow); padding:10px; display:none; z-index:450; }
+.account-dropdown.open { display:block; }
+.account-drop-profile { display:flex; gap:10px; align-items:center; padding:12px; border-radius:15px; background:var(--cream); margin-bottom:8px; }
+.account-drop-avatar { width:42px; height:42px; border-radius:50%; display:grid; place-items:center; background:var(--pink); font-family:"Fraunces",serif; font-size:19px; color:var(--plum-dark); }
+.account-drop-profile strong { display:block; font-family:"Fraunces",serif; font-size:18px; }
+.account-drop-profile small { color:var(--muted); font-size:11px; }
+.account-drop-link { width:100%; border:0; background:transparent; display:flex; align-items:center; gap:11px; padding:11px 12px; border-radius:13px; text-align:left; color:var(--text); }
+.account-drop-link:hover { background:var(--butter-light); }
+.account-drop-link .ico { width:28px; text-align:center; font-size:17px; }
+.account-drop-link span:last-child { font-size:13px; font-weight:600; }
+.account-drop-divider { height:1px; background:var(--line); margin:6px 4px; }
+.welp-float { position:fixed; right:22px; bottom:22px; width:62px; height:62px; border:3px solid var(--paper); border-radius:50%; background:var(--plum); color:#fff; box-shadow:0 12px 30px rgba(56,42,52,.22); display:grid; place-items:center; font-size:27px; z-index:420; text-decoration:none; transition:.2s ease; }
+.welp-float:hover { transform:translateY(-3px) scale(1.03); box-shadow:0 16px 34px rgba(56,42,52,.28); }
+.welp-float::after { content:"Welp"; position:absolute; right:72px; white-space:nowrap; background:var(--paper); color:var(--plum-dark); border:1px solid var(--line); border-radius:999px; padding:7px 10px; font-size:11px; font-weight:700; opacity:0; pointer-events:none; transform:translateX(5px); transition:.2s; }
+.welp-float:hover::after { opacity:1; transform:translateX(0); }
+@media(max-width:700px){.welp-float{width:56px;height:56px;right:15px;bottom:15px;font-size:24px}}
+
 
 .cart-button {
     position: relative;
@@ -314,7 +336,7 @@ header {
 
 .hero h1 {
     font-family: "Fraunces", serif;
-    font-size: clamp(45px,5.3vw,70px);
+    font-size: clamp(45px, 5.3vw, 70px);
     line-height: 0.99;
     letter-spacing: -0.055em;
     max-width: 650px;
@@ -450,7 +472,7 @@ header {
 
 .thought-text {
     font-family: "Fraunces", serif;
-    font-size: clamp(25px,3vw,39px);
+    font-size: clamp(25px, 3vw, 39px);
     line-height: 1.15;
 }
 
@@ -489,7 +511,7 @@ header {
 
 .section h2 {
     font-family: "Fraunces", serif;
-    font-size: clamp(32px,4vw,50px);
+    font-size: clamp(32px, 4vw, 50px);
     line-height: 1;
     letter-spacing: -0.045em;
     color: var(--plum-dark);
@@ -507,7 +529,7 @@ header {
 
 .mood-grid {
     display: grid;
-    grid-template-columns: repeat(4,1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 18px;
 }
 
@@ -628,7 +650,7 @@ header {
 
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(4,1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 24px;
 }
 
@@ -714,30 +736,6 @@ header {
     min-height: 36px;
 }
 
-.product-rating {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 9px;
-    font-size: 12px;
-}
-
-.product-rating-stars {
-    color: var(--plum);
-    letter-spacing: 1px;
-    font-size: 13px;
-}
-
-.product-rating-text {
-    color: var(--muted);
-    font-weight: 600;
-}
-
-.product-rating.empty {
-    color: var(--muted);
-    opacity: 0.75;
-}
-
 .product-bottom {
     display: flex;
     align-items: center;
@@ -804,7 +802,7 @@ header {
 }
 
 /* =========================
-   CHECKOUT
+   CHECKOUT CONFIRMATION
 ========================= */
 
 .checkout-summary {
@@ -862,6 +860,13 @@ header {
     cursor: not-allowed;
 }
 
+@media (max-width: 600px) {
+    .checkout-actions {
+        flex-direction: column;
+    }
+}
+
+
 .empty-products {
     grid-column: 1 / -1;
     text-align: center;
@@ -871,7 +876,7 @@ header {
 }
 
 /* =========================
-   SPARKLE
+   SPARKLE EDITORIAL
 ========================= */
 
 .sparkle-section {
@@ -956,7 +961,7 @@ header {
 
 .philosophy h2 {
     font-family: "Fraunces", serif;
-    font-size: clamp(35px,5vw,60px);
+    font-size: clamp(35px, 5vw, 60px);
     line-height: 1;
     color: var(--plum-dark);
 }
@@ -1050,7 +1055,7 @@ footer {
 .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(40,30,38,0.35);
+    background: rgba(40, 30, 38, 0.35);
     z-index: 200;
     opacity: 0;
     pointer-events: none;
@@ -1066,7 +1071,7 @@ footer {
     position: fixed;
     top: 0;
     right: -450px;
-    width: min(430px,92vw);
+    width: min(430px, 92vw);
     height: 100vh;
     background: var(--paper);
     z-index: 201;
@@ -1209,7 +1214,7 @@ footer {
 .modal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(40,30,38,0.4);
+    background: rgba(40, 30, 38, 0.4);
     z-index: 300;
     display: none;
     align-items: center;
@@ -1222,7 +1227,7 @@ footer {
 }
 
 .modal {
-    width: min(500px,100%);
+    width: min(500px, 100%);
     background: var(--paper);
     border-radius: 28px;
     padding: 28px;
@@ -1398,7 +1403,7 @@ footer {
     position: fixed;
     bottom: 25px;
     left: 50%;
-    transform: translate(-50%,100px);
+    transform: translate(-50%, 100px);
     background: var(--plum-dark);
     color: white;
     padding: 13px 19px;
@@ -1412,273 +1417,7 @@ footer {
 
 .toast.show {
     opacity: 1;
-    transform: translate(-50%,0);
-}
-
-/* =========================
-   WELP AI ASSISTANT
-========================= */
-
-.welp-launcher {
-    position: fixed;
-    right: 25px;
-    bottom: 25px;
-    width: 64px;
-    height: 64px;
-    border: none;
-    border-radius: 50%;
-    background: var(--plum);
-    color: white;
-    font-size: 29px;
-    display: grid;
-    place-items: center;
-    box-shadow: 0 15px 35px rgba(56,42,52,0.22);
-    z-index: 250;
-    transition: 0.25s ease;
-}
-
-.welp-launcher:hover {
-    transform: translateY(-4px) rotate(-4deg);
-    background: var(--plum-dark);
-}
-
-.welp-launcher::after {
-    content: "ask Welp";
-    position: absolute;
-    right: 72px;
-    bottom: 17px;
-    background: var(--paper);
-    color: var(--plum-dark);
-    border: 1px solid var(--line);
-    padding: 7px 11px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 700;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(5px);
-    transition: 0.2s;
-}
-
-.welp-launcher:hover::after {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-.welp-panel {
-    position: fixed;
-    right: 25px;
-    bottom: 100px;
-    width: min(390px,calc(100vw - 30px));
-    height: min(590px,calc(100vh - 125px));
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 28px;
-    box-shadow: 0 25px 65px rgba(56,42,52,0.2);
-    z-index: 251;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(18px) scale(0.97);
-    transition: 0.25s ease;
-}
-
-.welp-panel.open {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateY(0) scale(1);
-}
-
-.welp-header {
-    background: var(--plum);
-    color: white;
-    padding: 18px 18px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.welp-brand {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-}
-
-.welp-avatar {
-    width: 43px;
-    height: 43px;
-    border-radius: 50%;
-    background: var(--butter);
-    display: grid;
-    place-items: center;
-    font-size: 23px;
-    color: var(--plum-dark);
-}
-
-.welp-title {
-    font-family: "Fraunces",serif;
-    font-size: 21px;
-    line-height: 1;
-}
-
-.welp-subtitle {
-    font-size: 10px;
-    margin-top: 4px;
-    opacity: 0.72;
-}
-
-.welp-close {
-    border: none;
-    background: rgba(255,255,255,0.12);
-    color: white;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    font-size: 19px;
-}
-
-.welp-close:hover {
-    background: rgba(255,255,255,0.2);
-}
-
-.welp-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    background:
-        radial-gradient(
-            circle at top right,
-            rgba(242,184,184,0.18),
-            transparent 35%
-        ),
-        var(--paper);
-}
-
-.welp-message {
-    max-width: 82%;
-    padding: 11px 13px;
-    border-radius: 17px;
-    font-size: 13px;
-    line-height: 1.5;
-    white-space: pre-wrap;
-}
-
-.welp-message.bot {
-    align-self: flex-start;
-    background: var(--blue-light);
-    color: var(--plum-dark);
-    border-bottom-left-radius: 5px;
-}
-
-.welp-message.user {
-    align-self: flex-end;
-    background: var(--pink-light);
-    color: var(--plum-dark);
-    border-bottom-right-radius: 5px;
-}
-
-.welp-suggestions {
-    display: flex;
-    gap: 7px;
-    overflow-x: auto;
-    padding: 0 16px 12px;
-    background: var(--paper);
-}
-
-.welp-suggestion {
-    flex-shrink: 0;
-    border: 1px solid var(--line);
-    background: var(--cream);
-    color: var(--plum-dark);
-    padding: 8px 11px;
-    border-radius: 50px;
-    font-size: 11px;
-    font-weight: 600;
-}
-
-.welp-suggestion:hover {
-    border-color: var(--plum);
-    background: var(--butter-light);
-}
-
-.welp-input-area {
-    border-top: 1px solid var(--line);
-    padding: 12px;
-    display: flex;
-    gap: 8px;
-    background: var(--paper);
-}
-
-.welp-input {
-    flex: 1;
-    min-width: 0;
-    border: 1px solid var(--line);
-    background: var(--cream);
-    border-radius: 50px;
-    padding: 11px 14px;
-    outline: none;
-    font-size: 13px;
-    color: var(--text);
-}
-
-.welp-input:focus {
-    border-color: var(--plum);
-}
-
-.welp-send {
-    width: 42px;
-    height: 42px;
-    border: none;
-    border-radius: 50%;
-    background: var(--plum);
-    color: white;
-    font-size: 17px;
-}
-
-.welp-send:hover {
-    background: var(--plum-dark);
-}
-
-.welp-typing {
-    align-self: flex-start;
-    background: var(--blue-light);
-    color: var(--muted);
-    padding: 9px 13px;
-    border-radius: 17px;
-    font-size: 12px;
-    display: none;
-    margin: 0 18px 10px;
-}
-
-.welp-typing.show {
-    display: block;
-}
-
-@media (max-width: 600px) {
-    .welp-launcher {
-        right: 17px;
-        bottom: 17px;
-        width: 58px;
-        height: 58px;
-    }
-
-    .welp-launcher::after {
-        display: none;
-    }
-
-    .welp-panel {
-        right: 10px;
-        bottom: 85px;
-        width: calc(100vw - 20px);
-        height: min(570px,calc(100vh - 105px));
-        border-radius: 24px;
-    }
+    transform: translate(-50%, 0);
 }
 
 /* =========================
@@ -1686,12 +1425,13 @@ footer {
 ========================= */
 
 @media (max-width: 1050px) {
+
     .product-grid {
-        grid-template-columns: repeat(3,1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 
     .mood-grid {
-        grid-template-columns: repeat(2,1fr);
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .hero {
@@ -1714,6 +1454,7 @@ footer {
 }
 
 @media (max-width: 750px) {
+
     .header-main {
         padding: 13px 18px;
         flex-wrap: wrap;
@@ -1779,7 +1520,7 @@ footer {
     }
 
     .product-grid {
-        grid-template-columns: repeat(2,1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 13px;
     }
 
@@ -1818,6 +1559,7 @@ footer {
 }
 
 @media (max-width: 450px) {
+
     .mood-grid {
         grid-template-columns: 1fr;
     }
@@ -1856,88 +1598,586 @@ footer {
     }
 }
 
+
+/* MARKETPLACE UPGRADE */
+.marketplace-upgrade{max-width:1280px;margin:auto;padding:20px 24px}.marketplace-section{margin:36px 0}.marketplace-section h2{font-family:Fraunces,serif;color:var(--plum);margin-bottom:8px}.marketplace-section p{color:var(--muted);font-size:13px}.marketplace-category-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}.marketplace-category-tile{padding:18px;border:1px solid var(--line);border-radius:20px;cursor:pointer;background:var(--paper);transition:.2s}.marketplace-category-tile:hover{transform:translateY(-4px);box-shadow:var(--soft-shadow)}.marketplace-category-icon{font-size:26px}.marketplace-category-name{font-weight:800;margin-top:10px}.marketplace-category-count{font-size:10px;color:var(--muted);margin-top:3px}.marketplace-collection-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.marketplace-collection{padding:20px;border-radius:22px;border:1px solid var(--line);cursor:pointer}.marketplace-collection:nth-child(1){background:var(--pink-light)}.marketplace-collection:nth-child(2){background:var(--blue-light)}.marketplace-collection:nth-child(3){background:#E8F2E9}.marketplace-collection:nth-child(4){background:var(--butter-light)}.marketplace-collection strong{display:block;font:600 20px Fraunces,serif;color:var(--plum)}.marketplace-collection span{display:block;margin-top:6px;font-size:11px;color:var(--muted)}.marketplace-shelf{display:grid;grid-auto-flow:column;grid-auto-columns:210px;gap:15px;overflow-x:auto;padding:5px}.marketplace-card{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:22px;background:var(--paper);box-shadow:var(--soft-shadow);cursor:pointer;transition:.2s}.marketplace-card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}.marketplace-card img{width:100%;height:175px;object-fit:cover;display:block}.marketplace-card-body{padding:13px}.marketplace-card-category{font-size:9px;font-weight:800;letter-spacing:.08em;color:var(--muted)}.marketplace-card-title{font-weight:700;margin-top:6px}.marketplace-card-rating{font-size:11px;margin-top:7px}.marketplace-card-price{font-weight:800;color:var(--plum);margin-top:8px}.marketplace-badge{position:absolute;top:10px;left:10px;padding:6px 9px;border-radius:999px;background:var(--pink-light);color:var(--plum);font-size:9px;font-weight:800}.marketplace-mini-add{position:absolute;right:10px;bottom:10px;border:0;border-radius:11px;padding:8px 10px;background:var(--plum);color:white;font-weight:700;cursor:pointer}.marketplace-search-panel{display:none;position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:100;padding:10px;border:1px solid var(--line);border-radius:16px;background:var(--paper);box-shadow:var(--shadow)}.marketplace-search-panel.open{display:block}.marketplace-search-result{display:flex;align-items:center;gap:10px;width:100%;padding:9px;border:0;background:transparent;text-align:left;border-radius:10px;cursor:pointer}.marketplace-search-result:hover{background:var(--cream)}.marketplace-search-result img{width:42px;height:42px;border-radius:9px;object-fit:cover}.marketplace-search-result small{display:block;color:var(--muted)}@media(max-width:900px){.marketplace-category-grid{grid-template-columns:repeat(3,1fr)}.marketplace-collection-bar{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.marketplace-category-grid,.marketplace-collection-bar{grid-template-columns:repeat(2,1fr)}.marketplace-shelf{grid-auto-columns:78vw}}
+
+.search-box {
+    position: relative;
+}
+
+.search-suggestions {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: none;
+    z-index: 1000;
+}
+
+.search-suggestions.show {
+    display: block;
+}
+
+.search-suggestion {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.search-suggestion:hover {
+    background: var(--pink-light);
+}
+
+.search-suggestion img {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+.search-suggestion-info {
+    min-width: 0;
+}
+
+.search-suggestion-name {
+    font-weight: 700;
+    color: var(--plum);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.search-suggestion-price {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 2px;
+}
+
+    /* ==========================================
+       ACCOUNT MENU UPGRADE
+    ========================================== */
+
+    .account-modal {
+        max-width: 560px;
+    }
+
+    .account-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 24px 0;
+    }
+
+    .account-menu-item {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: var(--paper);
+        color: var(--text);
+        text-align: left;
+        cursor: pointer;
+        transition:
+            transform 0.18s ease,
+            background 0.18s ease,
+            border-color 0.18s ease,
+            box-shadow 0.18s ease;
+    }
+
+    .account-menu-item:hover {
+        transform: translateY(-2px);
+        background: var(--pink-light);
+        border-color: var(--pink);
+        box-shadow: var(--soft-shadow);
+    }
+
+    .account-menu-icon {
+        width: 42px;
+        height: 42px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 13px;
+        background: var(--blue-light);
+        color: var(--plum);
+        font-size: 20px;
+    }
+
+    .account-menu-item:nth-child(2) .account-menu-icon {
+        background: var(--pink-light);
+    }
+
+    .account-menu-item:nth-child(3) .account-menu-icon {
+        background: var(--butter-light);
+    }
+
+    .account-menu-item:nth-child(4) .account-menu-icon {
+        background: var(--blue-light);
+    }
+
+    .account-menu-item:nth-child(5) .account-menu-icon {
+        background: var(--butter-light);
+    }
+
+    .account-menu-text {
+        min-width: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .account-menu-text strong {
+        font-size: 14px;
+        color: var(--plum);
+    }
+
+    .account-menu-text small {
+        font-size: 12px;
+        color: var(--muted);
+    }
+
+    .account-menu-arrow {
+        color: var(--muted);
+        font-size: 24px;
+        line-height: 1;
+        transition: transform 0.18s ease;
+    }
+
+    .account-menu-item:hover .account-menu-arrow {
+        transform: translateX(3px);
+        color: var(--plum);
+    }
+
+    .account-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 8px;
+    }
+
+    .account-actions .account-action-btn {
+        flex: 1;
+    }
+
+    @media (max-width: 600px) {
+        .account-modal {
+            width: calc(100vw - 28px);
+        }
+
+        .account-menu-item {
+            padding: 12px;
+        }
+
+        .account-menu-icon {
+            width: 38px;
+            height: 38px;
+        }
+
+        .account-menu-text small {
+            font-size: 11px;
+        }
+    }
 </style>
-</head>
+
+<style id="melon-blinkit-header">
+/* MELON MART — BLINKIT-STYLE HEADER */
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 3000;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+}
+
+.header-main {
+    max-width: 1380px;
+    margin: 0 auto;
+    padding: 13px 28px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.logo {
+    min-width: 175px;
+    flex-shrink: 0;
+    font-family: "Fraunces", serif;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--plum);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.delivery-location {
+    min-width: 185px;
+    max-width: 205px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 14px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+}
+
+.delivery-location:hover {
+    background: var(--cream);
+}
+
+.delivery-location-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.delivery-location-text {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.delivery-location-text small {
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.2;
+    text-transform: lowercase;
+}
+
+.delivery-location-text strong {
+    max-width: 145px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--plum);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.delivery-location-arrow {
+    color: var(--muted);
+    font-size: 18px;
+    margin-left: auto;
+}
+
+.search-box {
+    flex: 1;
+    min-width: 180px;
+    position: relative;
+}
+
+.search-box input {
+    height: 46px;
+    width: 100%;
+    border: 1px solid var(--line);
+    background: var(--cream);
+    padding: 12px 18px 12px 44px;
+    border-radius: 14px;
+    outline: none;
+    color: var(--text);
+    font-size: 14px;
+}
+
+.search-box input:focus {
+    border-color: var(--plum);
+    box-shadow: 0 0 0 3px rgba(89, 64, 82, 0.06);
+}
+
+.search-icon {
+    left: 16px;
+    font-size: 16px;
+    z-index: 2;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.header-btn.icon-header-btn {
+    min-width: 58px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 7px 8px;
+    border-radius: 13px;
+    font-size: 11px;
+}
+
+.header-btn.icon-header-btn > span:first-child {
+    font-size: 19px;
+    line-height: 1;
+}
+
+.header-btn.icon-header-btn strong {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: lowercase;
+}
+
+.header-btn.icon-header-btn:hover {
+    background: var(--butter-light);
+}
+
+.header-btn.account-btn.logged-in {
+    background: var(--pink-light);
+    color: var(--plum-dark);
+}
+
+.cart-button {
+    position: relative;
+}
+
+.cart-button .cart-count {
+    position: absolute;
+    top: 2px;
+    right: 4px;
+}
+
+.location-bar {
+    display: none;
+}
+
+.mini-nav {
+    display: none;
+}
+
+@media (max-width: 1050px) {
+    .header-main {
+        gap: 10px;
+        padding: 12px 18px;
+    }
+
+    .logo {
+        min-width: auto;
+        font-size: 21px;
+    }
+
+    .delivery-location {
+        min-width: 150px;
+        max-width: 170px;
+    }
+
+    .delivery-location-text strong {
+        max-width: 110px;
+    }
+
+    .header-btn.icon-header-btn {
+        min-width: 48px;
+        padding: 7px 5px;
+    }
+
+    .header-btn.icon-header-btn strong {
+        display: none;
+    }
+}
+
+@media (max-width: 750px) {
+    .header-main {
+        padding: 10px 14px;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 8px;
+    }
+
+    .logo {
+        font-size: 19px;
+    }
+
+    .delivery-location {
+        min-width: 0;
+        max-width: none;
+        padding: 5px 6px;
+    }
+
+    .delivery-location-text small {
+        font-size: 8px;
+    }
+
+    .delivery-location-text strong {
+        max-width: 95px;
+        font-size: 10px;
+    }
+
+    .delivery-location-icon {
+        font-size: 15px;
+    }
+
+    .search-box {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        width: 100%;
+    }
+
+    .search-box input {
+        height: 42px;
+    }
+
+    .header-actions {
+        gap: 0;
+    }
+
+    .header-btn.icon-header-btn {
+        min-width: 40px;
+        padding: 5px 3px;
+    }
+
+    .header-btn.icon-header-btn > span:first-child {
+        font-size: 17px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 17px;
+    }
+
+    .delivery-location {
+        display: none;
+    }
+
+    .header-main {
+        grid-template-columns: 1fr auto;
+    }
+
+    .search-box {
+        grid-column: 1 / -1;
+    }
+}
+</style>
+<style id="melon-aarthi-navigation">.melon-menu-btn{width:44px;height:44px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--plum);font-size:22px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}.melon-menu-btn:hover{transform:translateY(-1px);box-shadow:var(--soft-shadow)}.melon-side-overlay{position:fixed;inset:0;background:rgba(56,42,52,.28);z-index:9998;opacity:0;pointer-events:none;transition:.25s}.melon-side-menu{position:fixed;top:0;left:0;width:min(360px,88vw);height:100vh;background:var(--paper);z-index:9999;transform:translateX(-105%);transition:.28s;box-shadow:20px 0 50px rgba(56,42,52,.16);padding:22px;overflow:auto}.melon-side-menu.open{transform:translateX(0)}.melon-side-overlay.open{opacity:1;pointer-events:auto}.melon-side-head{display:flex;align-items:center;justify-content:space-between;font-family:Fraunces,serif;font-size:22px;color:var(--plum-dark);padding-bottom:18px;border-bottom:1px solid var(--line)}.melon-side-head button{border:0;background:transparent;font-size:30px;color:var(--plum);cursor:pointer}.melon-side-location{margin:18px 0;padding:14px 16px;background:var(--cream);border-radius:16px;color:var(--muted);display:grid;grid-template-columns:auto 1fr;column-gap:9px}.melon-side-location strong{grid-column:2;color:var(--text);font-size:14px;margin-top:2px}.melon-side-nav{display:grid;gap:8px}.melon-side-nav a{display:flex;gap:14px;align-items:center;padding:14px 15px;border-radius:15px;color:var(--text);text-decoration:none;font-weight:600}.melon-side-nav a:hover{background:var(--butter-light);color:var(--plum-dark)}@media(max-width:900px){.header-main{gap:10px}.delivery-location{display:none}}</style></head>
 
 <body>
+<a class="welp-float" href="welp.html" aria-label="Open Welp">🍉</a>
+<div class="melon-side-overlay" id="melonSideOverlay" onclick="toggleMelonMenu(false)"></div>
+<aside class="melon-side-menu" id="melonSideMenu" aria-label="Melon Mart menu">
+  <div class="melon-side-head"><strong>MELON MART</strong><button type="button" onclick="toggleMelonMenu(false)" aria-label="Close menu">×</button></div>
+  <div class="melon-side-location">📍 <span>delivering to</span><strong id="menuLocation">Hostel 4 · Main Campus</strong></div>
+  <nav class="melon-side-nav">
+    <a href="index.html">⌂ <span>Home</span></a><a href="account.html">♙ <span>My Account</span></a><a href="orders.html">▣ <span>My Orders</span></a><a href="wishlist.html">♡ <span>Wishlist</span></a><a href="location.html">📍 <span>Delivery Addresses</span></a><a href="cart.html">🛍 <span>My Bag</span></a><a id="menuSellerLink" href="seller.html" style="display:none">▤ <span>Seller Dashboard</span></a><a id="menuAdminLink" href="admin.html" style="display:none">⚙ <span>Admin Dashboard</span></a><a href="help.html">? <span>Help & Support</span></a><a href="welp.html">✦ <span>Welp AI</span></a>
+  </nav>
+</aside>
+
 
 <div class="top-note">
     an internet market for good things, useful things & questionable decisions ✦
 </div>
 
 <header>
-<div class="header-main">
+    <div class="header-main">
 
-    <a href="index.html" class="logo">
-        MELON MART
-        <span class="logo-dot"></span>
-    </a>
+        <button class="melon-menu-btn" type="button" aria-label="Open menu" onclick="toggleMelonMenu()">☰</button>
 
-    <div class="search-box">
-        <span class="search-icon">⌕</span>
+        <a href="index.html" class="logo" aria-label="Melon Mart home">
+            MELON MART
+            <span class="logo-dot"></span>
+        </a>
 
-        <input
-            type="text"
-            id="searchInput"
-            placeholder="search for snacks, fruit, sparkle..."
-            autocomplete="off"
+        <button
+            class="delivery-location"
+            onclick="openLocationModal()"
+            aria-label="Change delivery location"
         >
+            <span class="delivery-location-icon">&#128205;</span>
+            <span class="delivery-location-text">
+                <small>delivering to</small>
+                <strong id="currentLocation">Hostel 4 · Main Campus</strong>
+            </span>
+            <span class="delivery-location-arrow">&#8964;</span>
+        </button>
+
+        <div class="search-box">
+            <span class="search-icon">&#128269;</span>
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="search for snacks, fruit, sparkle..."
+                autocomplete="off"
+            >
+
+            <div id="searchSuggestions" class="search-suggestions"></div>
+        </div>
+
+        <div class="header-actions">
+
+            <button
+                class="header-btn icon-header-btn"
+                onclick="openWishlist()"
+                aria-label="Wishlist"
+            >
+                <span>&#9825;</span>
+                <strong>wishlist</strong>
+            </button>
+
+            <button
+                class="header-btn icon-header-btn"
+                onclick="openOrders()"
+                aria-label="Orders"
+            >
+                <span>&#128230;</span>
+                <strong>orders</strong>
+            </button>
+
+            <div class="account-wrap">
+                <button
+                    class="header-btn icon-header-btn account-btn"
+                    id="accountButton"
+                    onclick="handleAccountClick(event)"
+                    aria-label="Account"
+                >
+                    <span>♙</span>
+                    <strong>account</strong>
+                </button>
+                <div class="account-dropdown" id="accountDropdown" onclick="event.stopPropagation()"></div>
+            </div>
+
+            <button
+                class="header-btn icon-header-btn cart-button"
+                onclick="openCart()"
+                aria-label="Cart"
+            >
+                <span>&#128717;</span>
+                <strong>bag</strong>
+
+                <span
+                    class="cart-count"
+                    id="cartCount"
+                >
+                    0
+                </span>
+            </button>
+
+        </div>
+
     </div>
-
-    <div class="header-actions">
-
-        <button class="header-btn" onclick="openWishlist()">
-            ♡ <strong>wishlist</strong>
-        </button>
-
-        <button class="header-btn" onclick="openOrders()">
-            orders
-        </button>
-
-        <button
-            class="header-btn account-btn"
-            id="accountButton"
-            onclick="handleAccountClick()"
-        >
-            account
-        </button>
-
-        <button
-            class="header-btn"
-            onclick="window.location.href='seller.html'"
-        >
-            sell
-        </button>
-
-        <button
-            class="header-btn admin-btn"
-            id="adminButton"
-            onclick="window.location.href='admin.html'"
-            style="display:none;"
-        >
-            admin
-        </button>
-
-        <button class="header-btn cart-button" onclick="openCart()">
-            bag
-            <span class="cart-count" id="cartCount">0</span>
-        </button>
-
-    </div>
-</div>
-
-<nav class="mini-nav">
-
-    <a href="#shop">shop</a>
-    <a href="#moods">browse by mood</a>
-    <a href="#sparkle">sparkle</a>
-    <a href="#thought">thought of the day</a>
-
-</nav>
 </header>
 
 <div class="location-bar">
-
 <div class="location-info">
 
     <div class="location-pin">
@@ -1964,13 +2204,11 @@ footer {
 >
     change
 </button>
-
 </div>
 
 <main>
 
 <section class="hero">
-
 <div class="hero-copy">
 
     <span class="hero-kicker">
@@ -2007,7 +2245,10 @@ footer {
 
     <div class="hero-buttons">
 
-        <a href="#shop" class="primary-btn">
+        <a
+            href="#shop"
+            class="primary-btn"
+        >
             Shop the good stuff →
         </a>
 
@@ -2052,18 +2293,22 @@ footer {
     </div>
 
 </div>
-
 </section>
 
-<section class="thought-strip" id="thought">
-
+<section
+    class="thought-strip"
+    id="thought"
+>
 <div class="thought-inner">
 
     <div class="thought-label">
         thought of the day
     </div>
 
-    <div class="thought-text" id="dailyThought">
+    <div
+        class="thought-text"
+        id="dailyThought"
+    >
         loading today's unnecessary wisdom...
     </div>
 
@@ -2072,11 +2317,12 @@ footer {
     </div>
 
 </div>
-
 </section>
 
-<section class="section" id="moods">
-
+<section
+    class="section"
+    id="moods"
+>
 <div class="section-heading">
 
     <div>
@@ -2092,16 +2338,21 @@ footer {
     </div>
 
     <p class="section-intro">
+
         Because sometimes
         "I need groceries" is a lie
         and what you actually need is chocolate.
+
     </p>
 
 </div>
 
 <div class="mood-grid">
 
-    <button class="mood-card" onclick="goToCategory('FRUITS')">
+    <button
+        class="mood-card"
+        onclick="goToCategory('FRUITS')"
+    >
 
         <div class="mood-icon">
             🍓
@@ -2122,7 +2373,10 @@ footer {
 
     </button>
 
-    <button class="mood-card" onclick="goToCategory('SNACKS')">
+    <button
+        class="mood-card"
+        onclick="goToCategory('SNACKS')"
+    >
 
         <div class="mood-icon">
             🍿
@@ -2143,7 +2397,10 @@ footer {
 
     </button>
 
-    <button class="mood-card" onclick="goToCategory('JEWELLERY')">
+    <button
+        class="mood-card"
+        onclick="goToCategory('JEWELLERY')"
+    >
 
         <div class="mood-icon">
             ✦
@@ -2164,7 +2421,10 @@ footer {
 
     </button>
 
-    <button class="mood-card" onclick="goToCategory('JUICES')">
+    <button
+        class="mood-card"
+        onclick="goToCategory('JUICES')"
+    >
 
         <div class="mood-icon">
             🥤
@@ -2187,11 +2447,12 @@ footer {
     </button>
 
 </div>
-
 </section>
 
-<section class="shop-section" id="shop">
-
+<section
+    class="shop-section"
+    id="shop"
+>
 <div class="shop-inner">
 
     <div class="section-heading">
@@ -2209,8 +2470,10 @@ footer {
         </div>
 
         <p class="section-intro">
+
             No dramatic life decisions required.
             Just add what looks good.
+
         </p>
 
     </div>
@@ -2222,7 +2485,7 @@ footer {
             <button
                 class="filter-btn active"
                 data-category=""
-                onclick="setCategory(this,'')"
+                onclick="setCategory(this, '')"
             >
                 all
             </button>
@@ -2230,7 +2493,7 @@ footer {
             <button
                 class="filter-btn"
                 data-category="FRUITS"
-                onclick="setCategory(this,'FRUITS')"
+                onclick="setCategory(this, 'FRUITS')"
             >
                 fresh
             </button>
@@ -2238,7 +2501,7 @@ footer {
             <button
                 class="filter-btn"
                 data-category="JUICES"
-                onclick="setCategory(this,'JUICES')"
+                onclick="setCategory(this, 'JUICES')"
             >
                 drinks
             </button>
@@ -2246,7 +2509,7 @@ footer {
             <button
                 class="filter-btn"
                 data-category="SNACKS"
-                onclick="setCategory(this,'SNACKS')"
+                onclick="setCategory(this, 'SNACKS')"
             >
                 snacks
             </button>
@@ -2254,7 +2517,7 @@ footer {
             <button
                 class="filter-btn"
                 data-category="JEWELLERY"
-                onclick="setCategory(this,'JEWELLERY')"
+                onclick="setCategory(this, 'JEWELLERY')"
             >
                 jewellery
             </button>
@@ -2266,15 +2529,31 @@ footer {
             id="sortSelect"
             onchange="renderProducts()"
         >
-            <option value="recommended">recommended</option>
-            <option value="low">price: low → high</option>
-            <option value="high">price: high → low</option>
-            <option value="name">name</option>
+
+            <option value="recommended">
+                recommended
+            </option>
+
+            <option value="low">
+                price: low → high
+            </option>
+
+            <option value="high">
+                price: high → low
+            </option>
+
+            <option value="name">
+                name
+            </option>
+
         </select>
 
     </div>
 
-    <div class="product-grid" id="productGrid">
+    <div
+        class="product-grid"
+        id="productGrid"
+    >
 
         <div class="empty-products">
             gathering the good stuff...
@@ -2283,11 +2562,12 @@ footer {
     </div>
 
 </div>
-
 </section>
 
-<section class="sparkle-section" id="sparkle">
-
+<section
+    class="sparkle-section"
+    id="sparkle"
+>
 <div class="sparkle-inner">
 
     <div class="sparkle-copy">
@@ -2302,12 +2582,14 @@ footer {
         </h2>
 
         <p>
+
             A bracelet doesn't technically solve
             your problems. Neither does a cute pair
             of earrings.
 
             But suddenly Tuesday has
             a little more personality.
+
         </p>
 
         <span class="sparkle-note">
@@ -2347,11 +2629,9 @@ footer {
     </div>
 
 </div>
-
 </section>
 
 <section class="philosophy">
-
 <div class="eyebrow">
     a completely unnecessary thought
 </div>
@@ -2362,12 +2642,14 @@ footer {
 </h2>
 
 <p>
+
     Not every day needs to be productive,
     transformative, or suspiciously inspirational.
 
     Sometimes you just need a cold drink,
     a snack, fresh fruit, or something pretty
     sitting on your desk.
+
 </p>
 
 <p>
@@ -2376,16 +2658,31 @@ footer {
 </p>
 
 <div class="philosophy-quote">
+
     Maybe the good things aren't late.
     Maybe they're simply still on their way.
-</div>
 
+</div>
 </section>
 
 </main>
 
-<footer>
 
+<!-- MARKETPLACE HOME UPGRADE -->
+<section class="marketplace-upgrade" id="marketplaceHome">
+<section class="marketplace-section"><div class="marketplace-section-head"><h2>shop by what you're craving ✦</h2><p>Little categories for whatever kind of day you're having.</p></div><div class="marketplace-category-grid">
+<div class="marketplace-category-tile" onclick="marketplaceCategory('FRUITS')"><div class="marketplace-category-icon">🍓</div><div class="marketplace-category-name">Fresh</div><div class="marketplace-category-count">fruits & fresh finds</div></div>
+<div class="marketplace-category-tile" onclick="marketplaceCategory('SNACKS')"><div class="marketplace-category-icon">🍪</div><div class="marketplace-category-name">Snacks</div><div class="marketplace-category-count">crunchy little things</div></div>
+<div class="marketplace-category-tile" onclick="marketplaceCategory('JUICES')"><div class="marketplace-category-icon">🧃</div><div class="marketplace-category-name">Drinks</div><div class="marketplace-category-count">sip something nice</div></div>
+<div class="marketplace-category-tile" onclick="marketplaceCategory('JEWELLERY')"><div class="marketplace-category-icon">💍</div><div class="marketplace-category-name">Jewellery</div><div class="marketplace-category-count">a little sparkle</div></div>
+<div class="marketplace-category-tile" onclick="marketplaceCategory('CREATIVE')"><div class="marketplace-category-icon">🎨</div><div class="marketplace-category-name">Creative</div><div class="marketplace-category-count">cute useful finds</div></div>
+<div class="marketplace-category-tile" onclick="document.getElementById('shop')?.scrollIntoView({behavior:'smooth'})"><div class="marketplace-category-icon">✨</div><div class="marketplace-category-name">More</div><div class="marketplace-category-count">browse everything</div></div></div></section>
+<section class="marketplace-section"><div class="marketplace-collection-bar"><div class="marketplace-collection" onclick="marketplaceScroll('marketplaceDeals')"><strong>Deals today</strong><span>Good things, slightly less expensive.</span></div><div class="marketplace-collection" onclick="marketplaceScroll('marketplaceNew')"><strong>New in</strong><span>Fresh finds that just joined the market.</span></div><div class="marketplace-collection" onclick="marketplaceScroll('marketplaceRated')"><strong>Top rated</strong><span>The things people keep coming back for.</span></div><div class="marketplace-collection" onclick="marketplaceScroll('marketplacePopular')"><strong>For you</strong><span>A tiny recommendation corner.</span></div></div></section>
+<section class="marketplace-section" id="marketplaceDeals"><h2>deals & trending 🔥</h2><p>Popular picks from your market.</p><div class="marketplace-shelf" id="marketplaceDealsShelf"></div></section>
+<section class="marketplace-section" id="marketplacePopular"><h2>popular near you 📍</h2><p>Things people are looking at right now.</p><div class="marketplace-shelf" id="marketplacePopularShelf"></div></section>
+<section class="marketplace-section" id="marketplaceNew"><h2>new arrivals ✨</h2><p>Fresh finds worth a second look.</p><div class="marketplace-shelf" id="marketplaceNewShelf"></div></section>
+<section class="marketplace-section" id="marketplaceRated"><h2>top rated ⭐</h2><p>Sorted using the ratings already available.</p><div class="marketplace-shelf" id="marketplaceRatedShelf"></div></section></section>
+<footer>
 <div class="footer-inner">
 
     <div class="footer-grid">
@@ -2397,9 +2694,11 @@ footer {
             </div>
 
             <p class="footer-description">
+
                 An online market for groceries,
                 cravings, sparkle and the occasional
                 "well... I deserve it."
+
             </p>
 
         </div>
@@ -2447,7 +2746,7 @@ footer {
 
             <a
                 href="#"
-                onclick="openLocationModal();return false;"
+                onclick="openLocationModal(); return false;"
             >
                 delivery location
             </a>
@@ -2469,10 +2768,7 @@ footer {
     </div>
 
 </div>
-
 </footer>
-
-<!-- CART -->
 
 <div
     class="overlay"
@@ -2484,7 +2780,6 @@ footer {
     class="cart-drawer"
     id="cartDrawer"
 >
-
 <div class="cart-header">
 
     <h2>
@@ -2503,7 +2798,8 @@ footer {
 <div
     class="cart-items"
     id="cartItems"
-></div>
+>
+</div>
 
 <div class="cart-footer">
 
@@ -2532,10 +2828,7 @@ footer {
     </div>
 
 </div>
-
 </aside>
-
-<!-- CHECKOUT -->
 
 <div
     class="modal-backdrop"
@@ -2543,89 +2836,87 @@ footer {
     onclick="closeCheckoutModal(event)"
 >
 
-<div
-    class="modal"
-    onclick="event.stopPropagation()"
->
-
-    <button
-        class="modal-close"
-        onclick="closeCheckoutModal()"
+    <div
+        class="modal"
+        onclick="event.stopPropagation()"
     >
-        ×
-    </button>
-
-    <div class="eyebrow">
-        checkout
-    </div>
-
-    <h2>
-        Ready to place it? ✦
-    </h2>
-
-    <p class="modal-subtitle">
-        Your order is ready. Check the summary before placing it.
-    </p>
-
-    <div class="checkout-summary">
-
-        <div class="checkout-summary-row">
-            <span>
-                Items
-            </span>
-
-            <strong id="checkoutItemCount">
-                0 items
-            </strong>
-        </div>
-
-        <div class="checkout-summary-row">
-            <span>
-                Total
-            </span>
-
-            <strong id="checkoutTotal">
-                ₹0.00
-            </strong>
-        </div>
-
-    </div>
-
-    <p class="checkout-modal-note">
-        Mock checkout · no real payment will be taken.
-    </p>
-
-    <div class="checkout-actions">
 
         <button
-            class="checkout-cancel"
+            class="modal-close"
             onclick="closeCheckoutModal()"
         >
-            go back
+            ×
         </button>
 
-        <button
-            class="place-order-btn"
-            id="placeOrderButton"
-            onclick="placeOrder()"
-        >
-            Place order ✦
-        </button>
+        <div class="eyebrow">
+            checkout
+        </div>
+
+        <h2>
+            Ready to place it? ✦
+        </h2>
+
+        <p class="modal-subtitle">
+            Your order is ready. Check the summary before placing it.
+        </p>
+
+        <div class="checkout-summary">
+
+            <div class="checkout-summary-row">
+                <span>
+                    Items
+                </span>
+
+                <strong id="checkoutItemCount">
+                    0 items
+                </strong>
+            </div>
+
+            <div class="checkout-summary-row">
+                <span>
+                    Total
+                </span>
+
+                <strong id="checkoutTotal">
+                    ₹0.00
+                </strong>
+            </div>
+
+        </div>
+
+        <p class="checkout-modal-note">
+            Mock checkout · no real payment will be taken.
+        </p>
+
+        <div class="checkout-actions">
+
+            <button
+                class="checkout-cancel"
+                onclick="closeCheckoutModal()"
+            >
+                go back
+            </button>
+
+            <button
+                class="place-order-btn"
+                id="placeOrderButton"
+                onclick="placeOrder()"
+            >
+                Place order ✦
+            </button>
+
+        </div>
 
     </div>
 
 </div>
 
-</div>
-
-<!-- LOCATION -->
 
 <div
     class="modal-backdrop"
     id="locationModal"
     onclick="closeLocationModal(event)"
 >
-
 <div
     class="modal"
     onclick="event.stopPropagation()"
@@ -2649,7 +2940,8 @@ footer {
     <div
         class="location-options"
         id="locationOptions"
-    ></div>
+    >
+    </div>
 
     <div class="add-location-box">
 
@@ -2670,17 +2962,13 @@ footer {
     </div>
 
 </div>
-
 </div>
-
-<!-- WISHLIST -->
 
 <div
     class="modal-backdrop"
     id="wishlistModal"
     onclick="closeWishlist(event)"
 >
-
 <div
     class="modal"
     onclick="event.stopPropagation()"
@@ -2698,232 +2986,192 @@ footer {
     </h2>
 
     <p class="modal-subtitle">
+
         Things you liked enough to save,
         but apparently not enough to buy yet.
+
     </p>
 
     <div
         class="location-options"
         id="wishlistItems"
-    ></div>
+    >
+    </div>
 
 </div>
-
 </div>
-
-<!-- ACCOUNT -->
 
 <div
     class="modal-backdrop"
     id="accountModal"
     onclick="closeAccountModal(event)"
 >
-
-<div
-    class="modal"
-    onclick="event.stopPropagation()"
->
-
-    <button
-        class="modal-close"
-        onclick="closeAccountModal()"
+    <div
+        class="modal account-modal"
+        onclick="event.stopPropagation()"
     >
-        ×
-    </button>
-
-    <div class="eyebrow">
-        your melon mart account
-    </div>
-
-    <h2>
-        Hello, <span id="accountHeadingName">there</span> ✦
-    </h2>
-
-    <p class="modal-subtitle">
-        Your little corner of the market.
-    </p>
-
-    <div class="account-profile">
-
-        <div
-            class="account-avatar"
-            id="accountAvatar"
-        >
-            M
-        </div>
-
-        <div
-            class="account-name"
-            id="accountName"
-        >
-            Melon Mart User
-        </div>
-
-        <div
-            class="account-email"
-            id="accountEmail"
-        >
-            user@example.com
-        </div>
-
-        <div
-            class="account-role"
-            id="accountRole"
-        >
-            BUYER
-        </div>
-
-    </div>
-
-    <div class="account-actions">
 
         <button
-            class="account-action-btn account-home-btn"
+            class="modal-close"
             onclick="closeAccountModal()"
         >
-            keep shopping ✦
+            ×
         </button>
 
-        <button
-            class="account-action-btn logout-btn"
-            onclick="logout()"
-        >
-            log out
-        </button>
+        <div class="eyebrow">
+            your melon mart account
+        </div>
+
+        <h2>
+            Hello, <span id="accountHeadingName">there</span> ✦
+        </h2>
+
+        <p class="modal-subtitle">
+            Your little corner of the market.
+        </p>
+
+        <div class="account-profile">
+
+            <div
+                class="account-avatar"
+                id="accountAvatar"
+            >
+                M
+            </div>
+
+            <div
+                class="account-name"
+                id="accountName"
+            >
+                Melon Mart User
+            </div>
+
+            <div
+                class="account-email"
+                id="accountEmail"
+            >
+                user@example.com
+            </div>
+
+            <div
+                class="account-role"
+                id="accountRole"
+            >
+                BUYER
+            </div>
+
+        </div>
+
+        <div class="account-menu">
+
+            <button
+                class="account-menu-item"
+                onclick="closeAccountModal(); openOrders();"
+            >
+                <span class="account-menu-icon">📦</span>
+                <span class="account-menu-text">
+                    <strong>My Orders</strong>
+                    <small>Track your recent purchases</small>
+                </span>
+                <span class="account-menu-arrow">›</span>
+            </button>
+
+            <button
+                class="account-menu-item"
+                onclick="closeAccountModal(); openWishlist();"
+            >
+                <span class="account-menu-icon">♡</span>
+                <span class="account-menu-text">
+                    <strong>Wishlist</strong>
+                    <small>Your saved little finds</small>
+                </span>
+                <span class="account-menu-arrow">›</span>
+            </button>
+
+            <button
+                class="account-menu-item"
+                onclick="closeAccountModal(); openLocationModal();"
+            >
+                <span class="account-menu-icon">📍</span>
+                <span class="account-menu-text">
+                    <strong>Delivery Addresses</strong>
+                    <small>Manage where we deliver</small>
+                </span>
+                <span class="account-menu-arrow">›</span>
+            </button>
+
+            <button
+                class="account-menu-item"
+                onclick="closeAccountModal(); showToast('Your reviews will appear here ✦');"
+            >
+                <span class="account-menu-icon">★</span>
+                <span class="account-menu-text">
+                    <strong>My Reviews</strong>
+                    <small>See the products you reviewed</small>
+                </span>
+                <span class="account-menu-arrow">›</span>
+            </button>
+
+            <button class="account-menu-item" onclick="closeAccountModal(); openCart();">
+                <span class="account-menu-icon">🛒</span>
+                <span class="account-menu-text"><strong>My Cart</strong><small>Review your basket and checkout</small></span>
+                <span class="account-menu-arrow">›</span>
+            </button>
+
+            <button id="sellerAccountMenu" class="account-menu-item" style="display:none" onclick="window.location.href='seller.html'">
+                <span class="account-menu-icon">🏪</span>
+                <span class="account-menu-text"><strong>Seller Dashboard</strong><small>Products, orders and sales</small></span>
+                <span class="account-menu-arrow">›</span>
+            </button>
+
+            <button id="adminAccountMenu" class="account-menu-item" style="display:none" onclick="window.location.href='admin.html'">
+                <span class="account-menu-icon">🛡️</span>
+                <span class="account-menu-text"><strong>Admin Console</strong><small>Users, orders and listings</small></span>
+                <span class="account-menu-arrow">›</span>
+            </button>
+
+            <button
+                class="account-menu-item"
+                onclick="closeAccountModal(); showToast('Account settings are ready from this profile ✦');"
+            >
+                <span class="account-menu-icon">＋</span>
+                <span class="account-menu-text">
+                    <strong>Add Another Account</strong>
+                    <small>Keep another Melon Mart account handy</small>
+                </span>
+                <span class="account-menu-arrow">›</span>
+            </button>
+
+        </div>
+
+        <div id="roleAccountActions" class="account-menu"></div>
+
+        <div class="account-actions">
+
+            <button
+                class="account-action-btn account-home-btn"
+                onclick="closeAccountModal()"
+            >
+                keep shopping ✦
+            </button>
+
+            <button
+                class="account-action-btn logout-btn"
+                onclick="logout()"
+            >
+                log out
+            </button>
+
+        </div>
 
     </div>
-
 </div>
-
-</div>
-
-<!-- TOAST -->
 
 <div
     class="toast"
     id="toast"
 >
     Added to your bag ✦
-</div>
-
-<!-- =========================
-     WELP
-========================= -->
-
-<button
-    class="welp-launcher"
-    id="welpLauncher"
-    onclick="toggleWelp()"
-    aria-label="Open Welp shopping assistant"
->
-    🍉
-</button>
-
-<div
-    class="welp-panel"
-    id="welpPanel"
->
-
-    <div class="welp-header">
-
-        <div class="welp-brand">
-
-            <div class="welp-avatar">
-                🍉
-            </div>
-
-            <div>
-
-                <div class="welp-title">
-                    Welp
-                </div>
-
-                <div class="welp-subtitle">
-                    just welp for help. 🐾
-                </div>
-
-            </div>
-
-        </div>
-
-        <button
-            class="welp-close"
-            onclick="closeWelp()"
-            aria-label="Close Welp"
-        >
-            ×
-        </button>
-
-    </div>
-
-    <div
-        class="welp-messages"
-        id="welpMessages"
-    >
-
-        <div class="welp-message bot">
-            Hiii 🍉 I'm Welp!
-
-            Tell me what you're looking for and I'll help you find something good.
-        </div>
-
-    </div>
-
-    <div
-        class="welp-typing"
-        id="welpTyping"
-    >
-        Welp is thinking... 🍉
-    </div>
-
-    <div class="welp-suggestions">
-
-        <button
-            class="welp-suggestion"
-            onclick="sendWelpSuggestion('Something sweet under ₹300')"
-        >
-            🍫 Something sweet
-        </button>
-
-        <button
-            class="welp-suggestion"
-            onclick="sendWelpSuggestion('Show me snacks')"
-        >
-            🍿 Snacks
-        </button>
-
-        <button
-            class="welp-suggestion"
-            onclick="sendWelpSuggestion('Show me something pretty')"
-        >
-            ✦ Something pretty
-        </button>
-
-    </div>
-
-    <form
-        class="welp-input-area"
-        onsubmit="sendWelpMessage(event)"
-    >
-
-        <input
-            class="welp-input"
-            id="welpInput"
-            type="text"
-            placeholder="Ask Welp anything..."
-            autocomplete="off"
-        >
-
-        <button
-            class="welp-send"
-            type="submit"
-            aria-label="Send message"
-        >
-            ↑
-        </button>
-
-    </form>
-
 </div>
 
 <script>
@@ -2943,8 +3191,6 @@ const API_BASE =
 ========================================== */
 
 let products = [];
-
-let productRatings = {};
 
 let cart = [];
 
@@ -3041,6 +3287,7 @@ const dailyThoughts = [
 
 ];
 
+
 function setDailyThought() {
 
     const now = new Date();
@@ -3135,6 +3382,7 @@ async function checkCurrentUser() {
 
 }
 
+
 function updateAccountUI() {
 
     const button =
@@ -3145,11 +3393,6 @@ function updateAccountUI() {
     const footerLink =
         document.getElementById(
             "footerAccountLink"
-        );
-
-    const adminButton =
-        document.getElementById(
-            "adminButton"
         );
 
     if (!button) {
@@ -3178,19 +3421,11 @@ function updateAccountUI() {
             "logged-in"
         );
 
-        if (adminButton) {
-
-            const role =
-                String(
-                    currentUser.role || ""
-                ).toUpperCase();
-
-            adminButton.style.display =
-                role === "ADMIN"
-                    ? "inline-flex"
-                    : "none";
-
-        }
+        renderAccountDropdown();
+        const sellerLink = document.getElementById("menuSellerLink");
+        const adminLink = document.getElementById("menuAdminLink");
+        if (sellerLink) sellerLink.style.display = String(currentUser.role || "").toUpperCase() === "SELLER" ? "flex" : "none";
+        if (adminLink) adminLink.style.display = String(currentUser.role || "").toUpperCase() === "ADMIN" ? "flex" : "none";
 
         if (footerLink) {
 
@@ -3220,12 +3455,11 @@ function updateAccountUI() {
             "logged-in"
         );
 
-        if (adminButton) {
-
-            adminButton.style.display =
-                "none";
-
-        }
+        renderAccountDropdown();
+        const sellerLink = document.getElementById("menuSellerLink");
+        const adminLink = document.getElementById("menuAdminLink");
+        if (sellerLink) sellerLink.style.display = "none";
+        if (adminLink) adminLink.style.display = "none";
 
         if (footerLink) {
 
@@ -3244,6 +3478,7 @@ function updateAccountUI() {
 
 }
 
+
 function getFirstName(name) {
 
     return String(name)
@@ -3253,81 +3488,31 @@ function getFirstName(name) {
 
 }
 
-function handleAccountClick() {
 
-    if (!currentUser) {
-
-        window.location.href =
-            "login.html";
-
-        return;
-
-    }
-
-    openAccountModal();
-
+function handleAccountClick(event) {
+    if (event) event.stopPropagation();
+    if (!currentUser) { window.location.href = "login.html"; return; }
+    const drop = document.getElementById("accountDropdown");
+    if (!drop) { window.location.href = "account.html"; return; }
+    drop.classList.toggle("open");
 }
+
+function renderAccountDropdown() {
+    const drop = document.getElementById("accountDropdown");
+    if (!drop) return;
+    if (!currentUser) { drop.innerHTML = `<a class="account-drop-link" href="login.html"><span class="ico">♙</span><span>Sign in / create account</span></a>`; return; }
+    const name = currentUser.username || currentUser.name || "there";
+    const role = String(currentUser.role || "BUYER").toUpperCase();
+    const extra = role === "SELLER" ? `<a class="account-drop-link" href="seller.html"><span class="ico">🏪</span><span>Seller Dashboard</span></a>` : role === "ADMIN" ? `<a class="account-drop-link" href="admin.html"><span class="ico">🛡️</span><span>Admin Dashboard</span></a>` : "";
+    drop.innerHTML = `<div class="account-drop-profile"><div class="account-drop-avatar">${escapeHtml(getFirstName(name).charAt(0).toUpperCase())}</div><div><strong>Hi, ${escapeHtml(getFirstName(name))}</strong><small>${escapeHtml(currentUser.email || "")} · ${escapeHtml(role)}</small></div></div><a class="account-drop-link" href="account.html"><span class="ico">♙</span><span>My Account</span></a><a class="account-drop-link" href="orders.html"><span class="ico">📦</span><span>My Orders</span></a><a class="account-drop-link" href="wishlist.html"><span class="ico">♡</span><span>Wishlist</span></a><a class="account-drop-link" href="location.html"><span class="ico">📍</span><span>Delivery Addresses</span></a><a class="account-drop-link" href="reviews.html"><span class="ico">★</span><span>My Reviews</span></a><a class="account-drop-link" href="cart.html"><span class="ico">🛒</span><span>My Cart</span></a>${extra}<a class="account-drop-link" href="help.html"><span class="ico">?</span><span>Help & Support</span></a><div class="account-drop-divider"></div><button class="account-drop-link" onclick="logout()"><span class="ico">↪</span><span>Log out</span></button>`;
+}
+
 
 function openAccountModal() {
-
-    if (!currentUser) {
-
-        window.location.href =
-            "login.html";
-
-        return;
-
-    }
-
-    const name =
-        currentUser.username
-        ||
-        currentUser.name
-        ||
-        "Melon Mart User";
-
-    const email =
-        currentUser.email
-        ||
-        "";
-
-    const role =
-        currentUser.role
-        ||
-        "BUYER";
-
-    document.getElementById(
-        "accountHeadingName"
-    ).textContent =
-        getFirstName(name);
-
-    document.getElementById(
-        "accountName"
-    ).textContent =
-        name;
-
-    document.getElementById(
-        "accountEmail"
-    ).textContent =
-        email;
-
-    document.getElementById(
-        "accountRole"
-    ).textContent =
-        role;
-
-    document.getElementById(
-        "accountAvatar"
-    ).textContent =
-        getFirstName(name)
-            .charAt(0)
-            .toUpperCase();
-
-    document.getElementById(
-        "accountModal"
-    ).classList.add("open");
-
+    if (!currentUser) { window.location.href = "login.html"; return; }
+    window.location.href = "account.html";
 }
+
 
 function closeAccountModal(event) {
 
@@ -3343,9 +3528,11 @@ function closeAccountModal(event) {
 
     document.getElementById(
         "accountModal"
-    ).classList.remove("open");
+    )
+    .classList.remove("open");
 
 }
+
 
 async function logout() {
 
@@ -3437,71 +3624,6 @@ async function fetchProducts() {
         products =
             await response.json();
 
-        productRatings = {};
-
-        await Promise.all(
-            products.map(
-                async product => {
-
-                    try {
-
-                        const reviewResponse =
-                            await fetch(
-                                API_BASE
-                                +
-                                "/api/reviews/product?productId="
-                                +
-                                encodeURIComponent(
-                                    Number(product.id)
-                                )
-                            );
-
-                        if (!reviewResponse.ok) {
-                            return;
-                        }
-
-                        const reviewData =
-                            await reviewResponse.json();
-
-                        productRatings[
-                            Number(product.id)
-                        ] = {
-
-                            averageRating:
-                                Number(
-                                    reviewData.averageRating || 0
-                                ),
-
-                            reviewCount:
-                                Number(
-                                    reviewData.reviewCount || 0
-                                )
-
-                        };
-
-                    } catch (error) {
-
-                        console.error(
-                            "Could not load rating for product:",
-                            product.id,
-                            error
-                        );
-
-                        productRatings[
-                            Number(product.id)
-                        ] = {
-
-                            averageRating: 0,
-                            reviewCount: 0
-
-                        };
-
-                    }
-
-                }
-            )
-        );
-
         renderProducts();
 
     } catch (error) {
@@ -3570,6 +3692,7 @@ function setCategory(button, category) {
     fetchProducts();
 
 }
+
 
 function goToCategory(category) {
 
@@ -3650,7 +3773,7 @@ function renderProducts() {
     if (sort === "low") {
 
         filtered.sort(
-            (a,b) =>
+            (a, b) =>
                 Number(a.price) -
                 Number(b.price)
         );
@@ -3660,7 +3783,7 @@ function renderProducts() {
     if (sort === "high") {
 
         filtered.sort(
-            (a,b) =>
+            (a, b) =>
                 Number(b.price) -
                 Number(a.price)
         );
@@ -3670,7 +3793,7 @@ function renderProducts() {
     if (sort === "name") {
 
         filtered.sort(
-            (a,b) =>
+            (a, b) =>
                 String(a.name)
                     .localeCompare(
                         String(b.name)
@@ -3726,31 +3849,6 @@ function renderProducts() {
             const price =
                 Number(product.price || 0);
 
-            const rating =
-                productRatings[id]
-                ||
-                {
-                    averageRating: 0,
-                    reviewCount: 0
-                };
-
-            const averageRating =
-                Number(
-                    rating.averageRating || 0
-                );
-
-            const reviewCount =
-                Number(
-                    rating.reviewCount || 0
-                );
-
-            const ratingStars =
-                reviewCount > 0
-                ? "★".repeat(
-                    Math.round(averageRating)
-                )
-                : "";
-
             const cartItem =
                 cart.find(
                     item =>
@@ -3777,7 +3875,7 @@ function renderProducts() {
 
                         <button
                             class="wishlist-btn ${saved ? "saved" : ""}"
-                            onclick="toggleWishlist(${id},this)"
+                            onclick="toggleWishlist(${id}, this)"
                             aria-label="Save ${escapeHtml(product.name || "product")}"
                         >
                             ${saved ? "♥" : "♡"}
@@ -3796,41 +3894,14 @@ function renderProducts() {
                         </div>
 
                         <div class="product-description">
+
                             ${escapeHtml(
                                 product.description
                                 ||
                                 "Looks good. Probably is."
                             )}
+
                         </div>
-
-                        ${
-                            reviewCount > 0
-                            ? `
-                                <div class="product-rating">
-
-                                    <span class="product-rating-stars">
-                                        ${ratingStars}
-                                    </span>
-
-                                    <span class="product-rating-text">
-                                        ${averageRating.toFixed(1)}
-                                        ·
-                                        ${reviewCount}
-                                        ${
-                                            reviewCount === 1
-                                            ? "review"
-                                            : "reviews"
-                                        }
-                                    </span>
-
-                                </div>
-                            `
-                            : `
-                                <div class="product-rating empty">
-                                    ☆ No reviews yet
-                                </div>
-                            `
-                        }
 
                         <div class="product-bottom">
 
@@ -3844,7 +3915,7 @@ function renderProducts() {
                                     <div class="inline-quantity">
 
                                         <button
-                                            onclick="changeQuantityFromCard(event,${id},${cartQuantity - 1})"
+                                            onclick="changeQuantityFromCard(event, ${id}, ${cartQuantity - 1})"
                                             aria-label="Decrease ${escapeHtml(product.name || "product")}"
                                         >
                                             −
@@ -3855,7 +3926,7 @@ function renderProducts() {
                                         </span>
 
                                         <button
-                                            onclick="changeQuantityFromCard(event,${id},${cartQuantity + 1})"
+                                            onclick="changeQuantityFromCard(event, ${id}, ${cartQuantity + 1})"
                                             aria-label="Increase ${escapeHtml(product.name || "product")}"
                                         >
                                             +
@@ -3938,7 +4009,10 @@ document.getElementById("searchInput")
    WISHLIST
 ========================================== */
 
-function toggleWishlist(productId,button) {
+function toggleWishlist(
+    productId,
+    button
+) {
 
     productId =
         Number(productId);
@@ -3947,7 +4021,9 @@ function toggleWishlist(productId,button) {
 
         wishlist.delete(productId);
 
-        button.classList.remove("saved");
+        button.classList.remove(
+            "saved"
+        );
 
         button.textContent =
             "♡";
@@ -3960,7 +4036,9 @@ function toggleWishlist(productId,button) {
 
         wishlist.add(productId);
 
-        button.classList.add("saved");
+        button.classList.add(
+            "saved"
+        );
 
         button.textContent =
             "♥";
@@ -3980,15 +4058,11 @@ function toggleWishlist(productId,button) {
 
 }
 
-function openWishlist() {
 
-    renderWishlist();
+function openOrders() { window.location.href = "orders.html"; }
 
-    document.getElementById(
-        "wishlistModal"
-    ).classList.add("open");
+function openWishlist() { window.location.href = "wishlist.html"; }
 
-}
 
 function closeWishlist(event) {
 
@@ -4004,9 +4078,11 @@ function closeWishlist(event) {
 
     document.getElementById(
         "wishlistModal"
-    ).classList.remove("open");
+    )
+    .classList.remove("open");
 
 }
+
 
 function renderWishlist() {
 
@@ -4168,6 +4244,7 @@ async function addToCart(productId) {
 
 }
 
+
 async function fetchCart() {
 
     try {
@@ -4216,11 +4293,16 @@ async function fetchCart() {
 
 }
 
+
+/* ==========================================
+   FIXED CART RENDERING
+========================================== */
+
 function updateCartUI() {
 
     const count =
         cart.reduce(
-            (sum,item) =>
+            (sum, item) =>
                 sum + Number(item.quantity || 0),
             0
         );
@@ -4311,7 +4393,10 @@ function updateCartUI() {
                         <div class="quantity-controls">
 
                             <button
-                                onclick="changeQuantity(${Number(item.productId)},${quantity - 1})"
+                                onclick="changeQuantity(
+                                    ${Number(item.productId)},
+                                    ${quantity - 1}
+                                )"
                             >
                                 −
                             </button>
@@ -4321,7 +4406,10 @@ function updateCartUI() {
                             </span>
 
                             <button
-                                onclick="changeQuantity(${Number(item.productId)},${quantity + 1})"
+                                onclick="changeQuantity(
+                                    ${Number(item.productId)},
+                                    ${quantity + 1}
+                                )"
                             >
                                 +
                             </button>
@@ -4330,7 +4418,9 @@ function updateCartUI() {
 
                         <button
                             class="remove-cart"
-                            onclick="removeFromCart(${Number(item.productId)})"
+                            onclick="removeFromCart(
+                                ${Number(item.productId)}
+                            )"
                         >
                             remove
                         </button>
@@ -4338,7 +4428,9 @@ function updateCartUI() {
                     </div>
 
                     <strong>
-                        ₹${(price * quantity).toFixed(2)}
+                        ₹${(
+                            price * quantity
+                        ).toFixed(2)}
                     </strong>
 
                 </div>
@@ -4352,6 +4444,7 @@ function updateCartUI() {
         "₹" + total.toFixed(2);
 
 }
+
 
 async function changeQuantityFromCard(
     event,
@@ -4369,6 +4462,7 @@ async function changeQuantityFromCard(
     );
 
 }
+
 
 async function changeQuantity(
     productId,
@@ -4439,7 +4533,10 @@ async function changeQuantity(
 
 }
 
-async function removeFromCart(productId) {
+
+async function removeFromCart(
+    productId
+) {
 
     try {
 
@@ -4492,27 +4589,21 @@ async function removeFromCart(productId) {
 
 }
 
-function openCart() {
 
-    document.getElementById(
-        "cartDrawer"
-    ).classList.add("open");
+function openCart() { window.location.href = "cart.html"; }
 
-    document.getElementById(
-        "cartOverlay"
-    ).classList.add("open");
-
-}
 
 function closeCart() {
 
     document.getElementById(
         "cartDrawer"
-    ).classList.remove("open");
+    )
+    .classList.remove("open");
 
     document.getElementById(
         "cartOverlay"
-    ).classList.remove("open");
+    )
+    .classList.remove("open");
 
 }
 
@@ -4544,14 +4635,14 @@ function checkout() {
 
     const count =
         cart.reduce(
-            (sum,item) =>
+            (sum, item) =>
                 sum + Number(item.quantity || 0),
             0
         );
 
     const total =
         cart.reduce(
-            (sum,item) =>
+            (sum, item) =>
                 sum
                 +
                 Number(item.quantity || 0)
@@ -4562,7 +4653,8 @@ function checkout() {
 
     document.getElementById(
         "checkoutItemCount"
-    ).textContent =
+    )
+    .textContent =
         count
         +
         (
@@ -4573,15 +4665,18 @@ function checkout() {
 
     document.getElementById(
         "checkoutTotal"
-    ).textContent =
+    )
+    .textContent =
         "₹" +
         total.toFixed(2);
 
     document.getElementById(
         "checkoutModal"
-    ).classList.add("open");
+    )
+    .classList.add("open");
 
 }
+
 
 function closeCheckoutModal(event) {
 
@@ -4597,9 +4692,11 @@ function closeCheckoutModal(event) {
 
     document.getElementById(
         "checkoutModal"
-    ).classList.remove("open");
+    )
+    .classList.remove("open");
 
 }
+
 
 async function placeOrder() {
 
@@ -4713,20 +4810,12 @@ async function placeOrder() {
 
 }
 
-
 /* ==========================================
    LOCATION
 ========================================== */
 
-function openLocationModal() {
+function openLocationModal() { window.location.href = "location.html"; }
 
-    renderLocations();
-
-    document.getElementById(
-        "locationModal"
-    ).classList.add("open");
-
-}
 
 function closeLocationModal(event) {
 
@@ -4742,9 +4831,11 @@ function closeLocationModal(event) {
 
     document.getElementById(
         "locationModal"
-    ).classList.remove("open");
+    )
+    .classList.remove("open");
 
 }
+
 
 function renderLocations() {
 
@@ -4765,7 +4856,9 @@ function renderLocations() {
 
                     <button
                         class="location-option"
-                        onclick="selectLocation(${JSON.stringify(location)})"
+                        onclick="selectLocation(
+                            ${JSON.stringify(location)}
+                        )"
                     >
 
                         <div>
@@ -4775,21 +4868,25 @@ function renderLocations() {
                             </strong>
 
                             <span>
+
                                 ${
                                     selected
                                     ? "current delivery location"
                                     : "saved location"
                                 }
+
                             </span>
 
                         </div>
 
                         <div class="location-check">
+
                             ${
                                 selected
                                 ? "✓"
                                 : "○"
                             }
+
                         </div>
 
                     </button>
@@ -4800,6 +4897,7 @@ function renderLocations() {
         ).join("");
 
 }
+
 
 function selectLocation(location) {
 
@@ -4813,7 +4911,8 @@ function selectLocation(location) {
 
     document.getElementById(
         "currentLocation"
-    ).textContent =
+    )
+    .textContent =
         currentLocation;
 
     renderLocations();
@@ -4823,6 +4922,7 @@ function selectLocation(location) {
     );
 
 }
+
 
 function saveNewLocation() {
 
@@ -4873,7 +4973,8 @@ function saveNewLocation() {
 
     document.getElementById(
         "currentLocation"
-    ).textContent =
+    )
+    .textContent =
         currentLocation;
 
     input.value = "";
@@ -4933,215 +5034,26 @@ function showToast(message) {
 function escapeHtml(value) {
 
     return String(value ?? "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
-
-}
-
-
-/* ==========================================
-   WELP AI ASSISTANT
-========================================== */
-
-function toggleWelp() {
-
-    const panel =
-        document.getElementById(
-            "welpPanel"
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
         );
-
-    if (panel.classList.contains("open")) {
-
-        closeWelp();
-
-    } else {
-
-        openWelp();
-
-    }
-
-}
-
-function openWelp() {
-
-    document.getElementById(
-        "welpPanel"
-    ).classList.add("open");
-
-    setTimeout(() => {
-
-        document.getElementById(
-            "welpInput"
-        ).focus();
-
-    },250);
-
-}
-
-function closeWelp() {
-
-    document.getElementById(
-        "welpPanel"
-    ).classList.remove("open");
-
-}
-
-function addWelpMessage(
-    message,
-    type
-) {
-
-    const container =
-        document.getElementById(
-            "welpMessages"
-        );
-
-    const messageElement =
-        document.createElement("div");
-
-    messageElement.className =
-        "welp-message " + type;
-
-    messageElement.textContent =
-        message;
-
-    container.appendChild(
-        messageElement
-    );
-
-    container.scrollTop =
-        container.scrollHeight;
-
-}
-
-function setWelpTyping(visible) {
-
-    const typing =
-        document.getElementById(
-            "welpTyping"
-        );
-
-    typing.classList.toggle(
-        "show",
-        visible
-    );
-
-    const container =
-        document.getElementById(
-            "welpMessages"
-        );
-
-    if (visible) {
-
-        container.scrollTop =
-            container.scrollHeight;
-
-    }
-
-}
-
-async function sendWelpSuggestion(message) {
-
-    const input =
-        document.getElementById(
-            "welpInput"
-        );
-
-    input.value =
-        message;
-
-    await sendWelpMessage();
-
-}
-
-async function sendWelpMessage(event) {
-
-    if (event) {
-        event.preventDefault();
-    }
-
-    const input =
-        document.getElementById(
-            "welpInput"
-        );
-
-    const message =
-        input.value.trim();
-
-    if (!message) {
-        return;
-    }
-
-    addWelpMessage(
-        message,
-        "user"
-    );
-
-    input.value = "";
-
-    setWelpTyping(true);
-
-    try {
-
-        const response =
-            await fetch(
-                API_BASE + "/api/welp",
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body: JSON.stringify({
-                        message: message
-                    })
-                }
-            );
-
-        const data =
-            await response.json();
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.message
-                ||
-                data.error
-                ||
-                "Welp could not reply."
-            );
-
-        }
-
-        addWelpMessage(
-            data.reply
-            ||
-            "Hmm... Welp has temporarily lost the plot. 🍉",
-            "bot"
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Welp error:",
-            error
-        );
-
-        addWelpMessage(
-            "Oops 😭 Welp couldn't connect right now. Try again in a moment.",
-            "bot"
-        );
-
-    } finally {
-
-        setWelpTyping(false);
-
-    }
 
 }
 
@@ -5152,7 +5064,8 @@ async function sendWelpMessage(event) {
 
 document.getElementById(
     "currentLocation"
-).textContent =
+)
+.textContent =
     currentLocation;
 
 setDailyThought();
@@ -5163,23 +5076,195 @@ fetchProducts();
 
 fetchCart();
 
-function openOrders() {
 
-    if (!currentUser) {
+/* MARKETPLACE UPGRADE JS */
+(function(){function ps(){return Array.isArray(window.products)?window.products:[]}function nm(p){return p.title||p.name||'Melon Mart find'}function im(p){return p.img||p.imageUrl||p.image||'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80'}function ct(p){return p.category||'GOOD FIND'}function esc(v){return typeof escapeHtml==='function'?escapeHtml(String(v??'')):String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}function card(p,b){return '<article class="marketplace-card" onclick="marketplaceOpenProduct('+JSON.stringify(p.id)+')">'+(b?'<span class="marketplace-badge">'+b+'</span>':'')+'<img src="'+esc(im(p))+'" alt="'+esc(nm(p))+'" loading="lazy"><div class="marketplace-card-body"><div class="marketplace-card-category">'+esc(ct(p))+'</div><div class="marketplace-card-title">'+esc(nm(p))+'</div><div class="marketplace-card-rating">'+(p.rating?'★ '+Number(p.rating).toFixed(1):'New · be the first to review')+'</div><div class="marketplace-card-price">₹'+Number(p.price||0).toLocaleString('en-IN')+'</div><button class="marketplace-mini-add" onclick="event.stopPropagation();marketplaceAdd('+JSON.stringify(p.id)+')">+ Add</button></div></article>'}function fill(id,a,b){let e=document.getElementById(id);if(e)e.innerHTML=a.length?a.slice(0,8).map(x=>card(x,b)).join(''):'<div class="marketplace-empty">Nothing here yet ✦</div>'}function render(){let a=ps();if(!a.length)return;fill('marketplaceDealsShelf',a,'Good deal');fill('marketplacePopularShelf',a,'Popular');fill('marketplaceNewShelf',[...a].reverse(),'Just in');fill('marketplaceRatedShelf',[...a].sort((x,y)=>(Number(y.rating)||0)-(Number(x.rating)||0)),'Top rated')}window.marketplaceCategory=function(c){if(typeof setCategory==='function')setCategory(c);else if(typeof goToCategory==='function')goToCategory(c);document.getElementById('shop')?.scrollIntoView({behavior:'smooth'})};window.marketplaceScroll=function(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'})};window.marketplaceOpenProduct=function(id){if(typeof openProductDetails==='function')openProductDetails(id)};window.marketplaceAdd=function(id){let p=ps().find(x=>String(x.id)===String(id));if(p&&typeof addToCart==='function')addToCart(p)};function search(){let i=document.getElementById('searchInput'),box=i?.closest('.search-box');if(!i||!box||i.dataset.mm)return;i.dataset.mm='1';box.style.position='relative';let panel=document.createElement('div');panel.className='marketplace-search-panel';box.appendChild(panel);i.addEventListener('input',function(){let q=i.value.trim().toLowerCase();if(!q){panel.classList.remove('open');return}let m=ps().filter(p=>(nm(p)+' '+ct(p)).toLowerCase().includes(q)).slice(0,5);panel.innerHTML=m.map(p=>'<button class="marketplace-search-result" onclick="marketplaceOpenProduct('+JSON.stringify(p.id)+')"><img src="'+esc(im(p))+'"><span><strong>'+esc(nm(p))+'</strong><small>'+esc(ct(p))+' · ₹'+Number(p.price||0).toLocaleString('en-IN')+'</small></span></button>').join('')||'<div class="marketplace-empty">No little match found ✦</div>';panel.classList.add('open')})}function start(){search();render();setTimeout(render,700);setTimeout(render,1800)}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start()})();
 
-        window.location.href =
-            "login.html";
+const searchInput = document.getElementById("searchInput");
+const searchSuggestions = document.getElementById("searchSuggestions");
 
-        return;
+if (searchInput && searchSuggestions) {
 
-    }
+    searchInput.addEventListener("input", function () {
 
-    window.location.href =
-        "orders.html";
+        const query = this.value.trim().toLowerCase();
+
+        if (!query || !Array.isArray(products) || products.length === 0) {
+            searchSuggestions.innerHTML = "";
+            searchSuggestions.classList.remove("show");
+            return;
+        }
+
+        const matches = products
+            .filter(product =>
+                String(product.name || "")
+                    .toLowerCase()
+                    .includes(query)
+            )
+            .slice(0, 5);
+
+        if (matches.length === 0) {
+            searchSuggestions.innerHTML = `
+                <div class="search-suggestion">
+                    <div class="search-suggestion-info">
+                        <div class="search-suggestion-name">No products found</div>
+                        <div class="search-suggestion-price">Try another search</div>
+                    </div>
+                </div>
+            `;
+
+            searchSuggestions.classList.add("show");
+            return;
+        }
+
+        searchSuggestions.innerHTML = matches.map(product => `
+            <div
+                class="search-suggestion"
+                onclick="openProductDetails(${product.id})"
+            >
+                <img
+                    src="${product.imageUrl || getFallbackImage(product.category)}"
+                    alt="${escapeHtml(product.name || "Product")}"
+                >
+
+                <div class="search-suggestion-info">
+                    <div class="search-suggestion-name">
+                        ${escapeHtml(product.name || "Product")}
+                    </div>
+
+                    <div class="search-suggestion-price">
+                        ₹${Number(product.price || 0).toFixed(2)}
+                    </div>
+                </div>
+            </div>
+        `).join("");
+
+        searchSuggestions.classList.add("show");
+    });
+
+    document.addEventListener("click", function (event) {
+
+        if (!event.target.closest(".search-box")) {
+            searchSuggestions.classList.remove("show");
+        }
+
+    });
 
 }
+/* =========================
+   PRODUCT DETAILS + REVIEWS
+========================= */
+(function () {
+    function esc(v) {
+        return typeof escapeHtml === "function" ? escapeHtml(String(v ?? "")) : String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+    }
+    function money(v) { return "₹" + Number(v || 0).toLocaleString("en-IN", {minimumFractionDigits:2, maximumFractionDigits:2}); }
+    function stars(v) { const n = Math.round(Number(v || 0)); return "★".repeat(n) + "☆".repeat(5-n); }
+    function close() { document.getElementById("mmProductModal")?.remove(); document.body.style.overflow = ""; }
+    window.closeProductDetails = close;
 
+    async function openProductDetails(productId) {
+        const product = (window.products || products || []).find(p => String(p.id) === String(productId));
+        if (!product) { showToast("Product is not available right now"); return; }
+        close();
+        document.body.style.overflow = "hidden";
+        const modal = document.createElement("div");
+        modal.id = "mmProductModal";
+        modal.innerHTML = `
+          <div class="mm-product-backdrop" onclick="if(event.target===this)closeProductDetails()">
+            <div class="mm-product-sheet" role="dialog" aria-modal="true" aria-label="Product details">
+              <button class="mm-close" onclick="closeProductDetails()" aria-label="Close">×</button>
+              <div class="mm-product-grid">
+                <div class="mm-product-image-wrap"><img src="${esc(product.imageUrl || getFallbackImage(product.category))}" alt="${esc(product.name)}"></div>
+                <div class="mm-product-info">
+                  <div class="mm-eyebrow">${esc(product.category || "GROCERY")}</div>
+                  <h2>${esc(product.name)}</h2>
+                  <div id="mmRating" class="mm-rating">Loading rating…</div>
+                  <div class="mm-price">${money(product.price)}</div>
+                  <p class="mm-description">${esc(product.description || "Freshly listed on MelonMart.")}</p>
+                  <div class="mm-seller">Seller #${esc(product.sellerId)} · ${Number(product.stockQty || 0) > 0 ? "In stock" : "Out of stock"}</div>
+                  <div class="mm-actions">
+                    <button class="mm-add" ${Number(product.stockQty || 0) <= 0 ? "disabled" : ""} onclick="addToCart(${Number(product.id)});showToast('Added to cart ✦');closeProductDetails()">+ Add to cart</button>
+                  </div>
+                </div>
+              </div>
+              <section class="mm-reviews-section">
+                <div class="mm-section-head"><div><h3>Customer reviews</h3><p>Real reviews from completed purchases.</p></div><div id="mmRatingBig"></div></div>
+                <div id="mmReviews">Loading reviews…</div>
+              </section>
+            </div>
+          </div>`;
+        document.body.appendChild(modal);
+        try {
+            const r = await fetch(API_BASE + "/api/reviews/product?productId=" + encodeURIComponent(productId));
+            const data = await r.json();
+            const reviews = Array.isArray(data.reviews) ? data.reviews : [];
+            const avg = Number(data.averageRating || 0);
+            document.getElementById("mmRating").innerHTML = avg ? `<b>${avg.toFixed(1)}</b> <span class="mm-stars">${stars(avg)}</span> <span>${reviews.length} review${reviews.length===1?"":"s"}</span>` : `<span class="mm-stars">☆☆☆☆☆</span> <span>New · be the first to review</span>`;
+            document.getElementById("mmRatingBig").innerHTML = avg ? `<strong>${avg.toFixed(1)}</strong> <span class="mm-stars">${stars(avg)}</span><small>${reviews.length} review${reviews.length===1?"":"s"}</small>` : `<strong>New</strong><small>No reviews yet</small>`;
+            const box = document.getElementById("mmReviews");
+            if (!reviews.length) box.innerHTML = `<div class="mm-empty-review"><div class="mm-empty-star">☆</div><strong>No reviews yet</strong><span>Be the first to review this product after your delivered purchase.</span></div>`;
+            else box.innerHTML = reviews.map(rv => `<article class="mm-review"><div class="mm-review-top"><strong>${esc(rv.userName || "MelonMart customer")}</strong><span class="mm-stars">${stars(rv.rating)}</span></div><p>${esc(rv.comment || "No written comment.")}</p><small>${rv.createdAt ? new Date(rv.createdAt).toLocaleDateString("en-IN") : ""}</small></article>`).join("");
+            await addReviewEntry(product);
+        } catch (e) {
+            console.error(e);
+            document.getElementById("mmReviews").innerHTML = `<div class="mm-empty-review"><strong>Reviews could not be loaded.</strong><span>Please try again.</span></div>`;
+        }
+    }
+    window.openProductDetails = openProductDetails;
+
+    async function addReviewEntry(product) {
+        const box = document.getElementById("mmReviews");
+        if (!box) return;
+        try {
+            const me = await fetch(API_BASE + "/api/auth/me");
+            if (!me.ok) return;
+            const md = await me.json();
+            if (!md.authenticated) return;
+            const ordersResp = await fetch(API_BASE + "/api/orders");
+            if (!ordersResp.ok) return;
+            const orders = await ordersResp.json();
+            let eligible = null;
+            for (const o of (Array.isArray(orders) ? orders : [])) {
+                if (String(o.status).toUpperCase() !== "DELIVERED") continue;
+                const d = await fetch(API_BASE + "/api/orders/" + o.id);
+                if (!d.ok) continue;
+                const od = await d.json();
+                if ((od.items || []).some(i => String(i.productId) === String(product.id))) { eligible = o; break; }
+            }
+            const old = document.getElementById("mmReviewComposer"); if (old) old.remove();
+            const composer = document.createElement("div"); composer.id="mmReviewComposer"; composer.className="mm-review-composer";
+            if (!eligible) {
+                composer.innerHTML = `<strong>Want to review this?</strong><span>You can leave a review after this product is part of an order marked Delivered.</span>`;
+            } else {
+                composer.innerHTML = `<strong>Share your experience</strong><div class="mm-review-form"><select id="mmReviewRating"><option value="5">★★★★★ · 5</option><option value="4">★★★★☆ · 4</option><option value="3">★★★☆☆ · 3</option><option value="2">★★☆☆☆ · 2</option><option value="1">★☆☆☆☆ · 1</option></select><textarea id="mmReviewComment" maxlength="1000" placeholder="How was this product?"></textarea><button onclick="submitProductReview(${Number(product.id)},${Number(eligible.id)})">Post review</button></div>`;
+            }
+            box.appendChild(composer);
+        } catch (e) { console.debug("review eligibility", e); }
+    }
+    window.submitProductReview = async function(productId, orderId) {
+        const rating = document.getElementById("mmReviewRating")?.value;
+        const comment = document.getElementById("mmReviewComment")?.value || "";
+        const body = new URLSearchParams({productId:String(productId), orderId:String(orderId), rating:String(rating), comment:comment.trim()});
+        try {
+            const r = await fetch(API_BASE + "/api/reviews/create", {method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"}, body});
+            const d = await r.json();
+            if (!r.ok) throw new Error(d.message || "Could not post review");
+            showToast("Review posted ✦");
+            openProductDetails(productId);
+        } catch(e) { showToast(e.message || "Could not post review"); }
+    };
+
+    const style = document.createElement("style");
+    style.textContent = `
+      .mm-product-backdrop{position:fixed;inset:0;background:rgba(32,24,28,.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:22px;backdrop-filter:blur(8px)}
+      .mm-product-sheet{position:relative;width:min(1050px,100%);max-height:92vh;overflow:auto;background:#fffdf5;border-radius:28px;padding:30px;box-shadow:0 30px 90px rgba(0,0,0,.25)}
+      .mm-close{position:absolute;right:18px;top:14px;border:0;background:#f4e7d9;width:40px;height:40px;border-radius:50%;font-size:28px;line-height:1;z-index:2}.mm-product-grid{display:grid;grid-template-columns:minmax(300px,1fr) minmax(280px,1fr);gap:34px}.mm-product-image-wrap{background:#f5edda;border-radius:22px;min-height:380px;display:flex;align-items:center;justify-content:center;overflow:hidden}.mm-product-image-wrap img{width:100%;height:100%;min-height:380px;object-fit:cover}.mm-eyebrow{font-size:12px;font-weight:800;letter-spacing:.12em;color:#8b756d}.mm-product-info h2{font-family:Fraunces,serif;font-size:40px;line-height:1.05;margin:8px 0 12px;color:#382a34}.mm-rating,.mm-rating-big{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.mm-stars{color:#c89228;letter-spacing:2px}.mm-price{font-size:30px;font-weight:800;margin:22px 0 10px}.mm-description{font-size:16px;color:#655b61;line-height:1.7}.mm-seller{margin-top:16px;color:#756c73;font-size:13px}.mm-add{margin-top:22px;border:0;border-radius:14px;background:#382a34;color:#fff;padding:14px 24px;font-weight:800}.mm-add:disabled{opacity:.45}.mm-reviews-section{margin-top:34px;border-top:1px solid #e7dacc;padding-top:26px}.mm-section-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}.mm-section-head h3{font-size:24px;margin-bottom:4px}.mm-section-head p{color:#756c73}.mm-section-head #mmRatingBig{display:flex;align-items:center;gap:7px}.mm-section-head #mmRatingBig strong{font-size:26px}.mm-section-head #mmRatingBig small{color:#756c73}.mm-review{padding:18px 0;border-bottom:1px solid #eadfd4}.mm-review-top{display:flex;justify-content:space-between;gap:15px}.mm-review p{margin:8px 0 5px;color:#4c454a}.mm-review small{color:#92888e}.mm-empty-review{padding:38px 15px;text-align:center;display:flex;flex-direction:column;gap:6px;color:#756c73}.mm-empty-star{font-size:48px;color:#c89228}.mm-empty-review strong{font-size:18px;color:#382a34}.mm-review-composer{margin-top:20px;padding:20px;background:#f7efdf;border-radius:18px;display:flex;flex-direction:column;gap:12px}.mm-review-form{display:grid;grid-template-columns:180px 1fr auto;gap:10px}.mm-review-form select,.mm-review-form textarea{border:1px solid #dfd0c0;border-radius:12px;padding:11px;background:white}.mm-review-form textarea{min-height:80px;resize:vertical}.mm-review-form button{border:0;border-radius:12px;padding:0 18px;background:#594052;color:white;font-weight:700}.mm-product-sheet::-webkit-scrollbar{width:8px}.mm-product-sheet::-webkit-scrollbar-thumb{background:#d8c8ba;border-radius:8px}@media(max-width:760px){.mm-product-backdrop{padding:0;align-items:flex-end}.mm-product-sheet{border-radius:26px 26px 0 0;max-height:96vh;padding:20px}.mm-product-grid{grid-template-columns:1fr;gap:18px}.mm-product-image-wrap,.mm-product-image-wrap img{min-height:250px;height:250px}.mm-product-info h2{font-size:30px}.mm-review-form{grid-template-columns:1fr}.mm-review-form button{padding:12px}.mm-section-head{flex-direction:column}}
+    `;
+    document.head.appendChild(style);
+})();
 </script>
 
-</body>
+<script>document.addEventListener("click",function(event){const wrap=document.querySelector(".account-wrap"),drop=document.getElementById("accountDropdown");if(drop&&wrap&&!wrap.contains(event.target))drop.classList.remove("open");});</script>
+<script>function toggleMelonMenu(force){const m=document.getElementById('melonSideMenu'),o=document.getElementById('melonSideOverlay');const open=force===undefined?!m.classList.contains('open'):force;m.classList.toggle('open',open);o.classList.toggle('open',open);document.body.style.overflow=open?'hidden':'';}</script></body>
 </html>
