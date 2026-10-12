@@ -299,6 +299,31 @@ public class OrderDAO {
     );
 }
 
+
+    /**
+     * Atomically reserves stock within the caller's checkout transaction.
+     * The conditional update prevents two checkouts from selling the same last unit.
+     */
+    public boolean reserveStock(
+            Connection connection,
+            int productId,
+            int quantity
+    ) throws Exception {
+        String sql = """
+                UPDATE products
+                SET stock_qty = stock_qty - ?
+                WHERE id = ?
+                  AND stock_qty >= ?
+                """;
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, quantity);
+            statement.setInt(2, productId);
+            statement.setInt(3, quantity);
+            return statement.executeUpdate() == 1;
+        }
+    }
+
     public void updateOrderStatus(int orderId, String status)
             throws Exception {
 
