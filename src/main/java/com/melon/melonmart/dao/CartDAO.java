@@ -3,6 +3,7 @@ package com.melon.melonmart.dao;
 import com.melon.melonmart.listener.DbContextListener;
 import com.melon.melonmart.model.CartItem;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,8 +12,18 @@ import java.util.List;
 
 public class CartDAO {
 
+    private final DataSource dataSource;
+
+    public CartDAO() {
+        this(DbContextListener.getDataSource());
+    }
+
+    public CartDAO(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     private Connection getConnection() throws Exception {
-        return DbContextListener.getDataSource().getConnection();
+        return dataSource.getConnection();
     }
 
     public List<CartItem> getCartByUserId(int userId) {
