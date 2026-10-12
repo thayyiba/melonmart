@@ -9,6 +9,8 @@ RUN mvn -B clean verify
 FROM tomcat:9.0-jdk17-temurin
 ENV PORT=8080
 ENV MELONMART_DB_URL="jdbc:h2:file:/data/melonmartdb;MODE=MySQL;AUTO_SERVER=TRUE"
+# Do not expose the repository demo administrator by default.
+ENV MELONMART_SEED_DEMO_DATA=false
 WORKDIR /usr/local/tomcat
 RUN rm -rf webapps/*
 RUN mkdir -p /data
