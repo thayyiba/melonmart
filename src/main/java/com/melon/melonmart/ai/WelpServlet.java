@@ -17,6 +17,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @WebServlet({"/api/welp", "/api/v1/welp"})
 public class WelpServlet extends HttpServlet {
@@ -26,7 +29,7 @@ public class WelpServlet extends HttpServlet {
     private final CartDAO cartDAO = new CartDAO();
 
     private final WelpService welpService =
-            new WelpService(new GeminiAIProvider());
+            new WelpService(WelpProviderFactory.create());
 
     private final Gson gson = new Gson();
 
@@ -130,11 +133,13 @@ public class WelpServlet extends HttpServlet {
             String productContext =
                     buildProductContext(products);
 
-            String reply =
-                    welpService.chat(
-                            message,
-                            productContext
-                    );
+            String cacheKey = message.toLowerCase(Locale.ROOT)
+                    + "|" + productContext.hashCode();
+            String reply = cachedReply(rateSession, cacheKey);
+            if (reply == null) {
+                reply = welpService.chat(message, productContext);
+                cacheReply(rateSession, cacheKey, reply);
+            }
 
             response.getWriter().write(
                     gson.toJson(
@@ -693,6 +698,40 @@ public class WelpServlet extends HttpServlet {
         }
 
         return context.toString();
+    }
+
+    @SuppressWarnings("unchecked")
+    private String cachedReply(HttpSession session, String key) {
+        Object value = session.getAttribute("welpReplyCache");
+        if (!(value instanceof Map)) {
+            return null;
+        }
+        Map<String, String> cache = (Map<String, String>) value;
+        synchronized (cache) {
+            return cache.get(key);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void cacheReply(HttpSession session, String key, String reply) {
+        Map<String, String> cache;
+        synchronized (session) {
+            Object value = session.getAttribute("welpReplyCache");
+            if (value instanceof Map) {
+                cache = (Map<String, String>) value;
+            } else {
+                cache = new LinkedHashMap<>(16, 0.75f, true);
+                session.setAttribute("welpReplyCache", cache);
+            }
+        }
+        synchronized (cache) {
+            cache.put(key, reply);
+            while (cache.size() > 50) {
+                Iterator<String> oldest = cache.keySet().iterator();
+                oldest.next();
+                oldest.remove();
+            }
+        }
     }
 
     private static class ChatRequest {
