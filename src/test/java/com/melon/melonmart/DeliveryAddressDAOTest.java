@@ -41,6 +41,8 @@ class DeliveryAddressDAOTest {
         assertTrue(remaining.get(0).isDefault());
         assertTrue(dao.findByUserId(2).isEmpty());
         assertFalse(dao.delete(2, work.getId()), "Another user must not delete this address.");
+        assertTrue(dao.delete(1, work.getId()), "A user must be able to remove the final saved address.");
+        assertTrue(dao.findByUserId(1).isEmpty(), "Removing the final address should leave the account empty.");
     }
 
     private JdbcDataSource newDataSource() throws Exception {
