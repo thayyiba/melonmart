@@ -17,6 +17,8 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.Properties;
+import java.util.List;
+import java.util.ArrayList;
 
 @WebListener
 public class DbContextListener implements ServletContextListener {
@@ -49,8 +51,10 @@ public class DbContextListener implements ServletContextListener {
             System.out.println("Using configured H2 database URL (value omitted).");
             System.out.println("=================================");
 
-            // Only ensure missing tables exist. Do not rewrite existing users, passwords, roles, orders, or data.
+            // Apply versioned, idempotent DDL before ensuring the complete schema and demo data.
+            runMigrations();
             runSchema();
+            runSeed();
         } catch (Exception e) {
             System.err.println("Failed to initialize database.");
             e.printStackTrace();
@@ -105,31 +109,90 @@ public class DbContextListener implements ServletContextListener {
         return url;
     }
 
-    private void runSchema() {
-        try (InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream("schema.sql")) {
-            if (input == null) throw new RuntimeException("schema.sql not found in src/main/resources");
-            StringBuilder sql = new StringBuilder();
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
+    private void runMigrations() throws Exception {
+        String[] migrations = {
+                "db/migrations/V1__init_schema.sql",
+                "db/migrations/V2__wishlist.sql"
+        };
+
+        try (Connection connection = dataSource.getConnection();
+             Statement statement = connection.createStatement()) {
+            statement.execute("""
+                    CREATE TABLE IF NOT EXISTS schema_migrations (
+                        version VARCHAR(50) PRIMARY KEY,
+                        applied_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                    )
+                    """);
+
+            for (String resource : migrations) {
+                String filename = resource.substring(resource.lastIndexOf('/') + 1);
+                String version = filename.substring(0, filename.indexOf("__"));
+                boolean applied;
+                try (java.sql.PreparedStatement check = connection.prepareStatement(
+                        "SELECT 1 FROM schema_migrations WHERE version = ?")) {
+                    check.setString(1, version);
+                    try (java.sql.ResultSet result = check.executeQuery()) {
+                        applied = result.next();
+                    }
+                }
+
+                if (!applied) {
+                    for (String sql : loadSqlStatements(resource)) {
+                        statement.execute(sql);
+                    }
+                    try (java.sql.PreparedStatement record = connection.prepareStatement(
+                            "INSERT INTO schema_migrations (version) VALUES (?)")) {
+                        record.setString(1, version);
+                        record.executeUpdate();
+                    }
+                }
+            }
+        }
+    }
+
+    private void runSchema() throws Exception {
+        executeSqlResource("schema.sql");
+        System.out.println("MelonMart database schema initialized successfully.");
+    }
+
+    private void runSeed() throws Exception {
+        executeSqlResource("seed.sql");
+        System.out.println("MelonMart demo seed data checked successfully.");
+    }
+
+    private void executeSqlResource(String resource) throws Exception {
+        try (Connection connection = dataSource.getConnection();
+             Statement statement = connection.createStatement()) {
+            for (String sql : loadSqlStatements(resource)) {
+                statement.execute(sql);
+            }
+        }
+    }
+
+    private String[] loadSqlStatements(String resource) throws IOException {
+        StringBuilder sql = new StringBuilder();
+        try (InputStream input = Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream(resource)) {
+            if (input == null) {
+                throw new IOException(resource + " not found in src/main/resources");
+            }
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(input, StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     line = line.trim();
                     if (line.isEmpty() || line.startsWith("--")) continue;
-                    sql.append(line).append("\n");
+                    sql.append(line).append('\n');
                 }
             }
-            String[] statements = sql.toString().split(";");
-            try (Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement()) {
-                for (String query : statements) {
-                    query = query.trim();
-                    if (!query.isEmpty()) statement.execute(query);
-                }
-            }
-            System.out.println("MelonMart database schema initialized successfully.");
-        } catch (Exception e) {
-            System.err.println("Failed to initialize database schema.");
-            e.printStackTrace();
-            throw new RuntimeException("Schema initialization failed", e);
         }
+
+        List<String> statements = new ArrayList<>();
+        for (String query : sql.toString().split(";")) {
+            query = query.trim();
+            if (!query.isEmpty()) statements.add(query);
+        }
+        return statements.toArray(new String[0]);
     }
 
     @Override
