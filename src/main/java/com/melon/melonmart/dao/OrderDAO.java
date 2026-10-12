@@ -191,7 +191,7 @@ public class OrderDAO {
                 p.name AS product_name,
                 p.image_url,
                 oi.quantity,
-                oi.unit_price
+                oi.unit_price AS price
             FROM orders o
             JOIN users u
                 ON o.buyer_id = u.id
