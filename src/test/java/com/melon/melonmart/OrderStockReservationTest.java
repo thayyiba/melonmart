@@ -1,6 +1,7 @@
 package com.melon.melonmart;
 
 import com.melon.melonmart.dao.OrderDAO;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -37,6 +38,13 @@ class OrderStockReservationTest {
             statement.executeUpdate();
         }
         orderDAO = new OrderDAO();
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        if (connection != null) {
+            connection.close();
+        }
     }
 
     @Test
