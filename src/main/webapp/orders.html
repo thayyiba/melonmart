@@ -691,6 +691,13 @@ header {
 
 }
 
+        .order-delivery-summary { margin: 0 0 22px; padding: 16px; border: 1px solid var(--line, #E7DACB); border-radius: 16px; background: rgba(255,253,245,.75); }
+        .delivery-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .delivery-grid > div { min-width: 0; display: flex; flex-direction: column; gap: 4px; overflow-wrap: anywhere; }
+        .delivery-grid span { color: var(--muted, #756C73); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; }
+        .delivery-grid strong { color: var(--text, #302A30); font-size: 12px; font-weight: 600; }
+        .delivery-grid .delivery-address { grid-column: 1 / -1; }
+        @media (max-width: 520px) { .delivery-grid { grid-template-columns: 1fr; } .delivery-grid .delivery-address { grid-column: auto; } }
 </style>
 </head>
 
@@ -1399,54 +1406,40 @@ function renderOrderDetails(
     `;
 
 
-    if (!items.length) {
-
-        details.innerHTML = `
-
-            <div class="detail-title">
-                items
-            </div>
-
-            <div class="more-items">
-                No item details available.
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
+    const order = data.order || {};
+    const address = [
+        order.deliveryAddress,
+        order.deliveryCity,
+        order.deliveryState,
+        order.deliveryPincode ? "PIN " + order.deliveryPincode : "",
+        order.deliveryLandmark ? "Landmark: " + order.deliveryLandmark : ""
+    ].filter(Boolean).join(", ");
+    const paymentMethod = ({
+        COD: "Cash on delivery",
+        UPI: "Mock UPI payment",
+        CARD: "Mock card payment"
+    })[String(order.paymentMethod || "").toUpperCase()] || "Not available";
     const delivered =
-        String(
-            data.order.status || ""
-        ).toUpperCase()
-        ===
-        "DELIVERED";
-
+        String(order.status || "").toUpperCase() === "DELIVERED";
 
     details.innerHTML = `
-
-        <div class="detail-title">
-            items in this order
-        </div>
-
+        <section class="order-delivery-summary">
+            <div class="detail-title">delivery & payment</div>
+            <div class="delivery-grid">
+                <div><span>deliver to</span><strong>${escapeHtml(order.deliveryName || "—")}</strong></div>
+                <div><span>phone</span><strong>${escapeHtml(order.deliveryPhone || "—")}</strong></div>
+                <div><span>email</span><strong>${escapeHtml(order.deliveryEmail || "—")}</strong></div>
+                <div><span>payment</span><strong>${escapeHtml(paymentMethod)}</strong></div>
+                <div class="delivery-address"><span>address</span><strong>${escapeHtml(address || "No delivery address saved.")}</strong></div>
+            </div>
+        </section>
+        <div class="detail-title">items in this order</div>
         ${
-            items
-                .map(
-                    item =>
-                        renderDetailItem(
-                            item,
-                            orderId,
-                            delivered
-                        )
-                )
-                .join("")
+            items.length
+                ? items.map(item => renderDetailItem(item, orderId, delivered)).join("")
+                : '<div class="more-items">No item details available.</div>'
         }
-
     `;
-
 }
 
 

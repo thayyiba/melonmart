@@ -416,6 +416,38 @@
         footer { border-top-color:var(--border); }
         @media(max-width:600px) { .success-card { padding:38px 22px; border-radius:24px; } .success-card h1 { font-size:34px; } .success-info { gap:18px; flex-wrap:wrap; } .actions { flex-direction:column; } .btn { width:100%; } }
 
+        .confirmation-details { margin: 22px 0 26px; text-align: left; }
+        .confirmation-details h2 { margin: 0 0 12px; color: var(--burgundy, #594052); font: 600 20px/1.25 "Fraunces", Georgia, serif; }
+        .order-detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+        .order-detail-card { min-width: 0; padding: 14px; border: 1px solid var(--border, #E7DACB); border-radius: 15px; background: rgba(255,253,245,.8); display: flex; flex-direction: column; gap: 5px; overflow-wrap: anywhere; }
+        .order-address-card { grid-column: 1 / -1; }
+        .order-detail-label { color: var(--muted, #756C73); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; }
+        .order-detail-value { color: var(--text, #302A30); font-size: 13px; font-weight: 500; white-space: pre-line; }
+        .confirmation-items { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border, #E7DACB); }
+        .confirmed-items-list { display: grid; gap: 8px; }
+        .confirmed-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--border, #E7DACB); font-size: 13px; }
+        .confirmed-item-name { min-width: 0; font-weight: 600; overflow-wrap: anywhere; }
+        .confirmed-item-meta { display: block; margin-top: 3px; color: var(--muted, #756C73); font-size: 11px; font-weight: 400; }
+        .confirmed-item-price { flex: 0 0 auto; font-weight: 700; white-space: nowrap; }
+        .confirmed-total { display: flex; justify-content: space-between; gap: 16px; padding: 15px 0 8px; font-size: 15px; }
+        .confirmed-total strong { color: var(--burgundy, #594052); }
+        .confirmed-status { margin: 8px 0 0; color: var(--muted, #756C73); font-size: 12px; }
+        .confirmation-loading, .confirmation-message { color: var(--muted, #756C73); font-size: 12px; line-height: 1.5; }
+        .confirmation-message:not([hidden]) { margin: 12px 0 0; padding: 10px 12px; border-radius: 12px; background: #FFF6D8; }
+        @media (max-width: 520px) { .order-detail-grid { grid-template-columns: 1fr; } .order-address-card { grid-column: auto; } }
+                /* Keep confirmation styling consistent with the Melon Mart butter-and-plum theme. */
+        :root { --burgundy:#594052; --burgundy-dark:#382A34; --cream:#FFF6D8; --cream-light:#FFFDF5; --beige:#FAE9A9; --text:#302A30; --muted:#756C73; --border:#E7DACB; }
+        body { font-family:"DM Sans",sans-serif; background:var(--cream); color:var(--text); }
+        header, footer { background:var(--cream-light); border-color:var(--border); }
+        .success-card { background:var(--cream-light); border:1px solid var(--border); border-radius:28px; box-shadow:0 18px 45px rgba(56,42,52,.09); }
+        .success-icon { background:#F9DDDD; color:var(--burgundy); }
+        .order-number { background:#FFF6D8; border-color:var(--border); border-radius:17px; }
+        .info-item { border-color:var(--border); background:#fffdf5; border-radius:16px; }
+        .btn { border-radius:999px; }
+        .btn-primary { background:var(--burgundy); color:#fff; }
+        .btn-primary:hover { background:var(--burgundy-dark); }
+        .btn-secondary { background:#FAE9A9; color:var(--burgundy-dark); border-color:var(--border); }
+        .btn-secondary:hover { background:#F2D477; }
 </style>
 </head>
 
@@ -496,6 +528,37 @@
 
 
 
+            <!-- REAL ORDER DETAILS: loaded from the authenticated order API -->
+            <section class="confirmation-details" id="confirmationDetails" aria-live="polite">
+                <h2>Delivery details</h2>
+                <div class="order-detail-grid">
+                    <div class="order-detail-card">
+                        <span class="order-detail-label">Delivering to</span>
+                        <strong class="order-detail-value" id="customerName">—</strong>
+                        <span class="order-detail-value" id="customerPhone">—</span>
+                    </div>
+                    <div class="order-detail-card">
+                        <span class="order-detail-label">Contact</span>
+                        <strong class="order-detail-value" id="customerEmail">—</strong>
+                        <span class="order-detail-label">Payment</span>
+                        <strong class="order-detail-value" id="paymentMethod">—</strong>
+                    </div>
+                    <div class="order-detail-card order-address-card">
+                        <span class="order-detail-label">Delivery address</span>
+                        <strong class="order-detail-value" id="deliveryAddress">Loading your address…</strong>
+                    </div>
+                </div>
+                <div class="confirmation-items">
+                    <h2>What you ordered</h2>
+                    <div id="confirmedItems" class="confirmed-items-list">
+                        <p class="confirmation-loading">Loading your order items…</p>
+                    </div>
+                    <div class="confirmed-total"><span>Order total</span><strong id="confirmedTotal">—</strong></div>
+                    <p class="confirmed-status">Order status: <strong id="confirmedStatus">—</strong> <span id="confirmedDate"></span></p>
+                </div>
+                <p class="confirmation-message" id="confirmationMessage" role="status" hidden></p>
+            </section>
+
             <!-- INFO -->
 
             <div class="success-info">
@@ -564,10 +627,10 @@
 
 
                 <a
-                    href="index.html"
+                    href="orders.html"
                     class="btn btn-secondary"
                 >
-                    Back to Home
+                    View My Orders
                 </a>
 
             </div>
@@ -593,38 +656,99 @@
     <!-- JAVASCRIPT -->
 
     <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const byId = id => document.getElementById(id);
+            const orderIdElement = byId("orderId");
+            const queryId = new URLSearchParams(window.location.search).get("orderId");
+            const storedId = sessionStorage.getItem("melonMartOrderId");
+            const orderId = (queryId || storedId || "").trim();
+            const message = byId("confirmationMessage");
 
-        document.addEventListener(
-            "DOMContentLoaded",
-            () => {
+            const showMessage = text => {
+                message.textContent = text;
+                message.hidden = false;
+            };
+            const escapeHtml = value => String(value == null ? "" : value)
+                .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;").replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;");
+            const money = value => "₹" + Number(value || 0).toLocaleString("en-IN", {
+                minimumFractionDigits: 2, maximumFractionDigits: 2
+            });
+            const paymentLabel = value => ({
+                COD: "Cash on delivery",
+                UPI: "Mock UPI payment",
+                CARD: "Mock card payment"
+            }[String(value || "").toUpperCase()] || "Not available");
 
-                const orderIdElement =
-                    document.getElementById(
-                        "orderId"
-                    );
-
-
-                const orderId =
-                    sessionStorage.getItem(
-                        "melonMartOrderId"
-                    );
-
-
-                if (orderId) {
-
-                    orderIdElement.textContent =
-                        "#" + orderId;
-
-                } else {
-
-                    orderIdElement.textContent =
-                        "Confirmed";
-
-                }
-
+            if (!/^\d+$/.test(orderId) || Number(orderId) <= 0) {
+                orderIdElement.textContent = "See My Orders";
+                showMessage("Your order may have been placed, but we couldn't read its confirmation number. Please check My Orders before trying checkout again.");
+                byId("confirmedItems").innerHTML = "";
+                return;
             }
-        );
 
+            orderIdElement.textContent = "#" + orderId;
+            sessionStorage.setItem("melonMartOrderId", orderId);
+
+            async function loadOrderConfirmation() {
+                try {
+                    const response = await fetch("api/orders/" + encodeURIComponent(orderId), {
+                        headers: { "Accept": "application/json" },
+                        credentials: "same-origin"
+                    });
+                    if (response.status === 401) {
+                        window.location.href = "login.html";
+                        return;
+                    }
+                    const data = await response.json();
+                    if (!response.ok || !data.order || String(data.order.id) !== orderId) {
+                        throw new Error(data.message || "We couldn't load this order.");
+                    }
+
+                    const order = data.order;
+                    const address = [
+                        order.deliveryAddress, order.deliveryCity, order.deliveryState,
+                        order.deliveryPincode ? "PIN " + order.deliveryPincode : "",
+                        order.deliveryLandmark ? "Landmark: " + order.deliveryLandmark : ""
+                    ].filter(Boolean).join(", ");
+
+                    byId("customerName").textContent = order.deliveryName || "—";
+                    byId("customerPhone").textContent = order.deliveryPhone || "—";
+                    byId("customerEmail").textContent = order.deliveryEmail || "—";
+                    byId("paymentMethod").textContent = paymentLabel(order.paymentMethod);
+                    byId("deliveryAddress").textContent = address || "No delivery address was saved.";
+                    byId("confirmedTotal").textContent = money(order.totalAmount);
+                    byId("confirmedStatus").textContent = String(order.status || "PENDING").replace(/_/g, " ");
+                    if (order.createdAt) {
+                        const date = new Date(order.createdAt);
+                        byId("confirmedDate").textContent = Number.isNaN(date.getTime())
+                            ? "" : " · Placed " + date.toLocaleString("en-IN", {
+                                dateStyle: "medium", timeStyle: "short"
+                            });
+                    }
+
+                    const items = Array.isArray(data.items) ? data.items : [];
+                    byId("confirmedItems").innerHTML = items.length
+                        ? items.map(item => {
+                            const name = escapeHtml(item.productName || "Product");
+                            const quantity = Math.max(0, Number(item.quantity || 0));
+                            const price = Number(item.price || 0);
+                            return '<div class="confirmed-item"><div class="confirmed-item-name">' +
+                                name + '<span class="confirmed-item-meta">Quantity: ' + quantity +
+                                ' · ' + money(price) + ' each</span></div><strong class="confirmed-item-price">' +
+                                money(price * quantity) + '</strong></div>';
+                        }).join("")
+                        : '<p class="confirmation-loading">No item details are available for this order.</p>';
+                } catch (error) {
+                    console.error("Order confirmation load failed:", error);
+                    showMessage("Your order number is saved, but the order details could not be loaded. You can view the latest status in My Orders.");
+                    byId("confirmedItems").innerHTML = "";
+                }
+            }
+
+            loadOrderConfirmation();
+        });
     </script>
 
 <script src="melon-experience.js"></script>
