@@ -1766,7 +1766,8 @@
         await Promise.all([
             fetchSellerInventory(),
             fetchSellerOrders(),
-            fetchSellerSales()
+            fetchSellerSales(),
+            fetchSellerReviews()
         ]);
 
         updateStats();
