@@ -1138,7 +1138,7 @@
         <div class="stat-card">
 
             <div class="stat-label">
-                Items in stock
+                Low-stock items
             </div>
 
             <div
@@ -1890,16 +1890,13 @@
                 );
             }
 
-            sellerProducts =
-                await response.json();
-
-            if (
-                !Array.isArray(
-                    sellerProducts
-                )
-            ) {
-                sellerProducts = [];
-            }
+            const products = await response.json();
+            sellerProducts = Array.isArray(products)
+                ? products.map(product => ({
+                    ...product,
+                    stock: Number(product.stockQty ?? product.stock ?? product.stock_qty ?? 0)
+                }))
+                : [];
 
             renderInventory();
             updateStats();
@@ -2155,7 +2152,7 @@
                         .value
                 ),
 
-            stock:
+            stockQty:
                 Number(
                     document
                         .getElementById("pStock")
@@ -2213,9 +2210,9 @@
 
         if (
             Number.isNaN(
-                productData.stock
+                productData.stockQty
             ) ||
-            productData.stock < 0
+            productData.stockQty < 0
         ) {
 
             showToast(
@@ -2366,7 +2363,7 @@
         document.getElementById(
             "pStock"
         ).value =
-            product.stock ?? "";
+            product.stockQty ?? product.stock ?? product.stock_qty ?? "";
 
 
         document.getElementById(
@@ -3430,25 +3427,13 @@
         }
 
 
-        const totalStock =
-            sellerProducts.reduce(
-                (
-                    total,
-                    product
-                ) =>
-                    total +
-                    Number(
-                        product.stock ?? product.stockQty ?? product.stock_qty ??
-                        0
-                    ),
-                0
-            );
-
+        const lowStockItems = sellerProducts.filter(product => {
+            const quantity = Number(product.stock ?? product.stockQty ?? product.stock_qty ?? 0);
+            return quantity > 0 && quantity <= 5;
+        }).length;
 
         if (stockCount) {
-
-            stockCount.textContent =
-                totalStock;
+            stockCount.textContent = lowStockItems;
         }
     }
 
