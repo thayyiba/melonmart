@@ -28,19 +28,19 @@
         }
 
         :root {
-            --burgundy: #6b1f2b;
-            --burgundy-dark: #4e1520;
-            --cream: #faf6ef;
-            --cream-light: #fffdf9;
-            --beige: #eee4d6;
-            --text: #30272a;
-            --muted: #817477;
-            --border: #ded3c7;
+            --burgundy: #594052;
+            --burgundy-dark: #382A34;
+            --cream: #FFF6D8;
+            --cream-light: #FFFDF5;
+            --beige: #F9DDDD;
+            --text: #382A34;
+            --muted: #806F79;
+            --border: #E7DACB;
             --white: #ffffff;
         }
 
         body {
-            font-family: "Poppins", sans-serif;
+            font-family: "DM Sans", sans-serif;
             background: var(--cream);
             color: var(--text);
             min-height: 100vh;
@@ -82,7 +82,7 @@
         }
 
         .brand {
-            font-family: "Playfair Display", serif;
+            font-family: "Fraunces", serif;
             font-size: 28px;
             font-weight: 600;
             color: var(--burgundy);
@@ -117,7 +117,7 @@
         }
 
         .page-title h1 {
-            font-family: "Playfair Display", serif;
+            font-family: "Fraunces", serif;
             font-size: 42px;
             font-weight: 600;
             color: var(--burgundy);
@@ -148,7 +148,7 @@
         }
 
         .empty-checkout h2 {
-            font-family: "Playfair Display", serif;
+            font-family: "Fraunces", serif;
             color: var(--burgundy);
             font-size: 30px;
             margin-bottom: 10px;
@@ -235,7 +235,7 @@
         }
 
         .section-heading h2 {
-            font-family: "Playfair Display", serif;
+            font-family: "Fraunces", serif;
             font-size: 23px;
             font-weight: 600;
             color: var(--burgundy);
@@ -424,7 +424,7 @@
         }
 
         .summary-header h2 {
-            font-family: "Playfair Display", serif;
+            font-family: "Fraunces", serif;
             color: var(--burgundy);
             font-size: 25px;
             margin-bottom: 5px;
@@ -741,6 +741,18 @@
         .checkout-item-image { border-radius:12px; }
         @media(max-width:700px) { .checkout-wrapper { padding:30px 16px 48px; } .checkout-section { padding:22px; } .summary-card { position:static; } }
 
+        @media (max-width: 850px) {
+            .checkout-content { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+            .checkout-wrapper { padding: 30px 16px 48px; }
+            .checkout-section { padding: 22px; }
+            .summary-card { position: static; }
+            .checkout-header { padding: 0 18px; }
+        }
+        @media (max-width: 480px) {
+            .page-title h1 { font-size: 32px; }
+            .checkout-section { padding: 18px 14px; }
+            .checkout-wrapper { padding: 24px 12px 36px; }
+        }
 </style>
 </head>
 
@@ -842,6 +854,7 @@
                             <input
                                 type="text"
                                 id="fullName"
+                                maxlength="100"
                                 placeholder="Enter your full name"
                                 autocomplete="name"
                             >
@@ -863,6 +876,7 @@
                             <input
                                 type="email"
                                 id="email"
+                                maxlength="150"
                                 placeholder="you@example.com"
                                 autocomplete="email"
                             >
@@ -884,6 +898,7 @@
                             <input
                                 type="tel"
                                 id="phone"
+                                inputmode="tel" maxlength="20"
                                 placeholder="10-digit mobile number"
                                 maxlength="10"
                                 autocomplete="tel"
@@ -928,6 +943,7 @@
 
                             <textarea
                                 id="address"
+                                maxlength="500"
                                 placeholder="House number, street name, area"
                             ></textarea>
 
@@ -948,6 +964,7 @@
                             <input
                                 type="text"
                                 id="city"
+                                maxlength="100"
                                 placeholder="City"
                                 autocomplete="address-level2"
                             >
@@ -969,6 +986,7 @@
                             <input
                                 type="text"
                                 id="state"
+                                maxlength="100"
                                 placeholder="State"
                                 autocomplete="address-level1"
                             >
@@ -1020,6 +1038,7 @@
                             <input
                                 type="text"
                                 id="landmark"
+                                maxlength="150"
                                 placeholder="Nearby landmark"
                             >
 
@@ -1323,7 +1342,13 @@
 
                 function fillIfEmpty(id, value) {
                     const field = document.getElementById(id);
-                    if (field && value && !field.value.trim()) field.value = String(value);
+                    if (field && value && !field.value.trim()) {
+                        if (id === "phone") {
+                            const digits = String(value).replace(/\D/g, "");
+                            value = digits.length === 12 && digits.startsWith("91") ? digits.slice(2) : digits;
+                        }
+                        field.value = String(value);
+                    }
                 }
                 function fillFromSavedAddress(saved) {
                     if (!saved || typeof saved !== "object") return;
@@ -1334,13 +1359,7 @@
                     fillIfEmpty("landmark", saved.landmark);
                 }
                 function fillFromLocalAddress() {
-                    try {
-                        const saved = JSON.parse(localStorage.getItem("melonmart_address_current") || "null");
-                        if (saved && typeof saved === "object") fillFromSavedAddress(saved);
-                        else fillIfEmpty("address", localStorage.getItem("melonmart_location"));
-                    } catch (error) {
-                        fillIfEmpty("address", localStorage.getItem("melonmart_location"));
-                    }
+                    // Never prefill checkout with browser-wide addresses; saved addresses belong to accounts.
                 }
                 function prefillSavedDeliveryAddress() {
                     fetch("api/addresses", { headers: { "Accept": "application/json" } })
@@ -1352,11 +1371,9 @@
                         .then(addresses => {
                             if (Array.isArray(addresses) && addresses.length) {
                                 fillFromSavedAddress(addresses.find(address => address.isDefault) || addresses[0]);
-                            } else {
-                                fillFromLocalAddress();
                             }
                         })
-                        .catch(fillFromLocalAddress);
+                        .catch(error => console.warn("Could not load saved account address:", error));
 
                     fetch("api/auth/me", { headers: { "Accept": "application/json" } })
                         .then(response => response.ok ? response.json() : null)
@@ -1746,13 +1763,9 @@
                             .trim();
 
 
-                    const phone =
-                        document
-                            .getElementById(
-                                "phone"
-                            )
-                            .value
-                            .trim();
+                    const phone = document.getElementById("phone").value.trim()
+                        .replace(/\D/g, "")
+                        .replace(/^91(?=\d{10}$)/, "");
 
 
                     const address =
@@ -2143,13 +2156,13 @@
                                                 action: "checkout",
                                                 fullName: document.getElementById("fullName").value.trim(),
                                                 email: document.getElementById("email").value.trim(),
-                                                phone: document.getElementById("phone").value.trim(),
+                                                phone: document.getElementById("phone").value.trim().replace(/\D/g, "").replace(/^91(?=\d{10}$)/, ""),
                                                 address: document.getElementById("address").value.trim(),
                                                 city: document.getElementById("city").value.trim(),
                                                 state: document.getElementById("state").value.trim(),
                                                 pincode: document.getElementById("pincode").value.trim(),
                                                 landmark: document.getElementById("landmark").value.trim(),
-                                                payment: document.querySelector('input[name="payment"]:checked').value
+                                                payment: (document.querySelector('input[name="payment"]:checked')?.value || "COD").toUpperCase()
                                             })
                                     }
                                 );
