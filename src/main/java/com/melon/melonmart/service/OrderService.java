@@ -35,6 +35,13 @@ public class OrderService {
     }
 
     public Order checkout(int userId) throws Exception {
+        return checkout(userId, new Order());
+    }
+
+    public Order checkout(int userId, Order checkoutDetails) throws Exception {
+        if (checkoutDetails == null) {
+            checkoutDetails = new Order();
+        }
         List<CartItem> cartItems = cartDAO.getCartByUserId(userId);
         if (cartItems == null || cartItems.isEmpty()) {
             throw new IllegalStateException("Cart is empty");
@@ -76,6 +83,15 @@ public class OrderService {
                 order.setUserId(userId);
                 order.setTotalAmount(totalAmount);
                 order.setStatus("PENDING");
+                order.setDeliveryName(checkoutDetails.getDeliveryName());
+                order.setDeliveryEmail(checkoutDetails.getDeliveryEmail());
+                order.setDeliveryPhone(checkoutDetails.getDeliveryPhone());
+                order.setDeliveryAddress(checkoutDetails.getDeliveryAddress());
+                order.setDeliveryCity(checkoutDetails.getDeliveryCity());
+                order.setDeliveryState(checkoutDetails.getDeliveryState());
+                order.setDeliveryPincode(checkoutDetails.getDeliveryPincode());
+                order.setDeliveryLandmark(checkoutDetails.getDeliveryLandmark());
+                order.setPaymentMethod(checkoutDetails.getPaymentMethod());
 
                 int orderId = orderDAO.createOrder(connection, order);
                 if (orderId <= 0) {
