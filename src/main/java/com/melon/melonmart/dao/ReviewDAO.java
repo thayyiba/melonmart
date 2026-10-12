@@ -237,6 +237,43 @@ public class ReviewDAO {
         return reviews;
     }
 
+    /**
+     * Returns reviews for products owned by the given seller.
+     * Reviewer email and other private account details are intentionally excluded.
+     */
+    public List<java.util.Map<String, Object>> getReviewsBySellerId(int sellerId) throws Exception {
+        String sql = """
+                SELECT r.id, r.product_id, p.name AS product_name,
+                       r.rating, r.comment, r.created_at,
+                       u.name AS reviewer_name
+                FROM reviews r
+                JOIN products p ON p.id = r.product_id
+                JOIN users u ON u.id = r.user_id
+                WHERE p.seller_id = ?
+                ORDER BY r.created_at DESC, r.id DESC
+                """;
+
+        List<java.util.Map<String, Object>> reviews = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, sellerId);
+            try (ResultSet result = statement.executeQuery()) {
+                while (result.next()) {
+                    java.util.Map<String, Object> review = new java.util.LinkedHashMap<>();
+                    review.put("id", result.getInt("id"));
+                    review.put("productId", result.getInt("product_id"));
+                    review.put("productName", result.getString("product_name"));
+                    review.put("rating", result.getInt("rating"));
+                    review.put("comment", result.getString("comment"));
+                    review.put("createdAt", result.getTimestamp("created_at"));
+                    review.put("reviewerName", result.getString("reviewer_name"));
+                    reviews.add(review);
+                }
+            }
+        }
+        return reviews;
+    }
+
     public double getAverageRating(
             int productId
     ) throws Exception {
