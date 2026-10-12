@@ -53,7 +53,8 @@ class DatabaseMigrationScriptTest {
             assertTrue(count(connection,
                     "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS "
                             + "WHERE TABLE_NAME = 'ORDERS' AND COLUMN_NAME = 'DELIVERY_ADDRESS'") == 1);
-            assertEquals(1, count(connection, "SELECT COUNT(*) FROM wishlist"));
+            assertEquals(1, count(connection,
+                    "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'WISHLIST'"));
             assertEquals(1, count(connection, "SELECT COUNT(*) FROM reviews"));
         }
     }
