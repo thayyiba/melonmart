@@ -2076,7 +2076,7 @@ header {
 <div class="melon-side-overlay" id="melonSideOverlay" onclick="toggleMelonMenu(false)"></div>
 <aside class="melon-side-menu" id="melonSideMenu" aria-label="Melon Mart menu">
   <div class="melon-side-head"><strong>MELON MART</strong><button type="button" onclick="toggleMelonMenu(false)" aria-label="Close menu">×</button></div>
-  <div class="melon-side-location">📍 <span>delivering to</span><strong id="menuLocation">Hostel 4 · Main Campus</strong></div>
+  <div class="melon-side-location">📍 <span>delivering to</span><strong id="menuLocation">Add delivery address</strong></div>
   <nav class="melon-side-nav">
     <a href="index.html">⌂ <span>Home</span></a><a href="account.html">♙ <span>My Account</span></a><a href="orders.html">▣ <span>My Orders</span></a><a href="wishlist.html">♡ <span>Wishlist</span></a><a href="location.html">📍 <span>Delivery Addresses</span></a><a href="cart.html">🛍 <span>My Bag</span></a><a id="menuSellerLink" href="seller.html" style="display:none">▤ <span>Seller Dashboard</span></a><a id="menuAdminLink" href="admin.html" style="display:none">⚙ <span>Admin Dashboard</span></a><a href="help.html">? <span>Help & Support</span></a><a href="#" onclick="event.preventDefault(); openMelonChat()">✦ <span>Welp AI</span></a>
   </nav>
@@ -2105,7 +2105,7 @@ header {
             <span class="delivery-location-icon">&#128205;</span>
             <span class="delivery-location-text">
                 <small>delivering to</small>
-                <strong id="currentLocation">Hostel 4 · Main Campus</strong>
+                <strong id="currentLocation">Add delivery address</strong>
             </span>
             <span class="delivery-location-arrow">&#8964;</span>
         </button>
@@ -2191,7 +2191,7 @@ header {
         </small>
 
         <strong id="currentLocation">
-            Hostel 4 · Main Campus
+            Add delivery address
         </strong>
 
     </div>
@@ -3204,19 +3204,8 @@ let wishlist = new Set(
     )
 );
 
-let savedLocations =
-    JSON.parse(
-        localStorage.getItem("melonmart_locations") || "null"
-    )
-    ||
-    [
-        "Hostel 4 · Main Campus"
-    ];
-
-let currentLocation =
-    localStorage.getItem("melonmart_location")
-    ||
-    savedLocations[0];
+let savedLocations = [];
+let currentLocation = "Add delivery address";
 
 
 /* ==========================================
@@ -4914,92 +4903,13 @@ function renderLocations() {
 }
 
 
-function selectLocation(location) {
-
-    currentLocation =
-        location;
-
-    localStorage.setItem(
-        "melonmart_location",
-        currentLocation
-    );
-
-    document.getElementById(
-        "currentLocation"
-    )
-    .textContent =
-        currentLocation;
-
-    renderLocations();
-
-    showToast(
-        "Delivery location updated 📍"
-    );
-
+function selectLocation() {
+    window.location.href = "location.html";
 }
 
 
 function saveNewLocation() {
-
-    const input =
-        document.getElementById(
-            "newLocationInput"
-        );
-
-    const location =
-        input.value.trim();
-
-    if (!location) {
-
-        showToast(
-            "Give the location a name first"
-        );
-
-        return;
-
-    }
-
-    if (
-        !savedLocations.includes(
-            location
-        )
-    ) {
-
-        savedLocations.push(
-            location
-        );
-
-    }
-
-    currentLocation =
-        location;
-
-    localStorage.setItem(
-        "melonmart_locations",
-        JSON.stringify(
-            savedLocations
-        )
-    );
-
-    localStorage.setItem(
-        "melonmart_location",
-        currentLocation
-    );
-
-    document.getElementById(
-        "currentLocation"
-    )
-    .textContent =
-        currentLocation;
-
-    input.value = "";
-
-    renderLocations();
-
-    showToast(
-        "New delivery spot saved 📍"
-    );
-
+    window.location.href = "location.html";
 }
 
 
@@ -5073,15 +4983,43 @@ function escapeHtml(value) {
 }
 
 
+async function syncDeliveryLocation() {
+    const updateLabels = label => {
+        currentLocation = label;
+        document.querySelectorAll("#currentLocation, #menuLocation").forEach(node => {
+            node.textContent = label;
+        });
+    };
+    updateLabels("Add delivery address");
+    try {
+        const response = await fetch("api/addresses", {
+            headers: { "Accept": "application/json" }
+        });
+        if (response.status === 401) {
+            updateLabels("Add delivery address");
+            return;
+        }
+        if (!response.ok) throw new Error("Address service unavailable");
+        const addresses = await response.json();
+        savedLocations = Array.isArray(addresses)
+            ? addresses.map(address => String(address.label || address.address || "").trim()).filter(Boolean)
+            : [];
+        const selected = Array.isArray(addresses)
+            ? addresses.find(address => address.isDefault) || addresses[0]
+            : null;
+        updateLabels(selected ? String(selected.label || selected.address || "Add delivery address") : "Add delivery address");
+    } catch (error) {
+        updateLabels("Add delivery address");
+        console.warn("Could not load account delivery location:", error);
+    }
+}
+
 /* ==========================================
    INITIAL LOAD
 ========================================== */
 
-document.getElementById(
-    "currentLocation"
-)
-.textContent =
-    currentLocation;
+document.querySelectorAll("#currentLocation, #menuLocation").forEach(node => node.textContent = currentLocation);
+syncDeliveryLocation();
 
 setDailyThought();
 
