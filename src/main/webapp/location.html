@@ -1,2 +1,174 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Delivery Addresses · Melon Mart</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet"><link rel="stylesheet" href="melon-pages.css"></head><body data-active="location"><div id="siteHeader"></div><main class="page-shell"><section class="page-hero"><span class="eyebrow">where should we bring it?</span><h1>Delivery addresses 📍</h1><p>Save your favourite spots so checkout stays pleasantly uncomplicated.</p></section><section style="display:grid;grid-template-columns:1.1fr .9fr;gap:22px"><div class="paper-card" style="padding:26px"><h2 class="section-title">Your saved spots</h2><p class="section-subtitle">Choose the place you want Melon Mart to remember.</p><div id="locations" style="display:grid;gap:10px"></div></div><div class="paper-card" style="padding:26px"><h2 class="section-title">Add another spot</h2><p class="section-subtitle">Hostel, room, apartment, office — whatever helps you find the bag.</p><input id="newLocation" placeholder="e.g. Hostel 2 · Room 214" style="width:100%;padding:14px;border:1px solid var(--line);border-radius:15px;background:var(--cream);outline:none"><button class="primary-btn" style="margin-top:12px" onclick="saveLocation()">+ Save this location</button><p id="msg" style="color:var(--muted);font-size:12px;margin-top:12px"></p></div></section></main><footer class="site-footer">Your location stays in this browser for this project ✦</footer><script src="melon-pages.js"></script><script>
-const locsEl=document.getElementById('locations');let locs=JSON.parse(localStorage.getItem('melonmart_locations')||'null')||['Hostel 4 · Main Campus'];let current=localStorage.getItem('melonmart_location')||locs[0];function save(){localStorage.setItem('melonmart_locations',JSON.stringify(locs));localStorage.setItem('melonmart_location',current);document.getElementById('mmCurrentLocation').textContent=current}function render(){locsEl.innerHTML=locs.map((x,i)=>`<div style="border:1px solid ${x===current?'var(--plum)':'var(--line)'};background:var(--cream);border-radius:17px;padding:15px;display:flex;align-items:center;justify-content:space-between;gap:12px"><button onclick="selectLoc(${i})" style="border:0;background:transparent;text-align:left;flex:1"><strong style="display:block">📍 ${mmEsc(x)}</strong><span style="font-size:12px;color:var(--muted)">${x===current?'current delivery location':'saved spot'}</span></button><button class="danger-btn" onclick="deleteLoc(${i})">remove</button></div>`).join('')}function selectLoc(i){current=locs[i];save();render();document.getElementById('msg').textContent='Delivery location updated ✦'}function deleteLoc(i){if(locs.length===1){document.getElementById('msg').textContent='Keep at least one saved location.';return}const was=locs[i]===current;locs.splice(i,1);if(was)current=locs[0];save();render()}function saveLocation(){const input=document.getElementById('newLocation'),v=input.value.trim();if(!v)return;locs.push(v);current=v;save();input.value='';render();document.getElementById('msg').textContent='New delivery spot saved ✦'}render();</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delivery Addresses · Melon Mart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="melon-pages.css">
+<style>
+.location-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:start}
+.location-card{padding:26px}
+.location-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.location-form .full{grid-column:1/-1}
+.location-form label{display:block;font-size:12px;font-weight:700;color:var(--plum);margin:0 0 5px}
+.location-form input,.location-form textarea{width:100%;border:1px solid var(--line);border-radius:13px;background:#fffdf5;padding:12px 13px;color:var(--text);outline:none}
+.location-form textarea{min-height:78px;resize:vertical}
+.location-form input:focus,.location-form textarea:focus{border-color:var(--plum);box-shadow:0 0 0 3px #59405212}
+.location-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.location-entry{border:1px solid var(--line);background:var(--cream);border-radius:17px;padding:15px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.location-entry.selected{border-color:var(--plum);box-shadow:0 0 0 2px #59405210}
+.location-entry button{border:0;background:transparent;text-align:left;min-width:0;flex:1;color:var(--text)}
+.location-entry strong{display:block;color:var(--plum-dark);overflow-wrap:anywhere}
+.location-entry small{display:block;color:var(--muted);font-size:12px;margin-top:4px;line-height:1.5}
+.location-message{color:var(--muted);font-size:12px;margin-top:12px;line-height:1.5;min-height:18px}
+.location-note{margin-top:12px;padding:12px 14px;background:var(--butter-light);border-radius:14px;color:var(--plum-dark);font-size:12px;line-height:1.5}
+@media(max-width:760px){.location-layout{grid-template-columns:1fr}.location-card{padding:20px}}
+@media(max-width:460px){.location-form{grid-template-columns:1fr}.location-form .full{grid-column:auto}}
+</style>
+</head>
+<body data-active="location">
+<div id="siteHeader"></div>
+<main class="page-shell">
+  <section class="page-hero"><span class="eyebrow">where should we bring it?</span><h1>Delivery addresses 📍</h1><p>Save your favourite spots so checkout stays pleasantly uncomplicated.</p></section>
+  <section class="location-layout">
+    <div class="paper-card location-card">
+      <h2 class="section-title">Your saved spots</h2>
+      <p class="section-subtitle">Choose the place you want Melon Mart to remember.</p>
+      <div id="locations" style="display:grid;gap:10px"></div>
+    </div>
+    <div class="paper-card location-card">
+      <h2 class="section-title">Add another spot</h2>
+      <p class="section-subtitle">Hostel, room, apartment, office — whatever helps you find the bag.</p>
+      <form id="locationForm" class="location-form">
+        <div class="full"><label for="locationLabel">Spot name</label><input id="locationLabel" maxlength="80" placeholder="e.g. Hostel 2 · Room 214" required></div>
+        <div class="full"><label for="newLocation">Full address</label><textarea id="newLocation" maxlength="500" placeholder="House number, street name, area" required></textarea></div>
+        <div><label for="locationCity">City / Town</label><input id="locationCity" maxlength="100" autocomplete="address-level2" placeholder="City"></div>
+        <div><label for="locationState">State</label><input id="locationState" maxlength="100" autocomplete="address-level1" placeholder="State"></div>
+        <div><label for="locationPincode">PIN code</label><input id="locationPincode" maxlength="6" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{6}" placeholder="6-digit PIN"></div>
+        <div><label for="locationLandmark">Landmark</label><input id="locationLandmark" maxlength="160" placeholder="Nearby landmark"></div>
+      </form>
+      <div class="location-actions">
+        <button class="secondary-btn" type="button" id="useCurrentLocation">◎ Use my current location</button>
+        <button class="primary-btn" type="submit" form="locationForm">+ Save this location</button>
+      </div>
+      <p id="msg" class="location-message" role="status" aria-live="polite"></p>
+      <div class="location-note">Your browser will ask permission before using your device location. Check the address and PIN code before saving; location accuracy depends on your device and available map data.</div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer">Your location stays in this browser for this project ✦</footer>
+<script src="melon-pages.js"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const listEl = $("locations");
+  const messageEl = $("msg");
+  const parse = (key, fallback) => { try { const value = JSON.parse(localStorage.getItem(key)); return value == null ? fallback : value; } catch (_) { return fallback; } };
+  const oldLabels = parse("melonmart_locations", ["Hostel 4 · Main Campus"]);
+  let addresses = parse("melonmart_addresses", []);
+  if (!Array.isArray(addresses)) addresses = [];
+  let current = parse("melonmart_address_current", null);
+  const legacyLabel = localStorage.getItem("melonmart_location") || (oldLabels[0] || "Hostel 4 · Main Campus");
+  if (current && !addresses.some(a => a.id === current.id)) addresses.unshift(current);
+  if (!addresses.length) addresses = [{id:"legacy",label:legacyLabel,address:legacyLabel,city:"",state:"",pincode:"",landmark:"",legacy:true}];
+  if (!current) current = addresses.find(a => a.label === legacyLabel) || addresses[0];
+  let coordinates = null;
+
+  function saveState() {
+    localStorage.setItem("melonmart_addresses", JSON.stringify(addresses.filter(a => !a.legacy)));
+    localStorage.setItem("melonmart_address_current", JSON.stringify(current));
+    localStorage.setItem("melonmart_location", current.label || current.address || "");
+    const labels = addresses.map(a => a.label).filter(Boolean);
+    localStorage.setItem("melonmart_locations", JSON.stringify(labels.length ? labels : [current.label || current.address || "Delivery address"]));
+    const headerLocation = document.getElementById("mmCurrentLocation");
+    if (headerLocation) headerLocation.textContent = current.label || current.address || "Delivery address";
+    const headerLoc = document.getElementById("currentLocation");
+    if (headerLoc) headerLoc.textContent = current.label || current.address || "Delivery address";
+    const menuLoc = document.getElementById("menuLocation");
+    if (menuLoc) menuLoc.textContent = current.label || current.address || "Delivery address";
+  }
+  function addressSummary(a) {
+    return [a.address, a.city, a.state, a.pincode].filter(Boolean).join(", ");
+  }
+  function render() {
+    listEl.innerHTML = addresses.map((a, i) => {
+      const selected = current && a.id === current.id;
+      return '<div class="location-entry' + (selected ? ' selected' : '') + '">' +
+        '<button type="button" data-select="' + i + '"><strong>📍 ' + mmEsc(a.label || "Saved spot") + '</strong><small>' + mmEsc(addressSummary(a) || "Address details not added yet") + (selected ? '<br>current delivery location' : '<br>saved spot') + '</small></button>' +
+        '<button type="button" class="danger-btn" data-delete="' + i + '" aria-label="Remove ' + mmEsc(a.label || "saved spot") + '">remove</button></div>';
+    }).join("");
+    listEl.querySelectorAll("[data-select]").forEach(btn => btn.addEventListener("click", () => {
+      current = addresses[Number(btn.dataset.select)];
+      saveState(); render(); messageEl.textContent = "Delivery location updated ✦";
+    }));
+    listEl.querySelectorAll("[data-delete]").forEach(btn => btn.addEventListener("click", () => {
+      const index = Number(btn.dataset.delete);
+      if (addresses.length === 1) { messageEl.textContent = "Keep at least one saved location."; return; }
+      const removed = addresses[index];
+      addresses.splice(index, 1);
+      if (current && current.id === removed.id) current = addresses[0];
+      saveState(); render(); messageEl.textContent = "Saved spot removed.";
+    }));
+  }
+  function setField(id, value) { $(id).value = value || ""; }
+  function clearForm() {
+    ["locationLabel","newLocation","locationCity","locationState","locationPincode","locationLandmark"].forEach(id => setField(id,""));
+    coordinates = null;
+  }
+  $("locationForm").addEventListener("submit", event => {
+    event.preventDefault();
+    const label = $("locationLabel").value.trim();
+    const address = $("newLocation").value.trim();
+    const pincode = $("locationPincode").value.trim();
+    if (!label || !address) { messageEl.textContent = "Add a spot name and full address first."; return; }
+    if (pincode && !/^\d{6}$/.test(pincode)) { messageEl.textContent = "PIN code should contain 6 digits."; $("locationPincode").focus(); return; }
+    const entry = {
+      id: "addr-" + Date.now(), label, address,
+      city: $("locationCity").value.trim(), state: $("locationState").value.trim(),
+      pincode, landmark: $("locationLandmark").value.trim(),
+      latitude: coordinates ? coordinates.latitude : null,
+      longitude: coordinates ? coordinates.longitude : null,
+      accuracy: coordinates ? coordinates.accuracy : null
+    };
+    addresses = addresses.filter(a => !a.legacy);
+    addresses.push(entry); current = entry;
+    saveState(); clearForm(); render();
+    messageEl.textContent = "New delivery spot saved ✦ Checkout will use this address.";
+  });
+  $("useCurrentLocation").addEventListener("click", () => {
+    if (!navigator.geolocation) { messageEl.textContent = "Your browser doesn't support location detection. You can type the address instead."; return; }
+    messageEl.textContent = "Asking your browser for your location…";
+    navigator.geolocation.getCurrentPosition(async position => {
+      coordinates = {latitude:position.coords.latitude,longitude:position.coords.longitude,accuracy:position.coords.accuracy};
+      messageEl.textContent = "Location found (about ±" + Math.round(position.coords.accuracy) + " m). Looking up the address…";
+      try {
+        const url = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&lat=" + encodeURIComponent(coordinates.latitude) + "&lon=" + encodeURIComponent(coordinates.longitude);
+        const response = await fetch(url, {headers:{"Accept-Language":"en"}});
+        if (!response.ok) throw new Error("Address lookup failed");
+        const data = await response.json();
+        const a = data.address || {};
+        const street = [a.house_number, a.road].filter(Boolean).join(" ");
+        const area = a.neighbourhood || a.suburb || a.quarter || a.village || a.hamlet || "";
+        setField("locationLabel", $("locationLabel").value.trim() || "Current location");
+        setField("newLocation", [street, area, a.county].filter(Boolean).join(", ") || data.display_name || "");
+        setField("locationCity", a.city || a.town || a.village || a.municipality || a.county || "");
+        setField("locationState", a.state || "");
+        setField("locationPincode", a.postcode || "");
+        setField("locationLandmark", a.amenity || a.building || "");
+        messageEl.textContent = "Address found. Please check the details and PIN code before saving.";
+      } catch (_) {
+        messageEl.textContent = "Coordinates were found, but the address lookup didn't work. Please enter the address manually and save again.";
+      }
+    }, error => {
+      const reason = error.code === 1 ? "Location permission was denied." : error.code === 2 ? "Your device couldn't determine the location." : "Location lookup timed out.";
+      messageEl.textContent = reason + " You can enter the delivery address manually.";
+    }, {enableHighAccuracy:true,timeout:15000,maximumAge:0});
+  });
+  saveState(); render();
+})();
+</script>
+</body>
+</html>
