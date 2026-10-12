@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 
 @WebServlet({"/api/orders/*", "/api/v1/orders/*"})
 public class OrderServlet extends HttpServlet {
@@ -39,6 +40,7 @@ public class OrderServlet extends HttpServlet {
             HttpServletResponse response
     ) throws ServletException, IOException {
 
+        request.setCharacterEncoding("UTF-8");
         String path = request.getPathInfo();
 
         if (path == null || !path.equals("/checkout")) {
@@ -66,9 +68,45 @@ public class OrderServlet extends HttpServlet {
         }
 
         try {
+            String fullName = parameter(request, "fullName");
+            String email = parameter(request, "email");
+            String phone = parameter(request, "phone");
+            String address = parameter(request, "address");
+            String city = parameter(request, "city");
+            String state = parameter(request, "state");
+            String pincode = parameter(request, "pincode");
+            String landmark = parameter(request, "landmark");
+            String payment = parameter(request, "payment").toUpperCase(Locale.ROOT);
+            if (payment.isBlank()) payment = "COD";
 
-            Order order =
-                    orderService.checkout(user.getId());
+            boolean valid = fullName.length() >= 2 && fullName.length() <= 100
+                    && email.length() <= 150
+                    && email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")
+                    && phone.matches("[0-9]{10}")
+                    && !address.isBlank() && address.length() <= 500
+                    && !city.isBlank() && city.length() <= 100
+                    && !state.isBlank() && state.length() <= 100
+                    && pincode.matches("[0-9]{6}")
+                    && landmark.length() <= 150
+                    && List.of("COD", "UPI", "CARD").contains(payment);
+            if (!valid) {
+                sendError(response, HttpServletResponse.SC_BAD_REQUEST,
+                        "Please check your contact, delivery and payment details.");
+                return;
+            }
+
+            Order checkoutDetails = new Order();
+            checkoutDetails.setDeliveryName(fullName);
+            checkoutDetails.setDeliveryEmail(email);
+            checkoutDetails.setDeliveryPhone(phone);
+            checkoutDetails.setDeliveryAddress(address);
+            checkoutDetails.setDeliveryCity(city);
+            checkoutDetails.setDeliveryState(state);
+            checkoutDetails.setDeliveryPincode(pincode);
+            checkoutDetails.setDeliveryLandmark(landmark);
+            checkoutDetails.setPaymentMethod(payment);
+
+            Order order = orderService.checkout(user.getId(), checkoutDetails);
 
             Map<String, Object> result =
                     new HashMap<>();
@@ -469,6 +507,11 @@ protected void doPut(
     }
 }
 
+
+    private String parameter(HttpServletRequest request, String name) {
+        String value = request.getParameter(name);
+        return value == null ? "" : value.trim();
+    }
 
     private User getLoggedInUser(
             HttpServletRequest request

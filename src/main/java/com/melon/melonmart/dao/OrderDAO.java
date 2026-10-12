@@ -38,8 +38,10 @@ public class OrderDAO {
 
         String sql = """
                 INSERT INTO orders
-                (buyer_id, total_amount, status)
-                VALUES (?, ?, ?)
+                (buyer_id, total_amount, status, delivery_name, delivery_email,
+                 delivery_phone, delivery_address, delivery_city, delivery_state,
+                 delivery_pincode, delivery_landmark, payment_method)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         try (PreparedStatement statement = connection.prepareStatement(
@@ -49,6 +51,15 @@ public class OrderDAO {
             statement.setInt(1, order.getUserId());
             statement.setBigDecimal(2, order.getTotalAmount());
             statement.setString(3, order.getStatus());
+            statement.setString(4, order.getDeliveryName());
+            statement.setString(5, order.getDeliveryEmail());
+            statement.setString(6, order.getDeliveryPhone());
+            statement.setString(7, order.getDeliveryAddress());
+            statement.setString(8, order.getDeliveryCity());
+            statement.setString(9, order.getDeliveryState());
+            statement.setString(10, order.getDeliveryPincode());
+            statement.setString(11, order.getDeliveryLandmark());
+            statement.setString(12, order.getPaymentMethod() == null ? "COD" : order.getPaymentMethod());
 
             statement.executeUpdate();
 
@@ -66,7 +77,7 @@ public class OrderDAO {
     public Order getOrderById(int orderId) throws Exception {
 
         String sql = """
-                SELECT id, buyer_id AS user_id, total_amount, status, created_at
+                SELECT id, buyer_id AS user_id, total_amount, status, created_at, delivery_name, delivery_email, delivery_phone, delivery_address, delivery_city, delivery_state, delivery_pincode, delivery_landmark, payment_method
                 FROM orders
                 WHERE id = ?
                 """;
@@ -91,6 +102,15 @@ public class OrderDAO {
                     order.setCreatedAt(
                             result.getTimestamp("created_at")
                     );
+                    order.setDeliveryName(result.getString("delivery_name"));
+                    order.setDeliveryEmail(result.getString("delivery_email"));
+                    order.setDeliveryPhone(result.getString("delivery_phone"));
+                    order.setDeliveryAddress(result.getString("delivery_address"));
+                    order.setDeliveryCity(result.getString("delivery_city"));
+                    order.setDeliveryState(result.getString("delivery_state"));
+                    order.setDeliveryPincode(result.getString("delivery_pincode"));
+                    order.setDeliveryLandmark(result.getString("delivery_landmark"));
+                    order.setPaymentMethod(result.getString("payment_method"));
 
                     return order;
                 }
@@ -309,6 +329,9 @@ public class OrderDAO {
             int productId,
             int quantity
     ) throws Exception {
+        if (productId <= 0 || quantity <= 0) {
+            return false;
+        }
         String sql = """
                 UPDATE products
                 SET stock_qty = stock_qty - ?
@@ -321,6 +344,21 @@ public class OrderDAO {
             statement.setInt(2, productId);
             statement.setInt(3, quantity);
             return statement.executeUpdate() == 1;
+        }
+    }
+
+    /**
+     * Reads the current catalog price inside the active checkout transaction.
+     * The caller must reserve stock first so the product row remains locked
+     * until the order transaction commits or rolls back.
+     */
+    public BigDecimal getProductPrice(Connection connection, int productId) throws Exception {
+        String sql = "SELECT price FROM products WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, productId);
+            try (ResultSet result = statement.executeQuery()) {
+                return result.next() ? result.getBigDecimal("price") : null;
+            }
         }
     }
 

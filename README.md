@@ -13,12 +13,12 @@ JDK 17 · Tomcat 9 · Servlet 4 (`javax.servlet`) · Maven · H2 · HikariCP · 
 Passwords are stored as bcrypt hashes in the database.
 
 ## Run
-1. **Keep your existing `data/melonmartdb.mv.db`**. The startup migration upgrades compatible legacy columns in place; do not replace it with another project database.
-2. Set `GEMINI_API_KEY` only if you want live AI. Without it, Welp runs in safe demo mode.
-3. Build: `mvn clean verify`.
-4. Deploy `target/melonmart.war` to Tomcat 9.
-5. Open `/melonmart/`.
-6. Health: `/melonmart/api/v1/health`.
+1. **Protect your existing database first.** Back up `melonmartdb.mv.db` before changing database settings. On Windows, the historical Tomcat database path is preserved. On non-Windows hosts, configure `MELONMART_DB_URL` to a writable path; use persistent storage in deployments so data survives restarts.
+2. Set `GEMINI_API_KEY` only if you want live AI. Without it, Welp runs in safe demo mode. Database settings can be overridden with `MELONMART_DB_URL`, `MELONMART_DB_USERNAME`, and `MELONMART_DB_PASSWORD`.
+3. Startup applies the numbered scripts in `src/main/resources/db/migrations`, records applied versions in `schema_migrations`, then ensures `schema.sql` and idempotent demo data in `seed.sql` are applied. The SQL scripts are designed for compatible H2 databases; back up real data before upgrades.\n4. Build and test: `mvn -B clean verify`.
+5. Deploy `target/melonmart.war` to Tomcat 9.
+6. Open `/melonmart/`.
+7. Health: `/melonmart/api/v1/health`.
 
 ## Main flows
 Buyer: register/login → browse/search/category → product details → reviews → cart → mock checkout → order history → delivered review.

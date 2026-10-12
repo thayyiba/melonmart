@@ -3,6 +3,7 @@ package com.melon.melonmart.dao;
 import com.melon.melonmart.listener.DbContextListener;
 import com.melon.melonmart.model.CartItem;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,8 +12,18 @@ import java.util.List;
 
 public class CartDAO {
 
+    private final DataSource dataSource;
+
+    public CartDAO() {
+        this(DbContextListener.getDataSource());
+    }
+
+    public CartDAO(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     private Connection getConnection() throws Exception {
-        return DbContextListener.getDataSource().getConnection();
+        return dataSource.getConnection();
     }
 
     public List<CartItem> getCartByUserId(int userId) {
@@ -79,36 +90,78 @@ public class CartDAO {
         return cart;
     }
 
-    public boolean addToCart(
-            int userId,
-            int productId,
-            int quantity
-    ) {
+    /**
+     * Adds to an existing cart line, or creates one if absent.
+     * Locks the product row while validating the requested quantity.
+     */
+    public boolean addToCart(int userId, int productId, int quantity) {
+        if (userId <= 0 || productId <= 0 || quantity <= 0) return false;
 
-        String sql = """
-                MERGE INTO cart_items
-                (user_id, product_id, quantity)
-                KEY (user_id, product_id)
-                VALUES (?, ?, ?)
-                """;
+        try (Connection connection = getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                int stock;
+                try (PreparedStatement product = connection.prepareStatement(
+                        "SELECT stock_qty FROM products WHERE id = ? FOR UPDATE")) {
+                    product.setInt(1, productId);
+                    try (ResultSet result = product.executeQuery()) {
+                        if (!result.next()) {
+                            connection.rollback();
+                            return false;
+                        }
+                        stock = result.getInt("stock_qty");
+                    }
+                }
 
-        try (
-                Connection connection = getConnection();
-                PreparedStatement statement =
-                        connection.prepareStatement(sql)
-        ) {
+                int currentQuantity = 0;
+                try (PreparedStatement existing = connection.prepareStatement(
+                        "SELECT quantity FROM cart_items WHERE user_id = ? AND product_id = ?")) {
+                    existing.setInt(1, userId);
+                    existing.setInt(2, productId);
+                    try (ResultSet result = existing.executeQuery()) {
+                        if (result.next()) currentQuantity = result.getInt("quantity");
+                    }
+                }
 
-            statement.setInt(1, userId);
-            statement.setInt(2, productId);
-            statement.setInt(3, quantity);
+                if (currentQuantity + quantity > stock) {
+                    connection.rollback();
+                    return false;
+                }
 
-            return statement.executeUpdate() > 0;
+                String sql = currentQuantity > 0
+                        ? "UPDATE cart_items SET quantity = quantity + ? WHERE user_id = ? AND product_id = ?"
+                        : "INSERT INTO cart_items (user_id, product_id, quantity) VALUES (?, ?, ?)";
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    if (currentQuantity > 0) {
+                        statement.setInt(1, quantity);
+                        statement.setInt(2, userId);
+                        statement.setInt(3, productId);
+                    } else {
+                        statement.setInt(1, userId);
+                        statement.setInt(2, productId);
+                        statement.setInt(3, quantity);
+                    }
+                    if (statement.executeUpdate() != 1) {
+                        connection.rollback();
+                        return false;
+                    }
+                }
 
+                connection.commit();
+                return true;
+            } catch (Exception e) {
+                try { connection.rollback(); } catch (Exception rollbackError) {
+                    e.addSuppressed(rollbackError);
+                }
+                System.err.println("Error adding item to cart:");
+                e.printStackTrace();
+                return false;
+            } finally {
+                try { connection.setAutoCommit(true); } catch (Exception ignored) { }
+            }
         } catch (Exception e) {
-
             System.err.println("Error adding item to cart:");
             e.printStackTrace();
-
             return false;
         }
     }
@@ -148,36 +201,32 @@ public class CartDAO {
         }
     }
 
-    public boolean updateQuantity(
-            int userId,
-            int productId,
-            int quantity
-    ) {
-
+    /**
+     * Sets a cart line to the requested quantity, validating current stock.
+     */
+    public boolean updateQuantity(int userId, int productId, int quantity) {
+        if (userId <= 0 || productId <= 0 || quantity <= 0) return false;
         String sql = """
                 UPDATE cart_items
                 SET quantity = ?
                 WHERE user_id = ?
                   AND product_id = ?
+                  AND EXISTS (
+                      SELECT 1 FROM products p
+                      WHERE p.id = cart_items.product_id
+                        AND p.stock_qty >= ?
+                  )
                 """;
-
-        try (
-                Connection connection = getConnection();
-                PreparedStatement statement =
-                        connection.prepareStatement(sql)
-        ) {
-
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, quantity);
             statement.setInt(2, userId);
             statement.setInt(3, productId);
-
-            return statement.executeUpdate() > 0;
-
+            statement.setInt(4, quantity);
+            return statement.executeUpdate() == 1;
         } catch (Exception e) {
-
             System.err.println("Error updating cart quantity:");
             e.printStackTrace();
-
             return false;
         }
     }

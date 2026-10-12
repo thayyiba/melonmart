@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap"
         rel="stylesheet"
     >
 
@@ -681,6 +681,40 @@
 
         }
 
+    
+        /* Melon Mart's shared butter, blush and plum visual theme */
+        :root {
+            --burgundy: #594052;
+            --burgundy-dark: #382a34;
+            --cream: #FFF6D8;
+            --cream-light: #FFFDF5;
+            --beige: #FAE9A9;
+            --text: #302A30;
+            --muted: #756C73;
+            --border: #E7DACB;
+        }
+        body { font-family: "DM Sans", sans-serif; line-height: 1.5; }
+        .brand, .page-title h1, .empty-checkout h2, .section-heading h2,
+        .summary-header h2 { font-family: "Fraunces", serif; }
+        .checkout-header { background: rgba(255,253,247,.96); backdrop-filter: blur(15px); }
+        .checkout-section, .summary-card, .empty-checkout {
+            border-radius: 24px; box-shadow: 0 10px 25px rgba(56,42,52,.06);
+        }
+        .summary-card { overflow: hidden; }
+        .form-group input, .form-group textarea { border-radius: 13px; }
+        .payment-option { border-radius: 17px; }
+        .payment-option.selected { background: #F9DDDD; }
+        .payment-icon { border-radius: 12px; background: #FAE9A9; }
+        .payment-note { border-radius: 14px; background: #FFF6D8; }
+        .checkout-item-image { border-radius: 13px; }
+        .continue-shopping, .place-order-btn { border-radius: 999px; }
+        .place-order-btn, .continue-shopping { background: #594052; }
+        .place-order-btn:hover, .continue-shopping:hover { background: #382A34; }
+        @media (max-width: 650px) {
+            .checkout-header { border-radius: 0; }
+            .checkout-section, .summary-card, .empty-checkout { border-radius: 18px; }
+        }
+
     </style>
 </head>
 
@@ -1310,6 +1344,15 @@
                    FORMAT PRICE
                 ========================= */
 
+                function escapeHtml(value) {
+                    return String(value ?? "")
+                        .replace(/&/g, "&amp;")
+                        .replace(/</g, "&lt;")
+                        .replace(/>/g, "&gt;")
+                        .replace(/"/g, "&quot;")
+                        .replace(/'/g, "&#39;");
+                }
+
                 function formatPrice(price) {
 
                     return "₹" +
@@ -1467,8 +1510,8 @@
                             <div class="checkout-item-image">
 
                                 <img
-                                    src="${image}"
-                                    alt="${name}"
+                                    src="${escapeHtml(image)}"
+                                    alt="${escapeHtml(name)}"
                                 >
 
                             </div>
@@ -1477,7 +1520,7 @@
                             <div class="checkout-item-info">
 
                                 <div class="checkout-item-title">
-                                    ${name}
+                                    ${escapeHtml(name)}
                                 </div>
 
                                 <div class="checkout-item-meta">
@@ -2018,7 +2061,16 @@
 
                                         body:
                                             new URLSearchParams({
-                                                action: "checkout"
+                                                action: "checkout",
+                                                fullName: document.getElementById("fullName").value.trim(),
+                                                email: document.getElementById("email").value.trim(),
+                                                phone: document.getElementById("phone").value.trim(),
+                                                address: document.getElementById("address").value.trim(),
+                                                city: document.getElementById("city").value.trim(),
+                                                state: document.getElementById("state").value.trim(),
+                                                pincode: document.getElementById("pincode").value.trim(),
+                                                landmark: document.getElementById("landmark").value.trim(),
+                                                payment: document.querySelector('input[name="payment"]:checked').value
                                             })
                                     }
                                 );
@@ -2071,7 +2123,7 @@
 
                             sessionStorage.setItem(
                                 "melonMartOrderId",
-                                result.orderId
+                                (result.order && result.order.id) || result.orderId || result.id
                             );
 
 

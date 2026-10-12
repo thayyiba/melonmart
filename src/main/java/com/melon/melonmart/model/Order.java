@@ -10,6 +10,15 @@ public class Order {
     private BigDecimal totalAmount;
     private String status;
     private Timestamp createdAt;
+    private String deliveryName;
+    private String deliveryEmail;
+    private String deliveryPhone;
+    private String deliveryAddress;
+    private String deliveryCity;
+    private String deliveryState;
+    private String deliveryPincode;
+    private String deliveryLandmark;
+    private String paymentMethod = "COD";
 
     public Order() {
     }
@@ -54,6 +63,33 @@ public class Order {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String getDeliveryName() { return deliveryName; }
+    public void setDeliveryName(String deliveryName) { this.deliveryName = deliveryName; }
+
+    public String getDeliveryEmail() { return deliveryEmail; }
+    public void setDeliveryEmail(String deliveryEmail) { this.deliveryEmail = deliveryEmail; }
+
+    public String getDeliveryPhone() { return deliveryPhone; }
+    public void setDeliveryPhone(String deliveryPhone) { this.deliveryPhone = deliveryPhone; }
+
+    public String getDeliveryAddress() { return deliveryAddress; }
+    public void setDeliveryAddress(String deliveryAddress) { this.deliveryAddress = deliveryAddress; }
+
+    public String getDeliveryCity() { return deliveryCity; }
+    public void setDeliveryCity(String deliveryCity) { this.deliveryCity = deliveryCity; }
+
+    public String getDeliveryState() { return deliveryState; }
+    public void setDeliveryState(String deliveryState) { this.deliveryState = deliveryState; }
+
+    public String getDeliveryPincode() { return deliveryPincode; }
+    public void setDeliveryPincode(String deliveryPincode) { this.deliveryPincode = deliveryPincode; }
+
+    public String getDeliveryLandmark() { return deliveryLandmark; }
+    public void setDeliveryLandmark(String deliveryLandmark) { this.deliveryLandmark = deliveryLandmark; }
+
+    public String getPaymentMethod() { return paymentMethod; }
+    public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
 
     public Timestamp getCreatedAt() {
         return createdAt;
