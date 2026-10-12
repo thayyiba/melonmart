@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-@WebServlet("/api/welp")
+@WebServlet({"/api/welp", "/api/v1/welp"})
 public class WelpServlet extends HttpServlet {
 
     private final ProductDAO productDAO = new ProductDAO();

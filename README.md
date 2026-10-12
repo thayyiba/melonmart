@@ -6,6 +6,8 @@ Multi-seller grocery marketplace for Anna University R2025 Semester 3.
 JDK 17 · Tomcat 9 · Servlet 4 (`javax.servlet`) · Maven · H2 · HikariCP · Gson · jBCrypt · vanilla JS.
 
 ## Demo accounts
+
+> These well-known credentials are for local/isolated demos only. Do not expose them on a public deployment. The Docker image disables demo seeding by default; see [deployment security notes](docs/DEPLOYMENT.md#demo-credentials-and-first-administrator).
 - Admin: `admin@melonmart.com` / `admin123`
 - Buyer: `buyer@melonmart.com` / `buyer123`
 - Seller: `seller@melonmart.com` / `seller123`
@@ -40,3 +42,8 @@ Admin: login → users/orders/products/moderation.
 - Review creation requires a delivered order containing the product.
 - Chat input capped at 500 characters and 10 messages/minute/session.
 - `X-Request-ID` returned by API responses and included in the SLF4J MDC logging context.
+
+## Deployment
+- [Deployment guide](docs/DEPLOYMENT.md) — local Tomcat 9, Docker, Render, Railway, database configuration, and persistence notes.
+- A multi-stage `Dockerfile` builds the WAR with Java 17 and runs it on Tomcat 9. Attach persistent storage at `/data` when deploying the default H2 file database.
+- For Render/Railway, the app is served at `/melonmart/`; the health endpoint is `/melonmart/api/health`.

@@ -24,3 +24,5 @@ jobs:
           cache: maven
       - name: Build and run tests
         run: mvn -B clean verify
+      - name: Build Tomcat container image
+        run: docker build --tag melonmart-ci:ci .

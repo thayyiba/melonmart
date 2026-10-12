@@ -1,0 +1,12 @@
+.git
+.gitignore
+.idea
+.vscode
+target
+*.mv.db
+*.trace.db
+*.lock.db
+*.zip
+*.war
+*.log
+.DS_Store
