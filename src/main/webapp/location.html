@@ -59,7 +59,7 @@
     </div>
   </section>
 </main>
-<footer class="site-footer">Your location stays in this browser for this project ✦</footer>
+<footer class="site-footer">Signed-in addresses belong to your account; guest spots stay on this device ✦</footer>
 <script src="melon-pages.js"></script>
 
 <script>
@@ -86,19 +86,25 @@
   let serverBacked = false;
 
   function saveState() {
-    localStorage.setItem("melonmart_addresses", JSON.stringify(addresses));
-    if (current) {
-      localStorage.setItem("melonmart_address_current", JSON.stringify(current));
-      localStorage.setItem("melonmart_location", current.label || current.address || "");
-    } else {
-      localStorage.removeItem("melonmart_address_current");
-    }
-    const labels = addresses.map(a => a.label).filter(Boolean);
-    localStorage.setItem("melonmart_locations", JSON.stringify(labels.length ? labels : [localStorage.getItem("melonmart_location") || "Delivery address"]));
     const label = current ? (current.label || current.address || "Delivery address") : "Add delivery address";
+    if (serverBacked) {
+      ["melonmart_addresses", "melonmart_address_current", "melonmart_locations", "melonmart_location"]
+        .forEach(key => localStorage.removeItem(key));
+    } else {
+      localStorage.setItem("melonmart_addresses", JSON.stringify(addresses));
+      if (current) {
+        localStorage.setItem("melonmart_address_current", JSON.stringify(current));
+        localStorage.setItem("melonmart_location", label);
+      } else {
+        localStorage.removeItem("melonmart_address_current");
+        localStorage.removeItem("melonmart_location");
+      }
+      const labels = addresses.map(a => a.label).filter(Boolean);
+      if (labels.length) localStorage.setItem("melonmart_locations", JSON.stringify(labels));
+      else localStorage.removeItem("melonmart_locations");
+    }
     ["mmCurrentLocation", "currentLocation", "menuLocation"].forEach(id => {
-      const node = document.getElementById(id);
-      if (node) node.textContent = label;
+      document.querySelectorAll("#" + id).forEach(node => { node.textContent = label; });
     });
   }
 
@@ -144,10 +150,6 @@
 
     listEl.querySelectorAll("[data-delete]").forEach(btn => btn.addEventListener("click", async () => {
       const index = Number(btn.dataset.delete);
-      if (addresses.length === 1) {
-        messageEl.textContent = "Keep at least one saved location.";
-        return;
-      }
       const removed = addresses[index];
       if (serverBacked) {
         try {
@@ -173,26 +175,7 @@
     if (response.status === 401) return false;
     if (!response.ok) throw new Error("Address service unavailable.");
     serverBacked = true;
-    let remote = await response.json();
-
-    // Migrate complete addresses from this browser into the account once, if the account has none yet.
-    const localCandidates = addresses.filter(a => !a.legacy && a.address);
-    if (!remote.length && localCandidates.length) {
-      for (const a of localCandidates) {
-        const created = await fetch(MM_BASE + "/api/addresses", {
-          method:"POST", headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({
-            action:"create", label:a.label, address:a.address, city:a.city, state:a.state,
-            pincode:a.pincode, landmark:a.landmark, latitude:a.latitude,
-            longitude:a.longitude, accuracy:a.accuracy
-          })
-        });
-        if (!created.ok) throw new Error("Could not sync this browser's saved addresses.");
-      }
-      const refreshed = await fetch(MM_BASE + "/api/addresses", {headers:{"Accept":"application/json"}});
-      if (refreshed.ok) remote = await refreshed.json();
-    }
-
+    const remote = await response.json();
     addresses = Array.isArray(remote) ? remote : [];
     current = addresses.find(a => a.isDefault) || addresses[0] || null;
     saveState();
@@ -307,14 +290,17 @@
         saveState();
         render();
       }
-    } catch (_) {
-      loadLocalState();
+    } catch (error) {
+      addresses = [];
+      current = null;
+      serverBacked = true;
       saveState();
       render();
+      messageEl.textContent = "Could not load account addresses. Refresh and try again.";
     }
   })();
 })();
-</script>>
+</script>
 
 <script src="melon-experience.js"></script>
 </body>
