@@ -1,0 +1,34 @@
+@startuml
+left to right direction
+actor Buyer
+actor Seller
+actor Admin
+rectangle "Melon Mart" {
+  usecase "Register / sign in" as UC1
+  usecase "Browse, search, filter products" as UC2
+  usecase "Manage cart and wishlist" as UC3
+  usecase "Checkout" as UC4
+  usecase "View own order history" as UC5
+  usecase "Review delivered products" as UC6
+  usecase "Ask Welp shopping assistant" as UC7
+  usecase "Manage own products and stock" as UC8
+  usecase "View seller orders and update status" as UC9
+  usecase "View sales summary" as UC10
+  usecase "Manage users, products, and orders" as UC11
+  usecase "Check application health" as UC12
+}
+Buyer --> UC1
+Buyer --> UC2
+Buyer --> UC3
+Buyer --> UC4
+Buyer --> UC5
+Buyer --> UC6
+Buyer --> UC7
+Seller --> UC1
+Seller --> UC8
+Seller --> UC9
+Seller --> UC10
+Admin --> UC1
+Admin --> UC11
+Admin --> UC12
+@enduml
