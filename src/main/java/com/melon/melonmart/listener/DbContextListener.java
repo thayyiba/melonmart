@@ -112,7 +112,8 @@ public class DbContextListener implements ServletContextListener {
     private void runMigrations() throws Exception {
         String[] migrations = {
                 "db/migrations/V1__init_schema.sql",
-                "db/migrations/V2__wishlist.sql"
+                "db/migrations/V2__wishlist.sql",
+                "db/migrations/V3__checkout_details.sql"
         };
 
         try (Connection connection = dataSource.getConnection();
