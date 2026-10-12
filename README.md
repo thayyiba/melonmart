@@ -20,6 +20,11 @@ Passwords are stored as bcrypt hashes in the database.
 6. Open `/melonmart/`.
 7. Health: `/melonmart/api/v1/health`.
 
+## Architecture diagrams
+- [D1 — Entity relationship diagram](docs/diagrams/erd.md)
+- [D2 — Use-case overview](docs/diagrams/use-cases.md)
+- [D3 — Checkout sequence](docs/diagrams/checkout-sequence.md)
+
 ## Main flows
 Buyer: register/login → browse/search/category → product details → reviews → cart → mock checkout → order history → delivered review.
 Seller: login → dashboard → add/edit/delete products → incoming orders → status updates → sales.
@@ -33,4 +38,4 @@ Admin: login → users/orders/products/moderation.
 - User API responses do not expose password hashes.
 - Review creation requires a delivered order containing the product.
 - Chat input capped at 500 characters and 10 messages/minute/session.
-- `X-Request-ID` added to API responses.
+- `X-Request-ID` returned by API responses and included in the SLF4J MDC logging context.
