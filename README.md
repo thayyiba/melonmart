@@ -40,3 +40,8 @@ Admin: login → users/orders/products/moderation.
 - Review creation requires a delivered order containing the product.
 - Chat input capped at 500 characters and 10 messages/minute/session.
 - `X-Request-ID` returned by API responses and included in the SLF4J MDC logging context.
+
+## Deployment
+- [Deployment guide](docs/DEPLOYMENT.md) — local Tomcat 9, Docker, Render, Railway, database configuration, and persistence notes.
+- A multi-stage `Dockerfile` builds the WAR with Java 17 and runs it on Tomcat 9. Attach persistent storage at `/data` when deploying the default H2 file database.
+- For Render/Railway, the app is served at `/melonmart/`; the health endpoint is `/melonmart/api/health`.
