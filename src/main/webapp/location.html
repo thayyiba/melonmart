@@ -73,7 +73,7 @@
   let current = parse("melonmart_address_current", null);
   const legacyLabel = localStorage.getItem("melonmart_location") || (oldLabels[0] || "Hostel 4 · Main Campus");
   if (current && !addresses.some(a => a.id === current.id)) addresses.unshift(current);
-  if (!addresses.length) addresses = [{id:"legacy",label:legacyLabel,address:legacyLabel,city:"",state:"",pincode:"",landmark:"",legacy:true}];
+  if (!addresses.length) addresses = (Array.isArray(oldLabels) && oldLabels.length ? oldLabels : [legacyLabel]).map((label, index) => ({id:"legacy-" + index,label:String(label),address:String(label),city:"",state:"",pincode:"",landmark:"",legacy:true}));
   if (!current) current = addresses.find(a => a.label === legacyLabel) || addresses[0];
   let coordinates = null;
 
