@@ -18,9 +18,9 @@
     nav.setAttribute("aria-label", "Main navigation");
     const items = [
       {href:"index.html", label:"Home", icon:"⌂", active:page==="index.html" || page===""},
-      {href:"index.html#marketplaceHome", label:"Categories", icon:"▦", active:page==="index.html" && window.location.hash==="#marketplaceHome"},
+      {href:"wishlist.html", label:"Wishlist", icon:"♡", active:page==="wishlist.html"},
       {href:"cart.html", label:"Cart", icon:"🛍", active:page==="cart.html" || page==="checkout.html"},
-      {href:"wishlist.html", label:"Wishlist", icon:"♡", active:page==="wishlist.html"}
+      {href:"orders.html", label:"Orders", icon:"📦", active:page==="orders.html"}
     ];
     nav.innerHTML = items.map(item => '<a href="' + item.href + '"' + (item.active ? ' aria-current="page"' : '') + '><span class="mm-nav-icon" aria-hidden="true">' + item.icon + '</span><span class="mm-nav-label">' + item.label + '</span></a>').join("");
     document.body.appendChild(nav);
