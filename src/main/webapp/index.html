@@ -5011,30 +5011,6 @@ async function syncDeliveryLocation() {
     }
 }
 
-async function syncDeliveryLocation() {
-    const updateLabels = label => {
-        currentLocation = label;
-        document.querySelectorAll("#currentLocation, #menuLocation").forEach(node => {
-            node.textContent = label;
-        });
-    };
-    updateLabels("Add delivery address");
-    try {
-        const response = await fetch("api/addresses", { headers: { "Accept": "application/json" } });
-        if (response.status === 401) return;
-        if (!response.ok) throw new Error("Address service unavailable");
-        const addresses = await response.json();
-        savedLocations = Array.isArray(addresses)
-            ? addresses.map(address => String(address.label || address.address || "").trim()).filter(Boolean)
-            : [];
-        const selected = Array.isArray(addresses) ? addresses.find(address => address.isDefault) || addresses[0] : null;
-        updateLabels(selected ? String(selected.label || selected.address || "Add delivery address") : "Add delivery address");
-    } catch (error) {
-        updateLabels("Add delivery address");
-        console.warn("Could not load account delivery location:", error);
-    }
-}
-
 /* ==========================================
    INITIAL LOAD
 ========================================== */
