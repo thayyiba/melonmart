@@ -19,8 +19,14 @@ public class AdminDAO {
     private final DataSource dataSource;
 
     public AdminDAO() {
-        this.dataSource =
-                DbContextListener.getDataSource();
+        this(DbContextListener.getDataSource());
+    }
+
+    public AdminDAO(DataSource dataSource) {
+        if (dataSource == null) {
+            throw new IllegalArgumentException("DataSource is required");
+        }
+        this.dataSource = dataSource;
     }
 
     public Map<String, Object> getDashboardStats()
