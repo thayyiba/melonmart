@@ -1791,6 +1791,35 @@ footer {
             font-size: 11px;
         }
     }
+
+/* Keep text tokens intact across laptop, tablet and phone widths. Text may wrap
+   between words, but never split a word, price, number, or button label mid-token. */
+html, body, h1, h2, h3, p, strong, small, label, button, a,
+.hero-description, .thought-inner, .marketplace-section,
+.marketplace-card-title, .marketplace-card-price, .marketplace-card-rating,
+.marketplace-badge, .marketplace-mini-add, .marketplace-collection strong,
+.marketplace-category-name, .marketplace-category-count {
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  hyphens: none !important;
+}
+.marketplace-card-price, .marketplace-card-rating, .marketplace-badge,
+.marketplace-mini-add, .header-btn, .primary-btn, .secondary-btn,
+.hero-kicker, .marketplace-category-count {
+  white-space: nowrap;
+}
+.marketplace-shelf { min-width: 0; overscroll-behavior-x: contain; }
+.marketplace-card { min-width: 0; }
+.marketplace-card-title { line-height: 1.35; }
+@media (max-width: 600px) {
+  .marketplace-upgrade { padding-left: 16px; padding-right: 16px; }
+  .marketplace-shelf { grid-auto-columns: min(78vw, 300px); }
+  .marketplace-card-title { font-size: 14px; }
+  .marketplace-mini-add { padding: 8px 10px; }
+  .marketplace-category-grid { gap: 10px; }
+  .marketplace-category-tile { min-width: 0; padding: 14px 12px; }
+  .marketplace-collection { min-width: 0; padding: 16px 13px; }
+}
 </style>
 
 <style id="melon-blinkit-header">
@@ -3613,6 +3642,7 @@ async function fetchProducts() {
         // The homepage shelves read from window.products; keep the API result
         // available to both the main grid and the Deals/New/Top Rated shelves.
         window.products = products;
+        window.dispatchEvent(new Event('melon-products-loaded'));
 
         renderProducts();
 
@@ -5028,7 +5058,7 @@ fetchCart();
 
 
 /* MARKETPLACE UPGRADE JS */
-(function(){function ps(){return Array.isArray(window.products)?window.products:[]}function nm(p){return p.title||p.name||'Melon Mart find'}function im(p){return p.img||p.imageUrl||p.image||'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80'}function ct(p){return p.category||'GOOD FIND'}function esc(v){return typeof escapeHtml==='function'?escapeHtml(String(v??'')):String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}function card(p,b){return '<article class="marketplace-card" onclick="marketplaceOpenProduct('+JSON.stringify(p.id)+')">'+(b?'<span class="marketplace-badge">'+b+'</span>':'')+'<img src="'+esc(im(p))+'" alt="'+esc(nm(p))+'" loading="lazy"><div class="marketplace-card-body"><div class="marketplace-card-category">'+esc(ct(p))+'</div><div class="marketplace-card-title">'+esc(nm(p))+'</div><div class="marketplace-card-rating">'+(p.rating?'★ '+Number(p.rating).toFixed(1):'New · be the first to review')+'</div><div class="marketplace-card-price">₹'+Number(p.price||0).toLocaleString('en-IN')+'</div><button class="marketplace-mini-add" onclick="event.stopPropagation();marketplaceAdd('+JSON.stringify(p.id)+')">+ Add</button></div></article>'}function fill(id,a,b){let e=document.getElementById(id);if(e)e.innerHTML=a.length?a.slice(0,8).map(x=>card(x,b)).join(''):'<div class="marketplace-empty">Nothing here yet ✦</div>'}function render(){let a=ps();if(!a.length)return;fill('marketplaceDealsShelf',a,'Good deal');fill('marketplacePopularShelf',a,'Popular');fill('marketplaceNewShelf',[...a].reverse(),'Just in');fill('marketplaceRatedShelf',[...a].sort((x,y)=>(Number(y.rating)||0)-(Number(x.rating)||0)),'Top rated')}window.marketplaceCategory=function(c){if(typeof setCategory==='function')setCategory(c);else if(typeof goToCategory==='function')goToCategory(c);document.getElementById('shop')?.scrollIntoView({behavior:'smooth'})};window.marketplaceScroll=function(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'})};window.marketplaceOpenProduct=function(id){if(typeof openProductDetails==='function')openProductDetails(id)};window.marketplaceAdd=function(id){let p=ps().find(x=>String(x.id)===String(id));if(p&&typeof addToCart==='function')addToCart(p)};function search(){let i=document.getElementById('searchInput'),box=i?.closest('.search-box');if(!i||!box||i.dataset.mm)return;i.dataset.mm='1';box.style.position='relative';let panel=document.createElement('div');panel.className='marketplace-search-panel';box.appendChild(panel);i.addEventListener('input',function(){let q=i.value.trim().toLowerCase();if(!q){panel.classList.remove('open');return}let m=ps().filter(p=>(nm(p)+' '+ct(p)).toLowerCase().includes(q)).slice(0,5);panel.innerHTML=m.map(p=>'<button class="marketplace-search-result" onclick="marketplaceOpenProduct('+JSON.stringify(p.id)+')"><img src="'+esc(im(p))+'"><span><strong>'+esc(nm(p))+'</strong><small>'+esc(ct(p))+' · ₹'+Number(p.price||0).toLocaleString('en-IN')+'</small></span></button>').join('')||'<div class="marketplace-empty">No little match found ✦</div>';panel.classList.add('open')})}function start(){search();render();setTimeout(render,700);setTimeout(render,1800)}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start()})();
+(function(){function ps(){return Array.isArray(window.products)?window.products:[]}function nm(p){return p.title||p.name||'Melon Mart find'}function im(p){return p.img||p.imageUrl||p.image||'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80'}function ct(p){return p.category||'GOOD FIND'}function esc(v){return typeof escapeHtml==='function'?escapeHtml(String(v??'')):String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}function card(p,b){return '<article class="marketplace-card" onclick="marketplaceOpenProduct('+JSON.stringify(p.id)+')">'+(b?'<span class="marketplace-badge">'+b+'</span>':'')+'<img src="'+esc(im(p))+'" alt="'+esc(nm(p))+'" loading="lazy"><div class="marketplace-card-body"><div class="marketplace-card-category">'+esc(ct(p))+'</div><div class="marketplace-card-title">'+esc(nm(p))+'</div><div class="marketplace-card-rating">'+(p.rating?'★ '+Number(p.rating).toFixed(1):'New · be the first to review')+'</div><div class="marketplace-card-price">₹'+Number(p.price||0).toLocaleString('en-IN')+'</div><button class="marketplace-mini-add" onclick="event.stopPropagation();marketplaceAdd('+JSON.stringify(p.id)+')">+ Add</button></div></article>'}function fill(id,a,b){let e=document.getElementById(id);if(e)e.innerHTML=a.length?a.slice(0,8).map(x=>card(x,b)).join(''):'<div class="marketplace-empty">Nothing here yet ✦</div>'}function render(){let a=ps();if(!a.length)return;fill('marketplaceDealsShelf',a,'Good deal');fill('marketplacePopularShelf',a,'Popular');fill('marketplaceNewShelf',[...a].reverse(),'Just in');fill('marketplaceRatedShelf',[...a].sort((x,y)=>(Number(y.rating)||0)-(Number(x.rating)||0)),'Top rated')}window.marketplaceCategory=function(c){if(typeof setCategory==='function')setCategory(c);else if(typeof goToCategory==='function')goToCategory(c);document.getElementById('shop')?.scrollIntoView({behavior:'smooth'})};window.marketplaceScroll=function(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'})};window.marketplaceOpenProduct=function(id){if(typeof openProductDetails==='function')openProductDetails(id)};window.marketplaceAdd=function(id){let p=ps().find(x=>String(x.id)===String(id));if(p&&typeof addToCart==='function')addToCart(p)};function search(){let i=document.getElementById('searchInput'),box=i?.closest('.search-box');if(!i||!box||i.dataset.mm)return;i.dataset.mm='1';box.style.position='relative';let panel=document.createElement('div');panel.className='marketplace-search-panel';box.appendChild(panel);i.addEventListener('input',function(){let q=i.value.trim().toLowerCase();if(!q){panel.classList.remove('open');return}let m=ps().filter(p=>(nm(p)+' '+ct(p)).toLowerCase().includes(q)).slice(0,5);panel.innerHTML=m.map(p=>'<button class="marketplace-search-result" onclick="marketplaceOpenProduct('+JSON.stringify(p.id)+')"><img src="'+esc(im(p))+'"><span><strong>'+esc(nm(p))+'</strong><small>'+esc(ct(p))+' · ₹'+Number(p.price||0).toLocaleString('en-IN')+'</small></span></button>').join('')||'<div class="marketplace-empty">No little match found ✦</div>';panel.classList.add('open')})}function start(){search();render();window.addEventListener('melon-products-loaded',render);setTimeout(render,700);setTimeout(render,1800)}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start()})();
 
 const searchInput = document.getElementById("searchInput");
 const searchSuggestions = document.getElementById("searchSuggestions");
