@@ -6,6 +6,8 @@ Multi-seller grocery marketplace for Anna University R2025 Semester 3.
 JDK 17 · Tomcat 9 · Servlet 4 (`javax.servlet`) · Maven · H2 · HikariCP · Gson · jBCrypt · vanilla JS.
 
 ## Demo accounts
+
+> These well-known credentials are for local/isolated demos only. Do not expose them on a public deployment. The Docker image disables demo seeding by default; see [deployment security notes](docs/DEPLOYMENT.md#demo-credentials-and-first-administrator).
 - Admin: `admin@melonmart.com` / `admin123`
 - Buyer: `buyer@melonmart.com` / `buyer123`
 - Seller: `seller@melonmart.com` / `seller123`
