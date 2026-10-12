@@ -116,7 +116,8 @@ public class DbContextListener implements ServletContextListener {
         String[] migrations = {
                 "db/migrations/V1__init_schema.sql",
                 "db/migrations/V2__wishlist.sql",
-                "db/migrations/V3__checkout_details.sql"
+                "db/migrations/V3__checkout_details.sql",
+                "db/migrations/V4__delivery_addresses.sql"
         };
 
         try (Connection connection = dataSource.getConnection();
