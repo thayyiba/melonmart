@@ -715,7 +715,33 @@
             .checkout-section, .summary-card, .empty-checkout { border-radius: 18px; }
         }
 
-    </style>
+    
+        /* Melon Mart's butter / blush / plum personality */
+        :root {
+            --burgundy:#594052; --burgundy-dark:#382A34; --cream:#FFF6D8; --cream-light:#FFFDF5;
+            --beige:#FAE9A9; --text:#302A30; --muted:#756C73; --border:#E7DACB;
+        }
+        body { font-family:"DM Sans",sans-serif; background:var(--cream); color:var(--text); }
+        .checkout-header { background:rgba(255,253,245,.96); border-bottom-color:var(--border); }
+        .brand,.page-title h1,.empty-checkout h2,.section-heading h2,.summary-header h2 { font-family:"Fraunces",Georgia,serif; color:var(--burgundy-dark); }
+        .checkout-section,.summary-card,.empty-checkout { border:1px solid var(--border); border-radius:25px; box-shadow:0 10px 25px rgba(56,42,52,.06); overflow:hidden; }
+        .checkout-section { background:var(--cream-light); }
+        .section-number,.continue-shopping,.place-order-btn { background:var(--burgundy); border-radius:14px; }
+        .continue-shopping,.place-order-btn { text-transform:none; letter-spacing:0; font-size:13px; }
+        .continue-shopping:hover,.place-order-btn:hover { background:var(--burgundy-dark); }
+        .form-group input,.form-group textarea { border-radius:13px; background:#fff; border-color:var(--border); font-family:"DM Sans",sans-serif; font-size:13px; }
+        .form-group input:focus,.form-group textarea:focus { border-color:var(--burgundy); box-shadow:0 0 0 3px rgba(89,64,82,.09); }
+        .payment-option { border-radius:17px; background:#fffdf5; }
+        .payment-option.selected { background:#F9DDDD; border-color:var(--burgundy); }
+        .payment-icon { border-radius:12px; background:#FAE9A9; }
+        .payment-note { border-radius:14px; background:#FFF6D8; }
+        .summary-card { background:var(--cream-light); }
+        .summary-header,.summary-details { border-color:var(--border); }
+        .summary-total span:last-child,.checkout-item-price,.secure-checkout i { color:var(--burgundy); }
+        .checkout-item-image { border-radius:12px; }
+        @media(max-width:700px) { .checkout-wrapper { padding:30px 16px 48px; } .checkout-section { padding:22px; } .summary-card { position:static; } }
+
+</style>
 </head>
 
 <body>
@@ -1293,6 +1319,41 @@
             "DOMContentLoaded",
             () => {
 
+
+
+                function fillIfEmpty(id, value) {
+                    const field = document.getElementById(id);
+                    if (field && value && !field.value.trim()) field.value = String(value);
+                }
+                function prefillSavedDeliveryAddress() {
+                    try {
+                        const saved = JSON.parse(localStorage.getItem("melonmart_address_current") || "null");
+                        if (saved && typeof saved === "object") {
+                            fillIfEmpty("address", saved.address || saved.label);
+                            fillIfEmpty("city", saved.city);
+                            fillIfEmpty("state", saved.state);
+                            fillIfEmpty("pincode", saved.pincode);
+                            fillIfEmpty("landmark", saved.landmark);
+                        } else {
+                            fillIfEmpty("address", localStorage.getItem("melonmart_location"));
+                        }
+                    } catch (error) {
+                        fillIfEmpty("address", localStorage.getItem("melonmart_location"));
+                    }
+                    fetch("api/auth/me", { headers: { "Accept": "application/json" } })
+                        .then(response => response.ok ? response.json() : null)
+                        .then(data => {
+                            if (!data) return;
+                            const user = data.user || null;
+                            if (user) {
+                                fillIfEmpty("fullName", user.name || user.username);
+                                fillIfEmpty("email", user.email);
+                                fillIfEmpty("phone", user.phone);
+                            }
+                        })
+                        .catch(() => {});
+                }
+                prefillSavedDeliveryAddress();
 
                 const emptyCheckout =
                     document.getElementById(
@@ -2190,5 +2251,6 @@
 
     </script>
 
+<script src="melon-experience.js"></script>
 </body>
 </html>
