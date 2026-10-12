@@ -217,6 +217,40 @@ public List<AdminProductDTO> getAllProducts()
 }
 
 
+    /**
+     * Checks whether a product exists before moderation actions are attempted.
+     */
+    public boolean productExists(int productId) throws Exception {
+        String sql = "SELECT 1 FROM products WHERE id = ?";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, productId);
+            try (ResultSet result = statement.executeQuery()) {
+                return result.next();
+            }
+        }
+    }
+
+    /**
+     * Remove a listing only when no order references it. This preserves historic
+     * order lines because the schema intentionally restricts deleting purchased products.
+     * Related cart and wishlist rows follow the existing foreign-key cascade rules.
+     */
+    public boolean deleteProductForModeration(int productId) throws Exception {
+        String sql = """
+                DELETE FROM products
+                WHERE id = ?
+                  AND NOT EXISTS (
+                      SELECT 1 FROM order_items oi WHERE oi.product_id = products.id
+                  )
+                """;
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, productId);
+            return statement.executeUpdate() > 0;
+        }
+    }
+
     private int getCount(String sql)
             throws Exception {
 
