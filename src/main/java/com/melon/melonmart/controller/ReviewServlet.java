@@ -46,6 +46,11 @@ public class ReviewServlet extends HttpServlet {
             return;
         }
 
+        if (path.equals("/seller")) {
+            getSellerReviews(request, response);
+            return;
+        }
+
         sendError(
                 response,
                 HttpServletResponse.SC_NOT_FOUND,
@@ -75,6 +80,33 @@ public class ReviewServlet extends HttpServlet {
                 HttpServletResponse.SC_NOT_FOUND,
                 "Review endpoint not found."
         );
+    }
+
+    private void getSellerReviews(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws IOException {
+        HttpSession session = request.getSession(false);
+        User user = session == null ? null : (User) session.getAttribute("user");
+
+        if (user == null) {
+            sendError(response, HttpServletResponse.SC_UNAUTHORIZED, "Please login first.");
+            return;
+        }
+        if (!"SELLER".equalsIgnoreCase(user.getRole())) {
+            sendError(response, HttpServletResponse.SC_FORBIDDEN, "Seller access required.");
+            return;
+        }
+
+        try {
+            Map<String, Object> result = new HashMap<>();
+            result.put("success", true);
+            result.put("reviews", reviewDAO.getReviewsBySellerId(user.getId()));
+            sendJson(response, HttpServletResponse.SC_OK, result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to load seller reviews.");
+        }
     }
 
     private void getProductReviews(
