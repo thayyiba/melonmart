@@ -133,7 +133,6 @@
       longitude: coordinates ? coordinates.longitude : null,
       accuracy: coordinates ? coordinates.accuracy : null
     };
-    addresses = addresses.filter(a => !a.legacy);
     addresses.push(entry); current = entry;
     saveState(); clearForm(); render();
     messageEl.textContent = "New delivery spot saved ✦ Checkout will use this address.";
