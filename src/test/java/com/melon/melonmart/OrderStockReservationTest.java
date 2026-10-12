@@ -62,6 +62,13 @@ class OrderStockReservationTest {
     }
 
     @Test
+    void reserveStockRejectsNonPositiveQuantities() throws Exception {
+        assertFalse(orderDAO.reserveStock(connection, 1, 0));
+        assertFalse(orderDAO.reserveStock(connection, 1, -2));
+        assertEquals(5, stockForProduct(1));
+    }
+
+    @Test
     void reserveStockRejectsUnknownProduct() throws Exception {
         assertFalse(orderDAO.reserveStock(connection, 99, 1));
     }
