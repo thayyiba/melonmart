@@ -3624,6 +3624,10 @@ async function fetchProducts() {
         products =
             await response.json();
 
+        // The homepage shelves read from window.products; keep the API result
+        // available to both the main grid and the Deals/New/Top Rated shelves.
+        window.products = products;
+
         renderProducts();
 
     } catch (error) {
