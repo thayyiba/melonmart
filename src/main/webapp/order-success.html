@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap"
         rel="stylesheet"
     >
 
@@ -368,6 +368,34 @@
                 width: 100%;
             }
 
+        }
+
+    
+        /* Match the shared Melon Mart theme without changing page copy or flow */
+        :root {
+            --burgundy: #594052;
+            --burgundy-dark: #382A34;
+            --cream: #FFF6D8;
+            --cream-light: #FFFDF5;
+            --beige: #FAE9A9;
+            --text: #302A30;
+            --muted: #756C73;
+            --border: #E7DACB;
+        }
+        body { font-family: "DM Sans", sans-serif; line-height: 1.5; }
+        .brand, .success-card h1, .order-number-value { font-family: "Fraunces", serif; }
+        header { background: rgba(255,253,247,.96); backdrop-filter: blur(15px); }
+        .success-card { border-radius: 28px; box-shadow: 0 18px 45px rgba(56,42,52,.08); }
+        .success-icon { background: #718C6A; }
+        .order-number { background: #FFF6D8; border-radius: 18px; }
+        .btn { border-radius: 999px; }
+        .btn-primary { background: #594052; }
+        .btn-primary:hover { background: #382A34; }
+        @media (max-width: 600px) {
+            .success-card { padding: 38px 22px; border-radius: 22px; }
+            .success-card h1 { font-size: 34px; }
+            .success-info { gap: 18px; flex-wrap: wrap; }
+            .actions { flex-wrap: wrap; }
         }
 
     </style>
