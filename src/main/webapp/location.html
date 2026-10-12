@@ -78,7 +78,7 @@
   let coordinates = null;
 
   function saveState() {
-    localStorage.setItem("melonmart_addresses", JSON.stringify(addresses.filter(a => !a.legacy)));
+    localStorage.setItem("melonmart_addresses", JSON.stringify(addresses));
     localStorage.setItem("melonmart_address_current", JSON.stringify(current));
     localStorage.setItem("melonmart_location", current.label || current.address || "");
     const labels = addresses.map(a => a.label).filter(Boolean);
