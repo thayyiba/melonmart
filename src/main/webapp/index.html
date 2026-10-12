@@ -3875,7 +3875,7 @@ function renderProducts() {
 
                         <button
                             class="wishlist-btn ${saved ? "saved" : ""}"
-                            onclick="toggleWishlist(${id}, this)"
+                            onclick="event.stopPropagation(); toggleWishlist(${id}, this)" aria-pressed="${saved ? "true" : "false"}"
                             aria-label="Save ${escapeHtml(product.name || "product")}"
                         >
                             ${saved ? "♥" : "♡"}
