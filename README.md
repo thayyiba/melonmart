@@ -26,7 +26,15 @@ Passwords are stored as bcrypt hashes in the database.
 ## Architecture diagrams
 - [D1 — Entity relationship diagram](docs/diagrams/erd.md)
 - [D2 — Use-case overview](docs/diagrams/use-cases.md)
+- [D2 — UML use-case diagram (PlantUML)](docs/diagrams/use-cases.puml)
 - [D3 — Checkout sequence](docs/diagrams/checkout-sequence.md)
+
+## Testing and review records
+- [Manual acceptance and smoke-test checklist](docs/testing/manual-acceptance-checklist.md)
+- [Security review checklist](docs/SECURITY_CHECKLIST.md)
+- [Requirements status and evidence tracker](docs/REQUIREMENTS_STATUS.md)
+- [Deployment guide](docs/DEPLOYMENT.md)
+- [Contribution and pull-request guidance](CONTRIBUTING.md)
 
 ## Main flows
 Buyer: register/login → browse/search/category → product details → reviews → cart → mock checkout → order history → delivered review.
@@ -46,4 +54,4 @@ Admin: login → users/orders/products/moderation.
 ## Deployment
 - [Deployment guide](docs/DEPLOYMENT.md) — local Tomcat 9, Docker, Render, Railway, database configuration, and persistence notes.
 - A multi-stage `Dockerfile` builds the WAR with Java 17 and runs it on Tomcat 9. Attach persistent storage at `/data` when deploying the default H2 file database.
-- For Render/Railway, the app is served at `/melonmart/`; the health endpoint is `/melonmart/api/health`.
+- For Render/Railway, the app is served at `/melonmart/`; the health endpoint is `/melonmart/api/v1/health` (also available at `/melonmart/api/health`).
