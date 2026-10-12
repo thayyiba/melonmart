@@ -15,7 +15,8 @@ Passwords are stored as bcrypt hashes in the database.
 ## Run
 1. **Protect your existing database first.** Back up `melonmartdb.mv.db` before changing database settings. On Windows, the historical Tomcat database path is preserved. On non-Windows hosts, configure `MELONMART_DB_URL` to a writable path; use persistent storage in deployments so data survives restarts.
 2. Set `GEMINI_API_KEY` only if you want live AI. Without it, Welp runs in safe demo mode. Database settings can be overridden with `MELONMART_DB_URL`, `MELONMART_DB_USERNAME`, and `MELONMART_DB_PASSWORD`.
-3. Startup applies the numbered scripts in `src/main/resources/db/migrations`, records applied versions in `schema_migrations`, then ensures `schema.sql` and idempotent demo data in `seed.sql` are applied. The SQL scripts are designed for compatible H2 databases; back up real data before upgrades.\n4. Build and test: `mvn -B clean verify`.
+3. Startup applies the numbered scripts in `src/main/resources/db/migrations`, records applied versions in `schema_migrations`, then ensures `schema.sql` and idempotent demo data in `seed.sql` are applied. The SQL scripts are designed for compatible H2 databases; back up real data before upgrades.
+4. Build and test: `mvn -B clean verify`.
 5. Deploy `target/melonmart.war` to Tomcat 9.
 6. Open `/melonmart/`.
 7. Health: `/melonmart/api/v1/health`.
