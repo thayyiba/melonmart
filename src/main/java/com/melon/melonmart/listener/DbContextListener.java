@@ -19,6 +19,8 @@ import java.sql.Statement;
 import java.util.Properties;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Locale;
+import org.mindrot.jbcrypt.BCrypt;
 
 @WebListener
 public class DbContextListener implements ServletContextListener {
@@ -55,6 +57,7 @@ public class DbContextListener implements ServletContextListener {
             runMigrations();
             runSchema();
             runSeed();
+            ensureBootstrapAdmin();
         } catch (Exception e) {
             System.err.println("Failed to initialize database.");
             e.printStackTrace();
@@ -139,6 +142,11 @@ public class DbContextListener implements ServletContextListener {
 
                 if (!applied) {
                     for (String sql : loadSqlStatements(resource)) {
+                        // The V1 migration historically also contained demo inserts.
+                        // Skip those known demo statements when production seeding is disabled.
+                        if (!isDemoSeedEnabled() && isDemoSeedStatement(sql)) {
+                            continue;
+                        }
                         statement.execute(sql);
                     }
                     try (java.sql.PreparedStatement record = connection.prepareStatement(
@@ -156,9 +164,79 @@ public class DbContextListener implements ServletContextListener {
         System.out.println("MelonMart database schema initialized successfully.");
     }
 
+    private boolean isDemoSeedEnabled() {
+        String configured = System.getenv("MELONMART_SEED_DEMO_DATA");
+        // Preserve local development behavior unless explicitly disabled.
+        return configured == null || configured.isBlank()
+                || Boolean.parseBoolean(configured);
+    }
+
+    private boolean isDemoSeedStatement(String sql) {
+        String normalized = sql.toLowerCase(Locale.ROOT);
+        return normalized.contains("admin@melonmart.com")
+                || normalized.contains("buyer@melonmart.com")
+                || normalized.contains("seller@melonmart.com");
+    }
+
     private void runSeed() throws Exception {
+        if (!isDemoSeedEnabled()) {
+            System.out.println("Demo seed data disabled by MELONMART_SEED_DEMO_DATA.");
+            return;
+        }
         executeSqlResource("seed.sql");
         System.out.println("MelonMart demo seed data checked successfully.");
+    }
+
+    /**
+     * Optionally creates the first administrator for a deployment that disables
+     * demo accounts. Existing accounts are never overwritten or promoted.
+     */
+    private void ensureBootstrapAdmin() throws Exception {
+        if (isDemoSeedEnabled()) {
+            return;
+        }
+
+        String email = System.getenv("MELONMART_ADMIN_EMAIL");
+        String password = System.getenv("MELONMART_ADMIN_PASSWORD");
+        if ((email == null || email.isBlank())
+                && (password == null || password.isBlank())) {
+            return;
+        }
+        if (email == null || email.isBlank() || password == null || password.length() < 12) {
+            throw new IllegalStateException(
+                    "Set both MELONMART_ADMIN_EMAIL and MELONMART_ADMIN_PASSWORD (at least 12 characters).");
+        }
+
+        try (Connection connection = dataSource.getConnection()) {
+            try (java.sql.PreparedStatement lookup = connection.prepareStatement(
+                    "SELECT role FROM users WHERE email = ?")) {
+                lookup.setString(1, email.trim());
+                try (java.sql.ResultSet result = lookup.executeQuery()) {
+                    if (result.next()) {
+                        if (!"ADMIN".equalsIgnoreCase(result.getString("role"))) {
+                            throw new IllegalStateException(
+                                    "MELONMART_ADMIN_EMAIL already belongs to a non-admin user.");
+                        }
+                        System.out.println("Bootstrap administrator already exists; credentials left unchanged.");
+                        return;
+                    }
+                }
+            }
+
+            String name = System.getenv("MELONMART_ADMIN_NAME");
+            if (name == null || name.isBlank()) {
+                name = "Melon Mart Admin";
+            }
+            String hash = BCrypt.hashpw(password, BCrypt.gensalt(12));
+            try (java.sql.PreparedStatement insert = connection.prepareStatement(
+                    "INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, 'ADMIN')")) {
+                insert.setString(1, name.trim());
+                insert.setString(2, email.trim());
+                insert.setString(3, hash);
+                insert.executeUpdate();
+            }
+            System.out.println("Bootstrap administrator created from environment configuration.");
+        }
     }
 
     private void executeSqlResource(String resource) throws Exception {
