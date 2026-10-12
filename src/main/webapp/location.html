@@ -61,90 +61,222 @@
 </main>
 <footer class="site-footer">Your location stays in this browser for this project ✦</footer>
 <script src="melon-pages.js"></script>
+
 <script>
 (() => {
   const $ = id => document.getElementById(id);
   const listEl = $("locations");
   const messageEl = $("msg");
-  const parse = (key, fallback) => { try { const value = JSON.parse(localStorage.getItem(key)); return value == null ? fallback : value; } catch (_) { return fallback; } };
+  const parse = (key, fallback) => {
+    try { const value = JSON.parse(localStorage.getItem(key)); return value == null ? fallback : value; }
+    catch (_) { return fallback; }
+  };
+
   const oldLabels = parse("melonmart_locations", ["Hostel 4 · Main Campus"]);
   let addresses = parse("melonmart_addresses", []);
   if (!Array.isArray(addresses)) addresses = [];
   let current = parse("melonmart_address_current", null);
   const legacyLabel = localStorage.getItem("melonmart_location") || (oldLabels[0] || "Hostel 4 · Main Campus");
-  if (current && !addresses.some(a => a.id === current.id)) addresses.unshift(current);
-  if (!addresses.length) addresses = (Array.isArray(oldLabels) && oldLabels.length ? oldLabels : [legacyLabel]).map((label, index) => ({id:"legacy-" + index,label:String(label),address:String(label),city:"",state:"",pincode:"",landmark:"",legacy:true}));
-  if (!current) current = addresses.find(a => a.label === legacyLabel) || addresses[0];
+  if (current && !addresses.some(a => String(a.id) === String(current.id))) addresses.unshift(current);
+  if (!addresses.length) {
+    addresses = (Array.isArray(oldLabels) && oldLabels.length ? oldLabels : [legacyLabel])
+      .map((label, index) => ({id:"legacy-" + index,label:String(label),address:String(label),city:"",state:"",pincode:"",landmark:"",legacy:true}));
+  }
+  if (!current) current = addresses.find(a => a.label === legacyLabel) || addresses[0] || null;
   let coordinates = null;
+  let serverBacked = false;
 
   function saveState() {
     localStorage.setItem("melonmart_addresses", JSON.stringify(addresses));
-    localStorage.setItem("melonmart_address_current", JSON.stringify(current));
-    localStorage.setItem("melonmart_location", current.label || current.address || "");
+    if (current) {
+      localStorage.setItem("melonmart_address_current", JSON.stringify(current));
+      localStorage.setItem("melonmart_location", current.label || current.address || "");
+    } else {
+      localStorage.removeItem("melonmart_address_current");
+    }
     const labels = addresses.map(a => a.label).filter(Boolean);
-    localStorage.setItem("melonmart_locations", JSON.stringify(labels.length ? labels : [current.label || current.address || "Delivery address"]));
-    const headerLocation = document.getElementById("mmCurrentLocation");
-    if (headerLocation) headerLocation.textContent = current.label || current.address || "Delivery address";
-    const headerLoc = document.getElementById("currentLocation");
-    if (headerLoc) headerLoc.textContent = current.label || current.address || "Delivery address";
-    const menuLoc = document.getElementById("menuLocation");
-    if (menuLoc) menuLoc.textContent = current.label || current.address || "Delivery address";
+    localStorage.setItem("melonmart_locations", JSON.stringify(labels.length ? labels : [localStorage.getItem("melonmart_location") || "Delivery address"]));
+    const label = current ? (current.label || current.address || "Delivery address") : "Add delivery address";
+    ["mmCurrentLocation", "currentLocation", "menuLocation"].forEach(id => {
+      const node = document.getElementById(id);
+      if (node) node.textContent = label;
+    });
   }
+
   function addressSummary(a) {
     return [a.address, a.city, a.state, a.pincode].filter(Boolean).join(", ");
   }
+
   function render() {
+    if (!addresses.length) {
+      listEl.innerHTML = '<p class="empty-state">No saved delivery spots yet. Add one below.</p>';
+      return;
+    }
     listEl.innerHTML = addresses.map((a, i) => {
-      const selected = current && a.id === current.id;
+      const selected = current && String(a.id) === String(current.id);
       return '<div class="location-entry' + (selected ? ' selected' : '') + '">' +
-        '<button type="button" data-select="' + i + '"><strong>📍 ' + mmEsc(a.label || "Saved spot") + '</strong><small>' + mmEsc(addressSummary(a) || "Address details not added yet") + (selected ? '<br>current delivery location' : '<br>saved spot') + '</small></button>' +
+        '<button type="button" data-select="' + i + '"><strong>📍 ' + mmEsc(a.label || "Saved spot") + '</strong><small>' +
+        mmEsc(addressSummary(a) || "Address details not added yet") +
+        (selected ? '<br>current delivery location' : '<br>saved spot') + '</small></button>' +
         '<button type="button" class="danger-btn" data-delete="' + i + '" aria-label="Remove ' + mmEsc(a.label || "saved spot") + '">remove</button></div>';
     }).join("");
-    listEl.querySelectorAll("[data-select]").forEach(btn => btn.addEventListener("click", () => {
-      current = addresses[Number(btn.dataset.select)];
-      saveState(); render(); messageEl.textContent = "Delivery location updated ✦";
+
+    listEl.querySelectorAll("[data-select]").forEach(btn => btn.addEventListener("click", async () => {
+      const selected = addresses[Number(btn.dataset.select)];
+      if (serverBacked) {
+        try {
+          const response = await fetch(MM_BASE + "/api/addresses", {
+            method:"POST", headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({action:"select", id:Number(selected.id)})
+          });
+          if (!response.ok) throw new Error("Could not update the delivery address.");
+          await refreshServerAddresses();
+        } catch (_) {
+          messageEl.textContent = "Could not update your saved address. Please try again.";
+          return;
+        }
+      } else {
+        current = selected;
+        saveState();
+        render();
+      }
+      messageEl.textContent = "Delivery location updated ✦";
     }));
-    listEl.querySelectorAll("[data-delete]").forEach(btn => btn.addEventListener("click", () => {
+
+    listEl.querySelectorAll("[data-delete]").forEach(btn => btn.addEventListener("click", async () => {
       const index = Number(btn.dataset.delete);
-      if (addresses.length === 1) { messageEl.textContent = "Keep at least one saved location."; return; }
+      if (addresses.length === 1) {
+        messageEl.textContent = "Keep at least one saved location.";
+        return;
+      }
       const removed = addresses[index];
-      addresses.splice(index, 1);
-      if (current && current.id === removed.id) current = addresses[0];
-      saveState(); render(); messageEl.textContent = "Saved spot removed.";
+      if (serverBacked) {
+        try {
+          const response = await fetch(MM_BASE + "/api/addresses?id=" + encodeURIComponent(removed.id), {method:"DELETE"});
+          if (!response.ok) throw new Error("Could not remove the address.");
+          await refreshServerAddresses();
+        } catch (_) {
+          messageEl.textContent = "Could not remove that saved address. Please try again.";
+          return;
+        }
+      } else {
+        addresses.splice(index, 1);
+        if (current && String(current.id) === String(removed.id)) current = addresses[0] || null;
+        saveState();
+        render();
+      }
+      messageEl.textContent = "Saved spot removed.";
     }));
   }
+
+  async function refreshServerAddresses() {
+    const response = await fetch(MM_BASE + "/api/addresses", {headers:{"Accept":"application/json"}});
+    if (response.status === 401) return false;
+    if (!response.ok) throw new Error("Address service unavailable.");
+    serverBacked = true;
+    let remote = await response.json();
+
+    // Migrate complete addresses from this browser into the account once, if the account has none yet.
+    const localCandidates = addresses.filter(a => !a.legacy && a.address);
+    if (!remote.length && localCandidates.length) {
+      for (const a of localCandidates) {
+        await fetch(MM_BASE + "/api/addresses", {
+          method:"POST", headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({
+            action:"create", label:a.label, address:a.address, city:a.city, state:a.state,
+            pincode:a.pincode, landmark:a.landmark, latitude:a.latitude,
+            longitude:a.longitude, accuracy:a.accuracy
+          })
+        });
+      }
+      const refreshed = await fetch(MM_BASE + "/api/addresses", {headers:{"Accept":"application/json"}});
+      if (refreshed.ok) remote = await refreshed.json();
+    }
+
+    addresses = Array.isArray(remote) ? remote : [];
+    current = addresses.find(a => a.isDefault) || addresses[0] || null;
+    saveState();
+    render();
+    return true;
+  }
+
+  function loadLocalState() {
+    addresses = parse("melonmart_addresses", []);
+    if (!Array.isArray(addresses)) addresses = [];
+    current = parse("melonmart_address_current", null);
+    const labels = parse("melonmart_locations", [legacyLabel]);
+    const fallbackLabel = localStorage.getItem("melonmart_location") || (labels[0] || "Hostel 4 · Main Campus");
+    if (current && !addresses.some(a => String(a.id) === String(current.id))) addresses.unshift(current);
+    if (!addresses.length) {
+      addresses = (Array.isArray(labels) && labels.length ? labels : [fallbackLabel])
+        .map((label, index) => ({id:"legacy-" + index,label:String(label),address:String(label),city:"",state:"",pincode:"",landmark:"",legacy:true}));
+    }
+    if (!current) current = addresses.find(a => a.label === fallbackLabel) || addresses[0] || null;
+  }
+
   function setField(id, value) { $(id).value = value || ""; }
   function clearForm() {
     ["locationLabel","newLocation","locationCity","locationState","locationPincode","locationLandmark"].forEach(id => setField(id,""));
     coordinates = null;
   }
-  $("locationForm").addEventListener("submit", event => {
+
+  $("locationForm").addEventListener("submit", async event => {
     event.preventDefault();
     const label = $("locationLabel").value.trim();
     const address = $("newLocation").value.trim();
     const pincode = $("locationPincode").value.trim();
     if (!label || !address) { messageEl.textContent = "Add a spot name and full address first."; return; }
-    if (pincode && !/^\d{6}$/.test(pincode)) { messageEl.textContent = "PIN code should contain 6 digits."; $("locationPincode").focus(); return; }
+    if (pincode && !/^\d{6}$/.test(pincode)) {
+      messageEl.textContent = "PIN code should contain 6 digits.";
+      $("locationPincode").focus();
+      return;
+    }
     const entry = {
-      id: "addr-" + Date.now(), label, address,
-      city: $("locationCity").value.trim(), state: $("locationState").value.trim(),
-      pincode, landmark: $("locationLandmark").value.trim(),
-      latitude: coordinates ? coordinates.latitude : null,
-      longitude: coordinates ? coordinates.longitude : null,
-      accuracy: coordinates ? coordinates.accuracy : null
+      label, address, city:$("locationCity").value.trim(), state:$("locationState").value.trim(),
+      pincode, landmark:$("locationLandmark").value.trim(),
+      latitude:coordinates ? coordinates.latitude : null,
+      longitude:coordinates ? coordinates.longitude : null,
+      accuracy:coordinates ? coordinates.accuracy : null
     };
-    addresses.push(entry); current = entry;
-    saveState(); clearForm(); render();
-    messageEl.textContent = "New delivery spot saved ✦ Checkout will use this address.";
+
+    if (serverBacked) {
+      try {
+        const response = await fetch(MM_BASE + "/api/addresses", {
+          method:"POST", headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({action:"create", ...entry})
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || "Could not save the address.");
+        await refreshServerAddresses();
+        clearForm();
+        messageEl.textContent = "New delivery spot saved to your account ✦ Checkout will use it.";
+      } catch (error) {
+        messageEl.textContent = error.message || "Could not save the address. Please try again.";
+      }
+      return;
+    }
+
+    entry.id = "addr-" + Date.now();
+    addresses.push(entry);
+    current = entry;
+    saveState();
+    clearForm();
+    render();
+    messageEl.textContent = "New delivery spot saved on this device ✦ Sign in to sync it to your account.";
   });
+
   $("useCurrentLocation").addEventListener("click", () => {
-    if (!navigator.geolocation) { messageEl.textContent = "Your browser doesn't support location detection. You can type the address instead."; return; }
+    if (!navigator.geolocation) {
+      messageEl.textContent = "Your browser doesn't support location detection. You can type the address instead.";
+      return;
+    }
     messageEl.textContent = "Asking your browser for your location…";
     navigator.geolocation.getCurrentPosition(async position => {
       coordinates = {latitude:position.coords.latitude,longitude:position.coords.longitude,accuracy:position.coords.accuracy};
       messageEl.textContent = "Location found (about ±" + Math.round(position.coords.accuracy) + " m). Looking up the address…";
       try {
-        const url = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&lat=" + encodeURIComponent(coordinates.latitude) + "&lon=" + encodeURIComponent(coordinates.longitude);
+        const url = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&lat=" +
+          encodeURIComponent(coordinates.latitude) + "&lon=" + encodeURIComponent(coordinates.longitude);
         const response = await fetch(url, {headers:{"Accept-Language":"en"}});
         if (!response.ok) throw new Error("Address lookup failed");
         const data = await response.json();
@@ -162,13 +294,28 @@
         messageEl.textContent = "Coordinates were found, but the address lookup didn't work. Please enter the address manually and save again.";
       }
     }, error => {
-      const reason = error.code === 1 ? "Location permission was denied." : error.code === 2 ? "Your device couldn't determine the location." : "Location lookup timed out.";
+      const reason = error.code === 1 ? "Location permission was denied." : error.code === 2 ?
+        "Your device couldn't determine the location." : "Location lookup timed out.";
       messageEl.textContent = reason + " You can enter the delivery address manually.";
     }, {enableHighAccuracy:true,timeout:15000,maximumAge:0});
   });
-  saveState(); render();
+
+  (async () => {
+    try {
+      const loaded = await refreshServerAddresses();
+      if (!loaded) {
+        loadLocalState();
+        saveState();
+        render();
+      }
+    } catch (_) {
+      loadLocalState();
+      saveState();
+      render();
+    }
+  })();
 })();
-</script>
+</script>>
 
 <script src="melon-experience.js"></script>
 </body>
