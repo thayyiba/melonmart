@@ -2061,7 +2061,16 @@
 
                                         body:
                                             new URLSearchParams({
-                                                action: "checkout"
+                                                action: "checkout",
+                                                fullName: document.getElementById("fullName").value.trim(),
+                                                email: document.getElementById("email").value.trim(),
+                                                phone: document.getElementById("phone").value.trim(),
+                                                address: document.getElementById("address").value.trim(),
+                                                city: document.getElementById("city").value.trim(),
+                                                state: document.getElementById("state").value.trim(),
+                                                pincode: document.getElementById("pincode").value.trim(),
+                                                landmark: document.getElementById("landmark").value.trim(),
+                                                payment: document.querySelector('input[name="payment"]:checked').value
                                             })
                                     }
                                 );
