@@ -11,7 +11,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -68,6 +67,20 @@ public final class OldDatabaseRestoreClient {
         if (counts.get("users") == 0 || counts.get("products") == 0) {
             throw new IllegalStateException("Old database has no users or products; refusing to send it.");
         }
+        int adminCount = 0;
+        for (com.google.gson.JsonElement userElement : tables.getAsJsonArray("users")) {
+            JsonObject user = userElement.getAsJsonObject();
+            if (user.has("role") && !user.get("role").isJsonNull()
+                    && "ADMIN".equalsIgnoreCase(user.get("role").getAsString())) {
+                adminCount++;
+            }
+        }
+        if (adminCount == 0) {
+            throw new IllegalStateException(
+                    "Old database has no ADMIN account; refusing to replace live data and risk losing admin access.");
+        }
+        System.out.println("Source check passed: administrator accounts found = " + adminCount
+                + " (no email addresses or password data printed).");
         payload.add("tables", tables);
         byte[] bytes = GSON.toJson(payload).getBytes(StandardCharsets.UTF_8);
         if (bytes.length > 8 * 1024 * 1024) {
