@@ -309,6 +309,9 @@ public class OrderDAO {
             int productId,
             int quantity
     ) throws Exception {
+        if (productId <= 0 || quantity <= 0) {
+            return false;
+        }
         String sql = """
                 UPDATE products
                 SET stock_qty = stock_qty - ?
