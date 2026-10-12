@@ -2,6 +2,7 @@ package com.melon.melonmart.ai;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MockAIProviderTest {
@@ -16,6 +17,21 @@ class MockAIProviderTest {
 
         assertTrue(reply.contains("Fresh Apples"));
         assertTrue(reply.contains("₹120.00"));
+    }
+
+    @Test
+    void factorySelectsMockProviderFromSystemProperty() {
+        String previous = System.getProperty("ai.chatbot.provider");
+        try {
+            System.setProperty("ai.chatbot.provider", "mock");
+            assertInstanceOf(MockAIProvider.class, WelpProviderFactory.create());
+        } finally {
+            if (previous == null) {
+                System.clearProperty("ai.chatbot.provider");
+            } else {
+                System.setProperty("ai.chatbot.provider", previous);
+            }
+        }
     }
 
     @Test
