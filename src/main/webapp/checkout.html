@@ -1325,21 +1325,39 @@
                     const field = document.getElementById(id);
                     if (field && value && !field.value.trim()) field.value = String(value);
                 }
-                function prefillSavedDeliveryAddress() {
+                function fillFromSavedAddress(saved) {
+                    if (!saved || typeof saved !== "object") return;
+                    fillIfEmpty("address", saved.address || saved.label);
+                    fillIfEmpty("city", saved.city);
+                    fillIfEmpty("state", saved.state);
+                    fillIfEmpty("pincode", saved.pincode);
+                    fillIfEmpty("landmark", saved.landmark);
+                }
+                function fillFromLocalAddress() {
                     try {
                         const saved = JSON.parse(localStorage.getItem("melonmart_address_current") || "null");
-                        if (saved && typeof saved === "object") {
-                            fillIfEmpty("address", saved.address || saved.label);
-                            fillIfEmpty("city", saved.city);
-                            fillIfEmpty("state", saved.state);
-                            fillIfEmpty("pincode", saved.pincode);
-                            fillIfEmpty("landmark", saved.landmark);
-                        } else {
-                            fillIfEmpty("address", localStorage.getItem("melonmart_location"));
-                        }
+                        if (saved && typeof saved === "object") fillFromSavedAddress(saved);
+                        else fillIfEmpty("address", localStorage.getItem("melonmart_location"));
                     } catch (error) {
                         fillIfEmpty("address", localStorage.getItem("melonmart_location"));
                     }
+                }
+                function prefillSavedDeliveryAddress() {
+                    fetch("api/addresses", { headers: { "Accept": "application/json" } })
+                        .then(response => {
+                            if (response.status === 401) return null;
+                            if (!response.ok) throw new Error("Could not load saved addresses.");
+                            return response.json();
+                        })
+                        .then(addresses => {
+                            if (Array.isArray(addresses) && addresses.length) {
+                                fillFromSavedAddress(addresses.find(address => address.isDefault) || addresses[0]);
+                            } else {
+                                fillFromLocalAddress();
+                            }
+                        })
+                        .catch(fillFromLocalAddress);
+
                     fetch("api/auth/me", { headers: { "Accept": "application/json" } })
                         .then(response => response.ok ? response.json() : null)
                         .then(data => {
