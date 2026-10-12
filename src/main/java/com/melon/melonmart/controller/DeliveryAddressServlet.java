@@ -201,6 +201,7 @@ public class DeliveryAddressServlet extends HttpServlet {
 
     private void sendJson(HttpServletResponse response, int status, Object value) throws IOException {
         response.setStatus(status);
+        response.setHeader("Cache-Control", "no-store");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(gson.toJson(value));
