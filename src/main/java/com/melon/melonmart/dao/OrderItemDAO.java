@@ -57,13 +57,15 @@ public class OrderItemDAO {
 
         String sql = """
                 SELECT
-                    id,
-                    order_id,
-                    product_id,
-                    quantity,
-                    unit_price
-                FROM order_items
-                WHERE order_id = ?
+                    oi.id,
+                    oi.order_id,
+                    oi.product_id,
+                    oi.quantity,
+                    oi.unit_price,
+                    p.name AS product_name
+                FROM order_items oi
+                JOIN products p ON p.id = oi.product_id
+                WHERE oi.order_id = ?
                 """;
 
         List<OrderItem> items = new ArrayList<>();
@@ -102,6 +104,10 @@ public class OrderItemDAO {
 
                     item.setPrice(
                             result.getBigDecimal("unit_price")
+                    );
+
+                    item.setProductName(
+                            result.getString("product_name")
                     );
 
                     items.add(item);
