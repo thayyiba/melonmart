@@ -3438,7 +3438,7 @@
                 ) =>
                     total +
                     Number(
-                        product.stock ||
+                        product.stock ?? product.stockQty ?? product.stock_qty ??
                         0
                     ),
                 0
