@@ -435,7 +435,20 @@
         .confirmation-loading, .confirmation-message { color: var(--muted, #756C73); font-size: 12px; line-height: 1.5; }
         .confirmation-message:not([hidden]) { margin: 12px 0 0; padding: 10px 12px; border-radius: 12px; background: #FFF6D8; }
         @media (max-width: 520px) { .order-detail-grid { grid-template-columns: 1fr; } .order-address-card { grid-column: auto; } }
-        </style>
+                /* Keep confirmation styling consistent with the Melon Mart butter-and-plum theme. */
+        :root { --burgundy:#594052; --burgundy-dark:#382A34; --cream:#FFF6D8; --cream-light:#FFFDF5; --beige:#FAE9A9; --text:#302A30; --muted:#756C73; --border:#E7DACB; }
+        body { font-family:"DM Sans",sans-serif; background:var(--cream); color:var(--text); }
+        header, footer { background:var(--cream-light); border-color:var(--border); }
+        .success-card { background:var(--cream-light); border:1px solid var(--border); border-radius:28px; box-shadow:0 18px 45px rgba(56,42,52,.09); }
+        .success-icon { background:#F9DDDD; color:var(--burgundy); }
+        .order-number { background:#FFF6D8; border-color:var(--border); border-radius:17px; }
+        .info-item { border-color:var(--border); background:#fffdf5; border-radius:16px; }
+        .btn { border-radius:999px; }
+        .btn-primary { background:var(--burgundy); color:#fff; }
+        .btn-primary:hover { background:var(--burgundy-dark); }
+        .btn-secondary { background:#FAE9A9; color:var(--burgundy-dark); border-color:var(--border); }
+        .btn-secondary:hover { background:#F2D477; }
+</style>
 </head>
 
 <body>
