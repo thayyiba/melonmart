@@ -99,6 +99,18 @@ public class OrderService {
                 // Create order item for every cart item
                 for (CartItem cartItem : cartItems) {
 
+                    boolean stockReserved = orderDAO.reserveStock(
+                            connection,
+                            cartItem.getProductId(),
+                            cartItem.getQuantity()
+                    );
+
+                    if (!stockReserved) {
+                        throw new IllegalStateException(
+                                "Insufficient stock for product ID: " + cartItem.getProductId()
+                        );
+                    }
+
                     OrderItem orderItem =
                             new OrderItem();
 
