@@ -47,14 +47,12 @@ public class DeliveryAddressDAO {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
             try {
-                boolean makeDefault;
-                try (PreparedStatement count = connection.prepareStatement(
-                        "SELECT COUNT(*) FROM delivery_addresses WHERE user_id = ?")) {
-                    count.setInt(1, userId);
-                    try (ResultSet result = count.executeQuery()) {
-                        result.next();
-                        makeDefault = result.getInt(1) == 0;
-                    }
+                // A newly saved address becomes the active delivery location.
+                boolean makeDefault = true;
+                try (PreparedStatement clear = connection.prepareStatement(
+                        "UPDATE delivery_addresses SET is_default = FALSE, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?")) {
+                    clear.setInt(1, userId);
+                    clear.executeUpdate();
                 }
                 try (PreparedStatement insert = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                     insert.setInt(1, userId);
@@ -90,13 +88,13 @@ public class DeliveryAddressDAO {
             connection.setAutoCommit(false);
             try {
                 try (PreparedStatement clear = connection.prepareStatement(
-                        "UPDATE delivery_addresses SET is_default = FALSE WHERE user_id = ?")) {
+                        "UPDATE delivery_addresses SET is_default = FALSE, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?")) {
                     clear.setInt(1, userId);
                     clear.executeUpdate();
                 }
                 int updated;
                 try (PreparedStatement select = connection.prepareStatement(
-                        "UPDATE delivery_addresses SET is_default = TRUE WHERE id = ? AND user_id = ?")) {
+                        "UPDATE delivery_addresses SET is_default = TRUE, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND user_id = ?")) {
                     select.setInt(1, addressId);
                     select.setInt(2, userId);
                     updated = select.executeUpdate();
@@ -142,7 +140,7 @@ public class DeliveryAddressDAO {
                 }
                 if (wasDefault) {
                     try (PreparedStatement promote = connection.prepareStatement("""
-                            UPDATE delivery_addresses SET is_default = TRUE
+                            UPDATE delivery_addresses SET is_default = TRUE, updated_at = CURRENT_TIMESTAMP
                             WHERE user_id = ? AND id = (
                                 SELECT MIN(id) FROM delivery_addresses WHERE user_id = ?
                             )
