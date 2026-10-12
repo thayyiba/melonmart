@@ -180,7 +180,7 @@
     const localCandidates = addresses.filter(a => !a.legacy && a.address);
     if (!remote.length && localCandidates.length) {
       for (const a of localCandidates) {
-        await fetch(MM_BASE + "/api/addresses", {
+        const created = await fetch(MM_BASE + "/api/addresses", {
           method:"POST", headers:{"Content-Type":"application/json"},
           body:JSON.stringify({
             action:"create", label:a.label, address:a.address, city:a.city, state:a.state,
@@ -188,6 +188,7 @@
             longitude:a.longitude, accuracy:a.accuracy
           })
         });
+        if (!created.ok) throw new Error("Could not sync this browser's saved addresses.");
       }
       const refreshed = await fetch(MM_BASE + "/api/addresses", {headers:{"Accept":"application/json"}});
       if (refreshed.ok) remote = await refreshed.json();
