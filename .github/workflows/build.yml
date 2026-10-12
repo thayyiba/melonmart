@@ -26,3 +26,12 @@ jobs:
         run: mvn -B clean verify
       - name: Build Tomcat container image
         run: docker build --tag melonmart-ci:ci .
+      - name: Upload static analysis reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-analysis-reports
+          path: |
+            target/checkstyle-result.xml
+            target/spotbugs.xml
+          if-no-files-found: warn
