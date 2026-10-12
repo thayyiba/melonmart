@@ -324,6 +324,21 @@ public class OrderDAO {
         }
     }
 
+    /**
+     * Reads the current catalog price inside the active checkout transaction.
+     * The caller must reserve stock first so the product row remains locked
+     * until the order transaction commits or rolls back.
+     */
+    public BigDecimal getProductPrice(Connection connection, int productId) throws Exception {
+        String sql = "SELECT price FROM products WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, productId);
+            try (ResultSet result = statement.executeQuery()) {
+                return result.next() ? result.getBigDecimal("price") : null;
+            }
+        }
+    }
+
     public void updateOrderStatus(int orderId, String status)
             throws Exception {
 
