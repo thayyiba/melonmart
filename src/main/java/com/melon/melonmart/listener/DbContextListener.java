@@ -208,17 +208,35 @@ public class DbContextListener implements ServletContextListener {
                     "Set both MELONMART_ADMIN_EMAIL and MELONMART_ADMIN_PASSWORD (at least 12 characters).");
         }
 
+        String normalizedEmail = email.trim().toLowerCase(Locale.ROOT);
+        boolean resetExistingAdminPassword = Boolean.parseBoolean(
+                System.getenv("MELONMART_ADMIN_RESET_PASSWORD"));
+
         try (Connection connection = dataSource.getConnection()) {
             try (java.sql.PreparedStatement lookup = connection.prepareStatement(
-                    "SELECT role FROM users WHERE email = ?")) {
-                lookup.setString(1, email.trim());
+                    "SELECT role FROM users WHERE LOWER(email) = ?")) {
+                lookup.setString(1, normalizedEmail);
                 try (java.sql.ResultSet result = lookup.executeQuery()) {
                     if (result.next()) {
                         if (!"ADMIN".equalsIgnoreCase(result.getString("role"))) {
                             throw new IllegalStateException(
                                     "MELONMART_ADMIN_EMAIL already belongs to a non-admin user.");
                         }
-                        System.out.println("Bootstrap administrator already exists; credentials left unchanged.");
+                        if (resetExistingAdminPassword) {
+                            String hash = BCrypt.hashpw(password, BCrypt.gensalt(12));
+                            try (java.sql.PreparedStatement update = connection.prepareStatement(
+                                    "UPDATE users SET password_hash = ? WHERE LOWER(email) = ? AND UPPER(role) = 'ADMIN'")) {
+                                update.setString(1, hash);
+                                update.setString(2, normalizedEmail);
+                                if (update.executeUpdate() != 1) {
+                                    throw new IllegalStateException(
+                                            "Could not safely reset the configured administrator password.");
+                                }
+                            }
+                            System.out.println("Bootstrap administrator password reset from environment configuration.");
+                        } else {
+                            System.out.println("Bootstrap administrator already exists; credentials left unchanged.");
+                        }
                         return;
                     }
                 }
@@ -232,7 +250,7 @@ public class DbContextListener implements ServletContextListener {
             try (java.sql.PreparedStatement insert = connection.prepareStatement(
                     "INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, 'ADMIN')")) {
                 insert.setString(1, name.trim());
-                insert.setString(2, email.trim());
+                insert.setString(2, normalizedEmail);
                 insert.setString(3, hash);
                 insert.executeUpdate();
             }
