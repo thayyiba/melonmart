@@ -1298,6 +1298,14 @@
 
             <button
                 class="filter-button active"
+                data-filter="INCOMING"
+                onclick="filterOrders('INCOMING', this)"
+            >
+                Incoming
+            </button>
+
+            <button
+                class="filter-button"
                 data-filter="ALL"
                 onclick="filterOrders('ALL', this)"
             >
@@ -1638,7 +1646,7 @@
     let sellerProducts = [];
     let sellerOrders = [];
     let sellerSales = null;
-    let currentOrderFilter = "ALL";
+    let currentOrderFilter = "INCOMING";
 
 
     /* =========================
@@ -2699,21 +2707,15 @@
         let filteredOrders =
             sellerOrders;
 
-
-        if (
-            currentOrderFilter !==
-            "ALL"
-        ) {
-
-            filteredOrders =
-                sellerOrders.filter(
-                    order =>
-                        String(
-                            order.status ||
-                            ""
-                        ).toUpperCase() ===
-                        currentOrderFilter
-                );
+        if (currentOrderFilter === "INCOMING") {
+            filteredOrders = sellerOrders.filter(order => {
+                const status = String(order.status || "").toUpperCase();
+                return status !== "DELIVERED" && status !== "CANCELLED";
+            });
+        } else if (currentOrderFilter !== "ALL") {
+            filteredOrders = sellerOrders.filter(order =>
+                String(order.status || "").toUpperCase() === currentOrderFilter
+            );
         }
 
 
@@ -3414,9 +3416,10 @@
 
 
         if (orderCount) {
-
-            orderCount.textContent =
-                sellerOrders.length;
+            orderCount.textContent = sellerOrders.filter(order => {
+                const status = String(order.status || "").toUpperCase();
+                return status !== "DELIVERED" && status !== "CANCELLED";
+            }).length;
         }
 
 
