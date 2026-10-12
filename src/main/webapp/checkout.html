@@ -2182,26 +2182,25 @@
                              * success page can display it.
                              */
 
-                            sessionStorage.setItem(
-                                "melonMartOrderId",
-                                (result.order && result.order.id) || result.orderId || result.id
-                            );
-
-
+                            const createdOrderId =
+                                (result.order && result.order.id) ||
+                                result.orderId ||
+                                result.id;
 
                             /*
-                             * Backend has now:
-                             *
-                             * 1. Created the order
-                             * 2. Added order items
-                             * 3. Reduced stock
-                             * 4. Cleared the cart
-                             *
+                             * Carry the real order ID into the confirmation URL as
+                             * well as session storage. This keeps refreshes and
+                             * direct confirmation links reliable without changing
+                             * the backend or database.
                              */
-
-
-                            window.location.href =
-                                "order-success.html";
+                            if (createdOrderId != null && String(createdOrderId).trim() !== "") {
+                                sessionStorage.setItem("melonMartOrderId", String(createdOrderId));
+                                window.location.href =
+                                    "order-success.html?orderId=" + encodeURIComponent(String(createdOrderId));
+                            } else {
+                                // The order was accepted, so never invite a duplicate submission.
+                                window.location.href = "orders.html?checkout=placed";
+                            }
 
 
                         } catch (error) {
