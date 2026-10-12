@@ -8,6 +8,7 @@ import com.melon.melonmart.model.Order;
 import com.melon.melonmart.model.OrderItem;
 import com.melon.melonmart.model.User;
 import com.melon.melonmart.service.OrderService;
+import com.melon.melonmart.service.OrderStatusPolicy;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -409,12 +410,7 @@ protected void doPut(
     status =
             status.trim().toUpperCase();
 
-    if (
-            !status.equals("PENDING") &&
-            !status.equals("CONFIRMED") &&
-            !status.equals("SHIPPED") &&
-            !status.equals("DELIVERED")
-    ) {
+    if (!OrderStatusPolicy.isAllowedUpdateStatus(status)) {
 
         sendError(
                 response,
