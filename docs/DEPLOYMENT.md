@@ -35,6 +35,12 @@ The repository includes a multi-stage `Dockerfile`. It builds and tests the WAR 
 
 The application health endpoint is `/melonmart/api/health`. The container currently expects a single running instance when using its embedded H2 file database. If you choose to run multiple replicas, use a database architecture designed for that instead of sharing one H2 file.
 
+### Demo credentials and first administrator
+
+The repository's demo seed includes publicly known admin, buyer, and seller credentials. The Docker image sets `MELONMART_SEED_DEMO_DATA=false` so a new deployment does not create those accounts or demo orders/products by default. Keep this disabled for a public deployment. Set `MELONMART_ADMIN_EMAIL` and `MELONMART_ADMIN_PASSWORD` (at least 12 characters) to create the first administrator on a fresh database; `MELONMART_ADMIN_NAME` is optional. The password is stored as a BCrypt hash. Existing accounts are never overwritten by this bootstrap step.
+
+For an isolated classroom/presentation demo only, you can explicitly set `MELONMART_SEED_DEMO_DATA=true` to load the sample users, products, order, and review. Do not expose those well-known demo credentials on a public deployment. If you attach an existing H2 database that already contains the demo administrator, disabling seeding does not delete or change that account—rotate/remove it before making that existing database public.
+
 ## Database safety notes
 
 On startup, the application applies versioned migrations and then executes the repository's schema and seed scripts. The scripts are intended to be idempotent, but always back up important data before deploying a schema change. The container image deliberately excludes local `*.mv.db`, `*.trace.db`, and `*.war` files from the Docker build context.
