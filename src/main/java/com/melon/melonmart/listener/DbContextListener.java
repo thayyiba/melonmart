@@ -174,14 +174,28 @@ public class DbContextListener implements ServletContextListener {
 
     private boolean isDemoSeedStatement(String sql) {
         String normalized = sql.toLowerCase(Locale.ROOT);
-        return normalized.contains("admin@melonmart.com")
+        boolean demoAccountInsert = normalized.startsWith("insert into users")
+                && (normalized.contains("admin@melonmart.com")
                 || normalized.contains("buyer@melonmart.com")
-                || normalized.contains("seller@melonmart.com");
+                || normalized.contains("seller@melonmart.com"));
+        boolean demoOrderInsert = (normalized.startsWith("insert into orders")
+                || normalized.startsWith("insert into order_items")
+                || normalized.startsWith("insert into reviews"))
+                && (normalized.contains("buyer@melonmart.com")
+                || normalized.contains("seller@melonmart.com"));
+        // Product inserts can reference the optional demo seller but must still run
+        // when demo accounts are disabled, so the public catalog is never empty.
+        return demoAccountInsert || demoOrderInsert;
     }
 
     private void runSeed() throws Exception {
         if (!isDemoSeedEnabled()) {
-            System.out.println("Demo seed data disabled by MELONMART_SEED_DEMO_DATA.");
+            // Catalog products are safe public content and do not create demo logins.
+            // This idempotent catalog seed also fills databases whose migrations were
+            // applied earlier while production demo seeding was disabled.
+            executeSqlResource("catalog.sql");
+            System.out.println("MelonMart public catalog seed checked successfully.");
+            System.out.println("Demo accounts and demo orders remain disabled.");
             return;
         }
         executeSqlResource("seed.sql");
