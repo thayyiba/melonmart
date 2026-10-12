@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,13 +29,14 @@ class OrderStockReservationTest {
                 ""
         );
         connection.createStatement().execute(
-                "CREATE TABLE products (id INT PRIMARY KEY, stock_qty INT NOT NULL CHECK (stock_qty >= 0))"
+                "CREATE TABLE products (id INT PRIMARY KEY, stock_qty INT NOT NULL CHECK (stock_qty >= 0), price DECIMAL(10,2) NOT NULL)"
         );
         try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO products (id, stock_qty) VALUES (?, ?)"
+                "INSERT INTO products (id, stock_qty, price) VALUES (?, ?, ?)"
         )) {
             statement.setInt(1, 1);
             statement.setInt(2, 5);
+            statement.setBigDecimal(3, new BigDecimal("12.50"));
             statement.executeUpdate();
         }
         orderDAO = new OrderDAO();
@@ -62,6 +64,11 @@ class OrderStockReservationTest {
     @Test
     void reserveStockRejectsUnknownProduct() throws Exception {
         assertFalse(orderDAO.reserveStock(connection, 99, 1));
+    }
+
+    @Test
+    void getProductPriceReadsCurrentCatalogPrice() throws Exception {
+        assertEquals(new BigDecimal("12.50"), orderDAO.getProductPrice(connection, 1));
     }
 
     private int stockForProduct(int productId) throws Exception {
