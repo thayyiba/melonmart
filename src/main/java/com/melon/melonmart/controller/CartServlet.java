@@ -101,17 +101,19 @@ public class CartServlet extends HttpServlet {
                 return;
             }
 
-            boolean success = cartDAO.addToCart(
-                    user.getId(),
-                    productId,
-                    quantity
-            );
+            String mode = data.get("mode") == null
+                    ? ""
+                    : data.get("mode").toString();
+
+            boolean success = "set".equalsIgnoreCase(mode)
+                    ? cartDAO.updateQuantity(user.getId(), productId, quantity)
+                    : cartDAO.addToCart(user.getId(), productId, quantity);
 
             if (!success) {
                 sendError(
                         response,
                         HttpServletResponse.SC_BAD_REQUEST,
-                        "Could not update cart."
+                        "Could not update cart. Check the available stock and try again."
                 );
                 return;
             }
