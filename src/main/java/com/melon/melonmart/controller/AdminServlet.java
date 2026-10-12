@@ -286,6 +286,59 @@ public class AdminServlet extends HttpServlet {
         );
     }
 
+    @Override
+    protected void doDelete(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws IOException {
+        User user = getLoggedInUser(request);
+        if (user == null) {
+            sendError(response, HttpServletResponse.SC_UNAUTHORIZED, "Login required.");
+            return;
+        }
+        if (!"ADMIN".equalsIgnoreCase(user.getRole())) {
+            sendError(response, HttpServletResponse.SC_FORBIDDEN, "Admin access required.");
+            return;
+        }
+
+        String path = request.getPathInfo();
+        String[] parts = path == null ? new String[0] : path.split("/");
+        if (parts.length != 3 || !"products".equals(parts[1])) {
+            sendError(response, HttpServletResponse.SC_NOT_FOUND, "Product moderation endpoint not found.");
+            return;
+        }
+
+        final int productId;
+        try {
+            productId = Integer.parseInt(parts[2]);
+            if (productId <= 0) throw new NumberFormatException("Product ID must be positive");
+        } catch (NumberFormatException e) {
+            sendError(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid product ID.");
+            return;
+        }
+
+        try {
+            if (!adminDAO.productExists(productId)) {
+                sendError(response, HttpServletResponse.SC_NOT_FOUND, "Product not found.");
+                return;
+            }
+            if (!adminDAO.deleteProductForModeration(productId)) {
+                sendError(response, HttpServletResponse.SC_CONFLICT,
+                        "This product has order history and cannot be removed. Past order records are protected.");
+                return;
+            }
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("success", true);
+            result.put("message", "Product removed from the marketplace.");
+            result.put("productId", productId);
+            sendJson(response, HttpServletResponse.SC_OK, result);
+        } catch (Exception e) {
+            getServletContext().log("Admin product moderation failed for product ID " + productId, e);
+            sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Could not remove this product.");
+        }
+    }
+
     private User getLoggedInUser(
             HttpServletRequest request
     ) {
