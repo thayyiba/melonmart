@@ -72,15 +72,14 @@
     catch (_) { return fallback; }
   };
 
-  const oldLabels = parse("melonmart_locations", ["Hostel 4 · Main Campus"]);
+  const oldLabels = parse("melonmart_locations", []);
   let addresses = parse("melonmart_addresses", []);
   if (!Array.isArray(addresses)) addresses = [];
   let current = parse("melonmart_address_current", null);
-  const legacyLabel = localStorage.getItem("melonmart_location") || (oldLabels[0] || "Hostel 4 · Main Campus");
+  const legacyLabel = localStorage.getItem("melonmart_location") || (oldLabels[0] || "");
   if (current && !addresses.some(a => String(a.id) === String(current.id))) addresses.unshift(current);
-  if (!addresses.length) {
-    addresses = (Array.isArray(oldLabels) && oldLabels.length ? oldLabels : [legacyLabel])
-      .map((label, index) => ({id:"legacy-" + index,label:String(label),address:String(label),city:"",state:"",pincode:"",landmark:"",legacy:true}));
+  if (!addresses.length && oldLabels.length) {
+    addresses = oldLabels.map((label, index) => ({id:"legacy-" + index,label:String(label),address:String(label),city:"",state:"",pincode:"",landmark:"",legacy:true}));
   }
   if (!current) current = addresses.find(a => a.label === legacyLabel) || addresses[0] || null;
   let coordinates = null;
@@ -206,11 +205,10 @@
     if (!Array.isArray(addresses)) addresses = [];
     current = parse("melonmart_address_current", null);
     const labels = parse("melonmart_locations", [legacyLabel]);
-    const fallbackLabel = localStorage.getItem("melonmart_location") || (labels[0] || "Hostel 4 · Main Campus");
+    const fallbackLabel = localStorage.getItem("melonmart_location") || (labels[0] || "");
     if (current && !addresses.some(a => String(a.id) === String(current.id))) addresses.unshift(current);
-    if (!addresses.length) {
-      addresses = (Array.isArray(labels) && labels.length ? labels : [fallbackLabel])
-        .map((label, index) => ({id:"legacy-" + index,label:String(label),address:String(label),city:"",state:"",pincode:"",landmark:"",legacy:true}));
+    if (!addresses.length && labels.length) {
+      addresses = labels.map((label, index) => ({id:"legacy-" + index,label:String(label),address:String(label),city:"",state:"",pincode:"",landmark:"",legacy:true}));
     }
     if (!current) current = addresses.find(a => a.label === fallbackLabel) || addresses[0] || null;
   }
