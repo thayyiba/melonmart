@@ -2072,13 +2072,13 @@ header {
 <style id="melon-aarthi-navigation">.melon-menu-btn{width:44px;height:44px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--plum);font-size:22px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}.melon-menu-btn:hover{transform:translateY(-1px);box-shadow:var(--soft-shadow)}.melon-side-overlay{position:fixed;inset:0;background:rgba(56,42,52,.28);z-index:9998;opacity:0;pointer-events:none;transition:.25s}.melon-side-menu{position:fixed;top:0;left:0;width:min(360px,88vw);height:100vh;background:var(--paper);z-index:9999;transform:translateX(-105%);transition:.28s;box-shadow:20px 0 50px rgba(56,42,52,.16);padding:22px;overflow:auto}.melon-side-menu.open{transform:translateX(0)}.melon-side-overlay.open{opacity:1;pointer-events:auto}.melon-side-head{display:flex;align-items:center;justify-content:space-between;font-family:Fraunces,serif;font-size:22px;color:var(--plum-dark);padding-bottom:18px;border-bottom:1px solid var(--line)}.melon-side-head button{border:0;background:transparent;font-size:30px;color:var(--plum);cursor:pointer}.melon-side-location{margin:18px 0;padding:14px 16px;background:var(--cream);border-radius:16px;color:var(--muted);display:grid;grid-template-columns:auto 1fr;column-gap:9px}.melon-side-location strong{grid-column:2;color:var(--text);font-size:14px;margin-top:2px}.melon-side-nav{display:grid;gap:8px}.melon-side-nav a{display:flex;gap:14px;align-items:center;padding:14px 15px;border-radius:15px;color:var(--text);text-decoration:none;font-weight:600}.melon-side-nav a:hover{background:var(--butter-light);color:var(--plum-dark)}@media(max-width:900px){.header-main{gap:10px}.delivery-location{display:none}}</style></head>
 
 <body>
-<a class="welp-float" href="welp.html" aria-label="Open Welp">🍉</a>
+<!-- Welp opens in the compact floating chat panel. -->
 <div class="melon-side-overlay" id="melonSideOverlay" onclick="toggleMelonMenu(false)"></div>
 <aside class="melon-side-menu" id="melonSideMenu" aria-label="Melon Mart menu">
   <div class="melon-side-head"><strong>MELON MART</strong><button type="button" onclick="toggleMelonMenu(false)" aria-label="Close menu">×</button></div>
   <div class="melon-side-location">📍 <span>delivering to</span><strong id="menuLocation">Hostel 4 · Main Campus</strong></div>
   <nav class="melon-side-nav">
-    <a href="index.html">⌂ <span>Home</span></a><a href="account.html">♙ <span>My Account</span></a><a href="orders.html">▣ <span>My Orders</span></a><a href="wishlist.html">♡ <span>Wishlist</span></a><a href="location.html">📍 <span>Delivery Addresses</span></a><a href="cart.html">🛍 <span>My Bag</span></a><a id="menuSellerLink" href="seller.html" style="display:none">▤ <span>Seller Dashboard</span></a><a id="menuAdminLink" href="admin.html" style="display:none">⚙ <span>Admin Dashboard</span></a><a href="help.html">? <span>Help & Support</span></a><a href="welp.html">✦ <span>Welp AI</span></a>
+    <a href="index.html">⌂ <span>Home</span></a><a href="account.html">♙ <span>My Account</span></a><a href="orders.html">▣ <span>My Orders</span></a><a href="wishlist.html">♡ <span>Wishlist</span></a><a href="location.html">📍 <span>Delivery Addresses</span></a><a href="cart.html">🛍 <span>My Bag</span></a><a id="menuSellerLink" href="seller.html" style="display:none">▤ <span>Seller Dashboard</span></a><a id="menuAdminLink" href="admin.html" style="display:none">⚙ <span>Admin Dashboard</span></a><a href="help.html">? <span>Help & Support</span></a><a href="#" onclick="event.preventDefault(); openMelonChat()">✦ <span>Welp AI</span></a>
   </nav>
 </aside>
 
@@ -3875,7 +3875,7 @@ function renderProducts() {
 
                         <button
                             class="wishlist-btn ${saved ? "saved" : ""}"
-                            onclick="toggleWishlist(${id}, this)"
+                            onclick="event.stopPropagation(); toggleWishlist(${id}, this)" aria-pressed="${saved ? "true" : "false"}"
                             aria-label="Save ${escapeHtml(product.name || "product")}"
                         >
                             ${saved ? "♥" : "♡"}
@@ -4009,55 +4009,65 @@ document.getElementById("searchInput")
    WISHLIST
 ========================================== */
 
-function toggleWishlist(
-    productId,
-    button
-) {
-
-    productId =
-        Number(productId);
-
-    if (wishlist.has(productId)) {
-
-        wishlist.delete(productId);
-
-        button.classList.remove(
-            "saved"
-        );
-
-        button.textContent =
-            "♡";
-
-        showToast(
-            "Removed from wishlist"
-        );
-
-    } else {
-
-        wishlist.add(productId);
-
-        button.classList.add(
-            "saved"
-        );
-
-        button.textContent =
-            "♥";
-
-        showToast(
-            "Saved for later ♡"
-        );
-
+async function toggleWishlist(productId, button) {
+    productId = Number(productId);
+    if (!Number.isInteger(productId) || productId <= 0) {
+        showToast("That product could not be saved.");
+        return;
     }
-
-    localStorage.setItem(
-        "melonmart_wishlist",
-        JSON.stringify(
-            [...wishlist]
-        )
-    );
-
+    const action = wishlist.has(productId) ? "remove" : "add";
+    button.disabled = true;
+    try {
+        const response = await fetch("api/wishlist", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({ action, productId: String(productId) })
+        });
+        if (response.status === 401) {
+            showToast("Sign in to save your favourites ♡");
+            window.setTimeout(() => { window.location.href = "login.html"; }, 650);
+            return;
+        }
+        if (!response.ok) throw new Error("Wishlist request failed");
+        const result = await response.json();
+        if (result.success !== true) throw new Error("Wishlist was not updated");
+        if (action === "add") {
+            wishlist.add(productId);
+            button.classList.add("saved");
+            button.textContent = "♥";
+            button.setAttribute("aria-pressed", "true");
+            showToast("Saved for later ♡");
+        } else {
+            wishlist.delete(productId);
+            button.classList.remove("saved");
+            button.textContent = "♡";
+            button.setAttribute("aria-pressed", "false");
+            showToast("Removed from wishlist");
+        }
+        localStorage.setItem("melonmart_wishlist", JSON.stringify([...wishlist]));
+    } catch (error) {
+        showToast("Could not update wishlist. Please try again.");
+        console.error("Wishlist update failed:", error);
+    } finally {
+        button.disabled = false;
+    }
 }
 
+async function syncWishlistFromServer() {
+    try {
+        const response = await fetch("api/wishlist", { headers: { "Accept": "application/json" } });
+        if (response.status === 401) return;
+        if (!response.ok) return;
+        const items = await response.json();
+        if (!Array.isArray(items)) return;
+        wishlist = new Set(items.map(item => Number(item.id)).filter(id => Number.isInteger(id) && id > 0));
+        localStorage.setItem("melonmart_wishlist", JSON.stringify([...wishlist]));
+        if (typeof renderProducts === "function") renderProducts();
+    } catch (error) {
+        console.warn("Could not sync wishlist from server:", error);
+    }
+}
+syncWishlistFromServer();
 
 function openOrders() { window.location.href = "orders.html"; }
 
@@ -5267,5 +5277,6 @@ if (searchInput && searchSuggestions) {
 </script>
 
 <script>document.addEventListener("click",function(event){const wrap=document.querySelector(".account-wrap"),drop=document.getElementById("accountDropdown");if(drop&&wrap&&!wrap.contains(event.target))drop.classList.remove("open");});</script>
-<script>function toggleMelonMenu(force){const m=document.getElementById('melonSideMenu'),o=document.getElementById('melonSideOverlay');const open=force===undefined?!m.classList.contains('open'):force;m.classList.toggle('open',open);o.classList.toggle('open',open);document.body.style.overflow=open?'hidden':'';}</script></body>
+<script>function toggleMelonMenu(force){const m=document.getElementById('melonSideMenu'),o=document.getElementById('melonSideOverlay');const open=force===undefined?!m.classList.contains('open'):force;m.classList.toggle('open',open);o.classList.toggle('open',open);document.body.style.overflow=open?'hidden':'';}</script><script src="melon-experience.js"></script>
+</body>
 </html>

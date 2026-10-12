@@ -1,0 +1,60 @@
+/* Melon Mart shared experience: playful bottom navigation + Welp chat */
+:root { --mm-cream:#FFF6D8; --mm-paper:#FFFDF5; --mm-butter:#F2D477; --mm-pink:#F2B8B8; --mm-pink-light:#F9DDDD; --mm-blue:#A7B2E2; --mm-plum:#594052; --mm-plum-dark:#382A34; --mm-line:#E7DACB; }
+body.has-melon-bottom-nav { padding-bottom: calc(106px + env(safe-area-inset-bottom)) !important; }
+#melon-bottom-nav, #melon-bottom-nav * { box-sizing:border-box; }
+#melon-bottom-nav {
+  position:fixed; z-index:9000; left:50%; bottom:calc(10px + env(safe-area-inset-bottom)); transform:translateX(-50%);
+  width:min(520px,calc(100vw - 22px)); display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:4px;
+  padding:8px; border:1px solid var(--mm-line); border-radius:25px; background:rgba(255,253,245,.97);
+  box-shadow:0 12px 36px rgba(56,42,52,.17); backdrop-filter:blur(16px);
+}
+#melon-bottom-nav a {
+  min-width:0; min-height:54px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+  border-radius:17px; color:var(--mm-plum); text-decoration:none; font:600 10px/1.1 "DM Sans",sans-serif; transition:background .18s,transform .18s;
+}
+#melon-bottom-nav a:hover { background:var(--mm-butter); transform:translateY(-1px); }
+#melon-bottom-nav a[aria-current="page"] { background:var(--mm-pink-light); color:var(--mm-plum-dark); }
+#melon-bottom-nav .mm-nav-icon { font-size:21px; line-height:1.1; }
+#melon-bottom-nav .mm-nav-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%; }
+#melon-welp-chat, #melon-welp-chat * { box-sizing:border-box; }
+#melon-welp-chat button, #melon-welp-chat input { font:inherit; }
+#melon-welp-chat #melon-welp-launcher {
+  position:fixed; right:20px; bottom:calc(91px + env(safe-area-inset-bottom)); z-index:9500; width:58px; height:58px;
+  border:2px solid var(--mm-paper); border-radius:50%; background:var(--mm-plum); color:#fff; cursor:pointer;
+  font-size:26px; box-shadow:0 8px 24px rgba(56,42,52,.23); transition:transform .2s,box-shadow .2s;
+}
+#melon-welp-chat #melon-welp-launcher:hover { transform:translateY(-3px) rotate(-4deg); box-shadow:0 12px 30px rgba(56,42,52,.28); }
+#melon-welp-chat #melon-welp-panel {
+  position:fixed; right:20px; bottom:calc(160px + env(safe-area-inset-bottom)); z-index:9501;
+  width:min(370px,calc(100vw - 24px)); height:490px; max-height:calc(100dvh - 185px); min-height:290px;
+  display:flex; flex-direction:column; overflow:hidden; border:2px solid var(--mm-plum); border-radius:25px;
+  background:var(--mm-paper); color:var(--mm-plum-dark); box-shadow:0 20px 55px rgba(56,42,52,.24);
+  font-family:"DM Sans",sans-serif;
+}
+#melon-welp-chat #melon-welp-panel[hidden] { display:none !important; }
+#melon-welp-chat .mm-welp-header { display:flex; align-items:center; gap:10px; padding:14px 15px; background:var(--mm-blue); border-bottom:2px solid var(--mm-plum); }
+#melon-welp-chat .mm-welp-avatar { display:grid; place-items:center; flex:0 0 42px; height:42px; border:2px solid var(--mm-plum); border-radius:50%; background:var(--mm-pink-light); font-size:22px; }
+#melon-welp-chat .mm-welp-heading { min-width:0; flex:1; }
+#melon-welp-chat .mm-welp-heading strong { display:block; font:700 20px/1.1 "Fraunces",Georgia,serif; color:var(--mm-plum-dark); }
+#melon-welp-chat .mm-welp-heading small { display:block; margin-top:4px; font-size:11px; color:var(--mm-plum-dark); }
+#melon-welp-chat #melon-welp-close { border:0; background:transparent; color:var(--mm-plum-dark); cursor:pointer; font-size:28px; line-height:1; }
+#melon-welp-chat .mm-welp-intro { padding:11px 14px 8px; color:#756c73; font-size:12px; line-height:1.45; }
+#melon-welp-chat .mm-welp-prompts { display:flex; flex-wrap:wrap; gap:6px; padding:0 12px 10px; }
+#melon-welp-chat .mm-welp-prompts button { border:1px solid #d8c5d1; border-radius:18px; padding:6px 9px; background:var(--mm-pink-light); color:var(--mm-plum-dark); font-size:11px; cursor:pointer; }
+#melon-welp-chat .mm-welp-prompts button:hover { background:var(--mm-butter); }
+#melon-welp-chat #melon-welp-messages { flex:1; min-height:0; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:9px; border-top:1px solid var(--mm-line); }
+#melon-welp-chat .mm-welp-message { max-width:88%; padding:10px 12px; border:1px solid transparent; border-radius:16px; white-space:pre-wrap; overflow-wrap:anywhere; font-size:13px; line-height:1.5; }
+#melon-welp-chat .mm-welp-bot { align-self:flex-start; border-color:#efd1d1; border-bottom-left-radius:5px; background:var(--mm-pink-light); color:var(--mm-plum-dark); }
+#melon-welp-chat .mm-welp-user { align-self:flex-end; border-bottom-right-radius:5px; background:var(--mm-plum); color:#fff; }
+#melon-welp-chat #melon-welp-form { display:flex; gap:8px; padding:11px; border-top:1px solid var(--mm-line); background:var(--mm-paper); }
+#melon-welp-chat #melon-welp-input { min-width:0; flex:1; border:1px solid #d8c5d1; border-radius:22px; outline:none; padding:11px 13px; color:var(--mm-plum-dark); background:#fff; font-size:13px; }
+#melon-welp-chat #melon-welp-input:focus { border-color:var(--mm-plum); box-shadow:0 0 0 3px rgba(89,64,82,.10); }
+#melon-welp-chat #melon-welp-send { flex:0 0 42px; width:42px; border:0; border-radius:50%; background:var(--mm-plum); color:#fff; cursor:pointer; font-size:18px; }
+#melon-welp-chat #melon-welp-send:disabled { opacity:.6; cursor:wait; }
+@media(max-width:480px) {
+  #melon-bottom-nav { bottom:calc(7px + env(safe-area-inset-bottom)); width:calc(100vw - 16px); padding:6px; border-radius:21px; }
+  #melon-bottom-nav a { min-height:51px; border-radius:15px; }
+  #melon-welp-chat #melon-welp-launcher { right:14px; bottom:calc(82px + env(safe-area-inset-bottom)); width:54px; height:54px; }
+  #melon-welp-chat #melon-welp-panel { right:8px; bottom:calc(145px + env(safe-area-inset-bottom)); width:calc(100vw - 16px); max-height:calc(100dvh - 165px); }
+}
+@media(prefers-reduced-motion:reduce) { #melon-bottom-nav a, #melon-welp-chat #melon-welp-launcher { transition:none; } }
