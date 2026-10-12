@@ -3198,11 +3198,8 @@ let currentCategory = "";
 
 let currentUser = null;
 
-let wishlist = new Set(
-    JSON.parse(
-        localStorage.getItem("melonmart_wishlist") || "[]"
-    )
-);
+let wishlist = new Set();
+let wishlistSyncPromise = Promise.resolve();
 
 let savedLocations = [];
 let currentLocation = "Add delivery address";
@@ -4008,9 +4005,10 @@ async function toggleWishlist(productId, button) {
         showToast("That product could not be saved.");
         return;
     }
-    const action = wishlist.has(productId) ? "remove" : "add";
     button.disabled = true;
     try {
+        await wishlistSyncPromise;
+        const action = wishlist.has(productId) ? "remove" : "add";
         const response = await fetch("api/wishlist", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -4021,23 +4019,17 @@ async function toggleWishlist(productId, button) {
             window.setTimeout(() => { window.location.href = "login.html"; }, 650);
             return;
         }
-        if (!response.ok) throw new Error("Wishlist request failed");
-        const result = await response.json();
-        if (result.success !== true) throw new Error("Wishlist was not updated");
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || result.success !== true) throw new Error(result.message || "Wishlist request failed");
         if (action === "add") {
             wishlist.add(productId);
-            button.classList.add("saved");
-            button.textContent = "♥";
-            button.setAttribute("aria-pressed", "true");
             showToast("Saved for later ♡");
         } else {
             wishlist.delete(productId);
-            button.classList.remove("saved");
-            button.textContent = "♡";
-            button.setAttribute("aria-pressed", "false");
             showToast("Removed from wishlist");
         }
-        localStorage.setItem("melonmart_wishlist", JSON.stringify([...wishlist]));
+        localStorage.removeItem("melonmart_wishlist");
+        if (typeof renderProducts === "function") renderProducts();
     } catch (error) {
         showToast("Could not update wishlist. Please try again.");
         console.error("Wishlist update failed:", error);
@@ -4049,18 +4041,23 @@ async function toggleWishlist(productId, button) {
 async function syncWishlistFromServer() {
     try {
         const response = await fetch("api/wishlist", { headers: { "Accept": "application/json" } });
-        if (response.status === 401) return;
+        if (response.status === 401) {
+            wishlist = new Set();
+            localStorage.removeItem("melonmart_wishlist");
+            if (typeof renderProducts === "function") renderProducts();
+            return;
+        }
         if (!response.ok) return;
         const items = await response.json();
         if (!Array.isArray(items)) return;
         wishlist = new Set(items.map(item => Number(item.id)).filter(id => Number.isInteger(id) && id > 0));
-        localStorage.setItem("melonmart_wishlist", JSON.stringify([...wishlist]));
+        localStorage.removeItem("melonmart_wishlist");
         if (typeof renderProducts === "function") renderProducts();
     } catch (error) {
         console.warn("Could not sync wishlist from server:", error);
     }
 }
-syncWishlistFromServer();
+wishlistSyncPromise = syncWishlistFromServer();
 
 function openOrders() { window.location.href = "orders.html"; }
 
@@ -5007,6 +5004,30 @@ async function syncDeliveryLocation() {
         const selected = Array.isArray(addresses)
             ? addresses.find(address => address.isDefault) || addresses[0]
             : null;
+        updateLabels(selected ? String(selected.label || selected.address || "Add delivery address") : "Add delivery address");
+    } catch (error) {
+        updateLabels("Add delivery address");
+        console.warn("Could not load account delivery location:", error);
+    }
+}
+
+async function syncDeliveryLocation() {
+    const updateLabels = label => {
+        currentLocation = label;
+        document.querySelectorAll("#currentLocation, #menuLocation").forEach(node => {
+            node.textContent = label;
+        });
+    };
+    updateLabels("Add delivery address");
+    try {
+        const response = await fetch("api/addresses", { headers: { "Accept": "application/json" } });
+        if (response.status === 401) return;
+        if (!response.ok) throw new Error("Address service unavailable");
+        const addresses = await response.json();
+        savedLocations = Array.isArray(addresses)
+            ? addresses.map(address => String(address.label || address.address || "").trim()).filter(Boolean)
+            : [];
+        const selected = Array.isArray(addresses) ? addresses.find(address => address.isDefault) || addresses[0] : null;
         updateLabels(selected ? String(selected.label || selected.address || "Add delivery address") : "Add delivery address");
     } catch (error) {
         updateLabels("Add delivery address");
