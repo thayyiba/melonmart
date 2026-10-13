@@ -38,9 +38,11 @@ public final class OldDatabaseRestoreClient {
     private OldDatabaseRestoreClient() { }
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 1 || !"--replace-all-data".equals(args[0])) {
+        boolean checkOnly = args.length == 1 && "--check-only".equals(args[0]);
+        boolean replaceAll = args.length == 1 && "--replace-all-data".equals(args[0]);
+        if (!checkOnly && !replaceAll) {
             throw new IllegalArgumentException(
-                    "This operation replaces all destination rows. Re-run only after backup with --replace-all-data.");
+                    "Use --check-only to validate the source without sending data, or --replace-all-data only after backup.");
         }
         String oldUrl = required("MELONMART_OLD_DB_URL");
         String target = required("MELONMART_RESTORE_TARGET_URL");
@@ -85,6 +87,12 @@ public final class OldDatabaseRestoreClient {
         byte[] bytes = GSON.toJson(payload).getBytes(StandardCharsets.UTF_8);
         if (bytes.length > 8 * 1024 * 1024) {
             throw new IllegalStateException("Export exceeds 8 MiB safety limit.");
+        }
+        if (checkOnly) {
+            System.out.println("PRECHECK PASSED — no data was sent and no destination was changed.");
+            System.out.println("Source table counts: " + GSON.toJson(counts));
+            System.out.println("Serialized payload size: " + bytes.length + " bytes.");
+            return;
         }
 
         HttpURLConnection connection = (HttpURLConnection) new URL(target).openConnection();
