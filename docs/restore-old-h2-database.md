@@ -22,16 +22,25 @@ Run this from the repository root on the computer that has the old H2 database. 
    mvn -DskipTests package dependency:build-classpath "-Dmdep.outputFile=target/classpath.txt"
    ```
 
-2. Set the old local database URL and deployed restore endpoint. Adjust the old path only if your database is somewhere else:
+2. Set only the old local database URL. Adjust the old path only if your database is somewhere else:
 
    ```powershell
    $env:MELONMART_OLD_DB_URL = 'jdbc:h2:file:C:/apache-tomcat-9.0.121/bin/data/melonmartdb;MODE=MySQL;AUTO_SERVER=TRUE'
-   $env:MELONMART_RESTORE_TARGET_URL = 'https://melonmart-app-production.up.railway.app/melonmart/api/v1/restore/old-database'
    ```
 
-3. Enter the exact temporary restore key that you configured in Railway without putting it in a command line:
+3. Run the non-destructive source precheck. It needs no Railway URL or restore key, sends no data, and does not change Railway:
 
    ```powershell
+   $cp = Get-Content target/classpath.txt -Raw
+   java -cp "target/classes;$cp" com.melon.melonmart.tools.OldDatabaseRestoreClient --check-only
+   ```
+
+   Confirm the counts match the original database (users 8, products 8, orders 14, order_items 15, cart_items 1, reviews 5, wishlist 1, delivery_addresses 0). If any count differs, stop and investigate.
+
+4. Only after the precheck passes and the backup is confirmed, set the deployed endpoint and enter the temporary key configured in Railway:
+
+   ```powershell
+   $env:MELONMART_RESTORE_TARGET_URL = 'https://melonmart-app-production.up.railway.app/melonmart/api/v1/restore/old-database'
    $secure = Read-Host 'Temporary Railway restore key' -AsSecureString
    $ptr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
    try {
@@ -41,16 +50,7 @@ Run this from the repository root on the computer that has the old H2 database. 
    }
    ```
 
-4. Run the non-destructive source precheck. It does not send data or change Railway:
-
-   ```powershell
-   $cp = Get-Content target/classpath.txt -Raw
-   java -cp "target/classes;$cp" com.melon.melonmart.tools.OldDatabaseRestoreClient --check-only
-   ```
-
-   Confirm the counts match the original database (users 8, products 8, orders 14, order_items 15, cart_items 1, reviews 5, wishlist 1, delivery_addresses 0). If any count differs, stop and investigate.
-
-5. Only after the precheck passes and the backup is confirmed, review the target URL carefully and run the explicit destructive operation:
+5. Review the target URL carefully and run the explicit destructive operation only after confirming the backup:
 
    ```powershell
    java -cp "target/classes;$cp" com.melon.melonmart.tools.OldDatabaseRestoreClient --replace-all-data
