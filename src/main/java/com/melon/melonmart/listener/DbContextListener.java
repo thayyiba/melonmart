@@ -58,6 +58,7 @@ public class DbContextListener implements ServletContextListener {
             runSchema();
             runSeed();
             resetDemoPasswordsOnce();
+            resetBootstrapAdminPasswordOnce();
             ensureBootstrapAdmin();
         } catch (Exception e) {
             System.err.println("Failed to initialize database.");
@@ -243,6 +244,55 @@ public class DbContextListener implements ServletContextListener {
                     record.executeUpdate();
                 }
                 System.out.println("One-time demo password reset applied to " + affected + " account(s).");
+            }
+        }
+    }
+
+    /**
+     * One-time reset for the configured bootstrap administrator only.
+     * This never changes buyer or seller passwords and will not repeat after its marker is recorded.
+     */
+    private void resetBootstrapAdminPasswordOnce() throws Exception {
+        if (!Boolean.parseBoolean(System.getenv("MELONMART_RESET_ADMIN_PASSWORD_ONCE"))) {
+            return;
+        }
+
+        String email = System.getenv("MELONMART_ADMIN_EMAIL");
+        String password = System.getenv("MELONMART_ADMIN_PASSWORD");
+        if (email == null || email.isBlank() || password == null || password.length() < 12) {
+            throw new IllegalStateException(
+                    "Admin one-time reset requires MELONMART_ADMIN_EMAIL and a MELONMART_ADMIN_PASSWORD of at least 12 characters.");
+        }
+
+        String marker = "BOOTSTRAP_ADMIN_PASSWORD_RESET_20261013";
+        try (Connection connection = dataSource.getConnection()) {
+            try (java.sql.PreparedStatement check = connection.prepareStatement(
+                    "SELECT 1 FROM schema_migrations WHERE version = ?")) {
+                check.setString(1, marker);
+                try (java.sql.ResultSet result = check.executeQuery()) {
+                    if (result.next()) {
+                        System.out.println("One-time bootstrap admin password reset already applied; skipping.");
+                        return;
+                    }
+                }
+            }
+
+            String hash = BCrypt.hashpw(password, BCrypt.gensalt(12));
+            try (java.sql.PreparedStatement update = connection.prepareStatement(
+                    "UPDATE users SET password_hash = ? WHERE LOWER(email) = LOWER(?) AND UPPER(role) = 'ADMIN'")) {
+                update.setString(1, hash);
+                update.setString(2, email.trim());
+                int affected = update.executeUpdate();
+                if (affected != 1) {
+                    throw new IllegalStateException(
+                            "One-time admin password reset expected exactly one matching administrator, found " + affected + ".");
+                }
+                try (java.sql.PreparedStatement record = connection.prepareStatement(
+                        "INSERT INTO schema_migrations (version) VALUES (?)")) {
+                    record.setString(1, marker);
+                    record.executeUpdate();
+                }
+                System.out.println("One-time bootstrap admin password reset completed for the configured administrator.");
             }
         }
     }
