@@ -57,6 +57,7 @@ public class DbContextListener implements ServletContextListener {
             runMigrations();
             runSchema();
             runSeed();
+            resetDemoPasswordsOnce();
             ensureBootstrapAdmin();
         } catch (Exception e) {
             System.err.println("Failed to initialize database.");
@@ -200,6 +201,50 @@ public class DbContextListener implements ServletContextListener {
         }
         executeSqlResource("seed.sql");
         System.out.println("MelonMart demo seed data checked successfully.");
+    }
+
+    /**
+     * Applies a one-time shared password for demo accounts when explicitly enabled.
+     * The migration marker ensures restarts do not keep overwriting later password changes.
+     * Do not enable on a production deployment with real users.
+     */
+    private void resetDemoPasswordsOnce() throws Exception {
+        if (!Boolean.parseBoolean(System.getenv("MELONMART_DEMO_RESET_ALL_PASSWORDS"))) {
+            return;
+        }
+
+        String password = System.getenv("MELONMART_DEMO_RESET_PASSWORD");
+        if (password == null || password.isEmpty()) {
+            throw new IllegalStateException(
+                    "MELONMART_DEMO_RESET_PASSWORD is required for the one-time demo reset.");
+        }
+
+        String marker = "DEMO_PASSWORD_RESET_20261013";
+        try (Connection connection = dataSource.getConnection()) {
+            try (java.sql.PreparedStatement check = connection.prepareStatement(
+                    "SELECT 1 FROM schema_migrations WHERE version = ?")) {
+                check.setString(1, marker);
+                try (java.sql.ResultSet result = check.executeQuery()) {
+                    if (result.next()) {
+                        System.out.println("One-time demo password reset already applied; skipping.");
+                        return;
+                    }
+                }
+            }
+
+            String hash = BCrypt.hashpw(password, BCrypt.gensalt(12));
+            try (java.sql.PreparedStatement update = connection.prepareStatement(
+                    "UPDATE users SET password_hash = ?")) {
+                update.setString(1, hash);
+                int affected = update.executeUpdate();
+                try (java.sql.PreparedStatement record = connection.prepareStatement(
+                        "INSERT INTO schema_migrations (version) VALUES (?)")) {
+                    record.setString(1, marker);
+                    record.executeUpdate();
+                }
+                System.out.println("One-time demo password reset applied to " + affected + " account(s).");
+            }
+        }
     }
 
     /**
