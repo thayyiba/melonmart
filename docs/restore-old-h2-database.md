@@ -9,7 +9,7 @@ This is a destructive, opt-in recovery procedure. It replaces rows in these tabl
 - The app must be built and deployed with this restore endpoint before running the client.
 - The endpoint is disabled unless Railway has `MELONMART_RESTORE_OLD_DB_KEY` set to a random secret of at least 32 characters.
 - Use the same secret locally as `MELONMART_RESTORE_OLD_DB_KEY`; remove it from Railway immediately after a successful restore so the endpoint becomes unavailable again.
-- The client requires `--replace-all-data`, insists on HTTPS, and prints row counts only.
+- The client offers a non-destructive `--check-only` precheck and requires `--replace-all-data` for the actual transfer. It insists on HTTPS and prints row counts only.
 - Do not change `MELONMART_DB_URL`, the `/data` volume mount, or the persistent volume.
 
 ## Windows PowerShell procedure
@@ -41,14 +41,22 @@ Run this from the repository root on the computer that has the old H2 database. 
    }
    ```
 
-4. Review the target URL carefully. Then run the explicit destructive operation:
+4. Run the non-destructive source precheck. It does not send data or change Railway:
 
    ```powershell
    $cp = Get-Content target/classpath.txt -Raw
+   java -cp "target/classes;$cp" com.melon.melonmart.tools.OldDatabaseRestoreClient --check-only
+   ```
+
+   Confirm the counts match the original database (users 8, products 8, orders 14, order_items 15, cart_items 1, reviews 5, wishlist 1, delivery_addresses 0). If any count differs, stop and investigate.
+
+5. Only after the precheck passes and the backup is confirmed, review the target URL carefully and run the explicit destructive operation:
+
+   ```powershell
    java -cp "target/classes;$cp" com.melon.melonmart.tools.OldDatabaseRestoreClient --replace-all-data
    ```
 
-5. Only continue if the response says `"success":true` and the counts match the old database (users 8, products 8, orders 14, order_items 15, cart_items 1, reviews 5, wishlist 1, delivery_addresses 0). Then remove the temporary key from Railway and clear the local environment variables:
+6. Only continue if the response says `"success":true` and the counts match the old database. Then remove the temporary key from Railway and clear the local environment variables:
 
    ```powershell
    Remove-Item Env:MELONMART_RESTORE_OLD_DB_KEY
