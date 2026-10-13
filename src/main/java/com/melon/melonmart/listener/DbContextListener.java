@@ -223,9 +223,13 @@ public class DbContextListener implements ServletContextListener {
                 }
             }
 
+            // Prefer the designated catalog seller when present. If it is absent,
+            // use an existing real SELLER account instead of leaving legacy products
+            // unowned. Never promote a buyer/admin or overwrite another seller's products.
             Integer sellerId = null;
             try (java.sql.PreparedStatement seller = connection.prepareStatement(
-                    "SELECT id FROM users WHERE LOWER(email) = ? AND role = 'SELLER'")) {
+                    "SELECT id FROM users WHERE UPPER(role) = 'SELLER' " +
+                    "ORDER BY CASE WHEN LOWER(email) = ? THEN 0 ELSE 1 END, id ASC LIMIT 1")) {
                 seller.setString(1, "seller@melonmart.com");
                 try (java.sql.ResultSet result = seller.executeQuery()) {
                     if (result.next()) {
@@ -235,7 +239,7 @@ public class DbContextListener implements ServletContextListener {
             }
 
             if (sellerId == null) {
-                System.out.println("Unowned catalog products left unchanged: demo seller account does not exist.");
+                System.out.println("Unowned catalog products left unchanged: no SELLER account exists.");
                 return;
             }
 
