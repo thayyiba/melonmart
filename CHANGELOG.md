@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — requirements audit and demo credential hygiene
+- Added a source-level compliance audit with verified baseline, known gaps, and safe verification order.
+- Removed well-known demo passwords from the public README; local demo instructions remain in the deployment guide.
+
 ## 1.0.0-review
 - Added compliant users/products/orders/order_items/cart/reviews schema.
 - Added bcrypt seed accounts and admin role.
@@ -16,4 +20,3 @@
 - Preserved review authorization: only a buyer who owns a delivered order containing the product can submit a review.
 - Preserved public product-review loading so other buyers can read reviews for the product.
 - No live database reset, seed overwrite, or password/role mutation was added.
-
