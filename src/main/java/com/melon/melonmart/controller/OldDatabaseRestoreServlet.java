@@ -163,9 +163,19 @@ public class OldDatabaseRestoreServlet extends HttpServlet {
 
     private static void insertRows(Connection connection, String table, JsonArray rows) throws Exception {
         List<String> allowed = ALLOWED_COLUMNS.get(table);
+        java.util.Set<Long> seenIds = new java.util.HashSet<>();
         for (JsonElement rowElement : rows) {
             if (!rowElement.isJsonObject()) throw new IllegalArgumentException("Invalid row in " + table);
             JsonObject row = rowElement.getAsJsonObject();
+            if (!row.has("id") || row.get("id").isJsonNull()
+                    || !row.get("id").isJsonPrimitive()
+                    || !row.get("id").getAsJsonPrimitive().isNumber()) {
+                throw new IllegalArgumentException("Every " + table + " row must have a numeric ID.");
+            }
+            long rowId = row.get("id").getAsLong();
+            if (rowId <= 0 || !seenIds.add(rowId)) {
+                throw new IllegalArgumentException("Invalid or duplicate ID in " + table);
+            }
             List<String> columns = new ArrayList<>();
             for (String column : allowed) if (row.has(column)) columns.add(column);
             if (columns.isEmpty()) throw new IllegalArgumentException("No known columns in " + table + " row");
