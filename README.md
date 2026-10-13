@@ -5,14 +5,9 @@ Multi-seller grocery marketplace for Anna University R2025 Semester 3.
 ## Stack
 JDK 17 · Tomcat 9 · Servlet 4 (`javax.servlet`) · Maven · H2 · HikariCP · Gson · jBCrypt · vanilla JS.
 
-## Demo accounts
+## Demo account safety
 
-> These well-known credentials are for local/isolated demos only. Do not expose them on a public deployment. The Docker image disables demo seeding by default; see [deployment security notes](docs/DEPLOYMENT.md#demo-credentials-and-first-administrator).
-- Admin: `admin@melonmart.com` / `admin123`
-- Buyer: `buyer@melonmart.com` / `buyer123`
-- Seller: `seller@melonmart.com` / `seller123`
-
-Passwords are stored as bcrypt hashes in the database.
+Demo credentials are intentionally not listed in this public README. They are well-known local/demo-only credentials and must never be used on a public deployment. The Docker image disables demo seeding by default; see [deployment security notes](docs/DEPLOYMENT.md#demo-credentials-and-first-administrator). Public deployments should use unique passwords configured through the hosting environment. Passwords are stored as bcrypt hashes in the database.
 
 ## Run
 1. **Protect your existing database first.** Back up `melonmartdb.mv.db` before changing database settings. On Windows, the historical Tomcat database path is preserved. On non-Windows hosts, configure `MELONMART_DB_URL` to a writable path; use persistent storage in deployments so data survives restarts.
@@ -42,6 +37,9 @@ Admin: login → users/orders/products/moderation.
 - Review creation requires a delivered order containing the product.
 - Chat input capped at 500 characters and 10 messages/minute/session.
 - `X-Request-ID` returned by API responses and included in the SLF4J MDC logging context.
+
+## Requirements audit
+See [the requirements compliance audit](docs/REQUIREMENTS_AUDIT.md) for the source-level baseline, known gaps, and safe verification order. Items marked unchecked still require implementation or test evidence.
 
 ## Deployment
 - [Deployment guide](docs/DEPLOYMENT.md) — local Tomcat 9, Docker, Render, Railway, database configuration, and persistence notes.
