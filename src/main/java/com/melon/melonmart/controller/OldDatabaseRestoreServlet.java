@@ -69,6 +69,7 @@ public class OldDatabaseRestoreServlet extends HttpServlet {
             }
         }
 
+        boolean rowsCommitted = false;
         try {
             JsonObject payload = GSON.fromJson(body.toString(), JsonObject.class);
             if (payload == null || !payload.has("replaceAllData")
@@ -119,7 +120,14 @@ public class OldDatabaseRestoreServlet extends HttpServlet {
                     for (String table : INSERT_ORDER) {
                         insertRows(connection, table, tables.getAsJsonArray(table));
                     }
+                    for (String table : INSERT_ORDER) {
+                        int actual = countRows(connection, table);
+                        if (actual != counts.get(table)) {
+                            throw new IllegalStateException("Restored row count mismatch for " + table);
+                        }
+                    }
                     connection.commit();
+                    rowsCommitted = true;
                 } catch (Exception e) {
                     connection.rollback();
                     throw e;
@@ -144,7 +152,12 @@ public class OldDatabaseRestoreServlet extends HttpServlet {
         } catch (Exception e) {
             // Do not log payloads, database rows, keys, or personal data.
             getServletContext().log("Old database restoration failed.", e);
-            sendError(response, 500, "Restoration failed; check application logs.");
+            if (rowsCommitted) {
+                sendError(response, 500,
+                        "Data rows were committed, but a post-restore step failed. Do not rerun the restore; check application logs.");
+            } else {
+                sendError(response, 500, "Restoration failed before commit; check application logs.");
+            }
         }
     }
 
@@ -184,6 +197,14 @@ public class OldDatabaseRestoreServlet extends HttpServlet {
             statement.setString(index, value.getAsString());
         } else {
             throw new IllegalArgumentException("Nested values are not allowed.");
+        }
+    }
+
+    private static int countRows(Connection connection, String table) throws Exception {
+        try (Statement statement = connection.createStatement();
+             java.sql.ResultSet result = statement.executeQuery("SELECT COUNT(*) FROM " + table)) {
+            result.next();
+            return result.getInt(1);
         }
     }
 
