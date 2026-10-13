@@ -57,6 +57,7 @@ public class DbContextListener implements ServletContextListener {
             runMigrations();
             runSchema();
             runSeed();
+            assignUnownedProductsToDemoSellerOnce();
             resetDemoPasswordsOnce();
             resetBootstrapAdminPasswordOnce();
             ensureBootstrapAdmin();
@@ -202,6 +203,57 @@ public class DbContextListener implements ServletContextListener {
         }
         executeSqlResource("seed.sql");
         System.out.println("MelonMart demo seed data checked successfully.");
+    }
+
+    /**
+     * Assigns only legacy catalog products without an owner to the existing demo seller.
+     * Products already owned by a real seller are never changed. The migration marker
+     * makes this a one-time repair and leaves future products untouched.
+     */
+    private void assignUnownedProductsToDemoSellerOnce() throws Exception {
+        final String version = "UNOWNED_PRODUCTS_TO_DEMO_SELLER_20261013";
+        try (Connection connection = dataSource.getConnection()) {
+            try (java.sql.PreparedStatement check = connection.prepareStatement(
+                    "SELECT 1 FROM schema_migrations WHERE version = ?")) {
+                check.setString(1, version);
+                try (java.sql.ResultSet result = check.executeQuery()) {
+                    if (result.next()) {
+                        return;
+                    }
+                }
+            }
+
+            Integer sellerId = null;
+            try (java.sql.PreparedStatement seller = connection.prepareStatement(
+                    "SELECT id FROM users WHERE LOWER(email) = ? AND role = 'SELLER'")) {
+                seller.setString(1, "seller@melonmart.com");
+                try (java.sql.ResultSet result = seller.executeQuery()) {
+                    if (result.next()) {
+                        sellerId = result.getInt("id");
+                    }
+                }
+            }
+
+            if (sellerId == null) {
+                System.out.println("Unowned catalog products left unchanged: demo seller account does not exist.");
+                return;
+            }
+
+            int updated;
+            try (java.sql.PreparedStatement update = connection.prepareStatement(
+                    "UPDATE products SET seller_id = ? WHERE seller_id IS NULL")) {
+                update.setInt(1, sellerId);
+                updated = update.executeUpdate();
+            }
+
+            try (java.sql.PreparedStatement record = connection.prepareStatement(
+                    "INSERT INTO schema_migrations (version) VALUES (?)")) {
+                record.setString(1, version);
+                record.executeUpdate();
+            }
+            System.out.println("One-time catalog ownership repair completed; assigned "
+                    + updated + " unowned products to the demo seller.");
+        }
     }
 
     /**
