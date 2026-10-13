@@ -16,7 +16,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -91,6 +90,23 @@ public class OldDatabaseRestoreServlet extends HttpServlet {
             }
             if (counts.get("users") == 0 || counts.get("products") == 0) {
                 sendError(response, 400, "Refusing to restore an empty users or products table.");
+                return;
+            }
+            boolean hasAdmin = false;
+            for (JsonElement userElement : tables.getAsJsonArray("users")) {
+                if (!userElement.isJsonObject()) {
+                    sendError(response, 400, "Invalid user row in restore payload.");
+                    return;
+                }
+                JsonObject user = userElement.getAsJsonObject();
+                if (user.has("role") && !user.get("role").isJsonNull()
+                        && "ADMIN".equalsIgnoreCase(user.get("role").getAsString())) {
+                    hasAdmin = true;
+                    break;
+                }
+            }
+            if (!hasAdmin) {
+                sendError(response, 400, "Refusing to restore data without an ADMIN account.");
                 return;
             }
 
