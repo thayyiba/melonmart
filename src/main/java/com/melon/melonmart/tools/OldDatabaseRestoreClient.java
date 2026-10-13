@@ -45,15 +45,19 @@ public final class OldDatabaseRestoreClient {
                     "Use --check-only to validate the source without sending data, or --replace-all-data only after backup.");
         }
         String oldUrl = required("MELONMART_OLD_DB_URL");
-        String target = required("MELONMART_RESTORE_TARGET_URL");
-        String key = required("MELONMART_RESTORE_OLD_DB_KEY");
-        if (!target.startsWith("https://")) {
-            throw new IllegalArgumentException("Restore target must use HTTPS.");
+        String target = null;
+        String key = null;
+        if (!checkOnly) {
+            target = required("MELONMART_RESTORE_TARGET_URL");
+            key = required("MELONMART_RESTORE_OLD_DB_KEY");
+            if (!target.startsWith("https://")) {
+                throw new IllegalArgumentException("Restore target must use HTTPS.");
+            }
+            if (!target.endsWith("/api/v1/restore/old-database")) {
+                throw new IllegalArgumentException("Target must end with /api/v1/restore/old-database.");
+            }
+            if (key.length() < 32) throw new IllegalArgumentException("Restore key must be at least 32 characters.");
         }
-        if (!target.endsWith("/api/v1/restore/old-database")) {
-            throw new IllegalArgumentException("Target must end with /api/v1/restore/old-database.");
-        }
-        if (key.length() < 32) throw new IllegalArgumentException("Restore key must be at least 32 characters.");
 
         JsonObject payload = new JsonObject();
         payload.addProperty("replaceAllData", true);
