@@ -136,7 +136,7 @@ public class GeminiAIProvider implements WelpAIProvider {
                 "on", "at", "is", "are", "show", "find", "get", "give", "some", "please",
                 "i", "want", "need", "looking", "with", "under", "over", "tonight", "today",
                 "offer", "offers", "deal", "deals", "discount", "discounts", "cheap", "cheapest",
-                "budget", "friendly", "tea", "time", "tea-time", "teatime", "snack", "snacks",
+                "budget", "friendly", "time", "tea-time", "teatime",
                 "recommend", "suggest", "product", "products", "available", "in-stock");
         List<String> terms = new ArrayList<>();
         for (String token : lower.replaceAll("[^a-z0-9 -]", " ").split("\\s+")) {
