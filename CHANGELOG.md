@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased — requirements audit and demo credential hygiene
+- Added a source-level compliance audit against the course specification, including explicitly unverified tests and engineering gaps.
+- Removed well-known demo passwords from the public README; local demo instructions remain in the deployment guide.
+- Documented that production seller ownership repair requires the seller account to exist first and does not alter products owned by other sellers.
+
 ## 1.0.0-review
 - Added compliant users/products/orders/order_items/cart/reviews schema.
 - Added bcrypt seed accounts and admin role.
@@ -16,4 +21,3 @@
 - Preserved review authorization: only a buyer who owns a delivered order containing the product can submit a review.
 - Preserved public product-review loading so other buyers can read reviews for the product.
 - No live database reset, seed overwrite, or password/role mutation was added.
-
