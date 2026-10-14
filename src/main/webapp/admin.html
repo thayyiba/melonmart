@@ -488,6 +488,25 @@
             background: #E8F0D8;
         }
 
+        .order-status-editor {
+            grid-column: 1 / -1; display: flex; align-items: center; gap: 10px;
+            flex-wrap: wrap; padding-top: 10px; border-top: 1px solid #E7DACB;
+        }
+        .order-status-editor label { color: #806F79; font-size: 12px; font-weight: 700; }
+        .order-status-editor select {
+            flex: 1 1 180px; min-width: 0; max-width: 280px; padding: 10px 12px;
+            border: 1px solid #E7DACB; border-radius: 10px; background: #FFFDF5;
+            color: #382A34; font: inherit;
+        }
+        .order-status-editor button {
+            border: 0; border-radius: 999px; padding: 10px 15px; background: #594052;
+            color: #fff; font: 700 12px/1.2 "DM Sans", sans-serif; cursor: pointer;
+        }
+        .order-status-editor button:focus-visible, .order-status-editor select:focus-visible {
+            outline: 3px solid #A7B2E2; outline-offset: 2px;
+        }
+        .order-status-editor button:disabled { opacity: .6; cursor: wait; }
+
         .toast {
             position: fixed;
             right: 24px;
@@ -1644,16 +1663,17 @@
                         order.userId
                     );
 
-                const status =
-                    escapeHtml(
-                        String(
-                            order.status ||
-                            "UNKNOWN"
-                        ).toUpperCase()
-                    );
-
-                const statusClass =
-                    status.toLowerCase();
+                const rawStatus = String(order.status || "PENDING").toUpperCase();
+                const status = escapeHtml(rawStatus);
+                const statusClass = status.toLowerCase();
+                const allowedStatuses = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED"];
+                const legacyStatusOption = allowedStatuses.includes(rawStatus)
+                    ? ""
+                    : '<option value="' + escapeHtml(rawStatus) + '" selected disabled>' + escapeHtml(rawStatus) + ' (current)</option>';
+                const statusOptions = allowedStatuses.map(value =>
+                    '<option value="' + value + '"' + (rawStatus === value ? " selected" : "") + '>' +
+                    value.charAt(0) + value.slice(1).toLowerCase() + '</option>'
+                ).join("");
 
                 const amount =
                     Number(
@@ -1691,10 +1711,47 @@
                             ${createdAt}
                         </div>
 
+                        <div class="order-status-editor">
+                            <label for="adminOrderStatus${Number(order.id)}">Update status</label>
+                            <select id="adminOrderStatus${Number(order.id)}" aria-label="New status for order ${id}">
+                                ${legacyStatusOption}
+                                ${statusOptions}
+                            </select>
+                            <button type="button" id="adminOrderStatusButton${Number(order.id)}" onclick="updateAdminOrderStatus(${Number(order.id)})">Save status</button>
+                        </div>
+
                     </div>
                 `;
 
             }).join("");
+    }
+
+    async function updateAdminOrderStatus(orderId) {
+        const select = document.getElementById("adminOrderStatus" + orderId);
+        const button = document.getElementById("adminOrderStatusButton" + orderId);
+        if (!select || !button || !Number.isSafeInteger(Number(orderId)) || Number(orderId) <= 0) return;
+        const nextStatus = select.value;
+        button.disabled = true;
+        button.textContent = "Saving…";
+        try {
+            const response = await fetch(
+                "/melonmart/api/orders/" + encodeURIComponent(orderId) + "/status?status=" + encodeURIComponent(nextStatus),
+                { method: "PUT", headers: { "Accept": "application/json" } }
+            );
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok || data.success !== true) throw new Error(data.message || "Could not update order status.");
+            const order = allOrders.find(item => Number(item.id) === Number(orderId));
+            if (order) order.status = data.status || nextStatus;
+            renderOrders();
+            showToast("Order #" + orderId + " updated to " + nextStatus + " ✨");
+        } catch (error) {
+            console.error("Admin order status update failed:", error);
+            showToast(error.message || "Could not update order status.");
+            renderOrders();
+        } finally {
+            button.disabled = false;
+            button.textContent = "Save status";
+        }
     }
 
     function goToSection(section) {

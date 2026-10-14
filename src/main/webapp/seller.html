@@ -1041,6 +1041,19 @@
                 width: 100%;
             }
         }
+    
+        /* SELLER REVIEWS */
+        .reviews-section { margin-bottom: 50px; }
+        .seller-reviews-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+        .seller-review-card { min-width: 0; background: var(--paper); border: 1px solid var(--border); border-radius: 18px; padding: 20px; }
+        .seller-review-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+        .seller-review-product { font-weight: 800; overflow-wrap: anywhere; }
+        .seller-review-stars { color: #8b6810; letter-spacing: 2px; white-space: nowrap; }
+        .seller-review-meta { color: var(--muted); font-size: 12px; margin-top: 5px; }
+        .seller-review-comment { margin-top: 12px; line-height: 1.65; overflow-wrap: anywhere; white-space: pre-wrap; }
+        .reviews-empty { grid-column: 1 / -1; background: var(--paper); border: 1px dashed var(--border); border-radius: 18px; padding: 30px 20px; text-align: center; color: var(--muted); line-height: 1.7; }
+        @media (max-width: 720px) { .seller-reviews-list { grid-template-columns: minmax(0, 1fr); } }
+
     </style>
 </head>
 
@@ -1138,7 +1151,7 @@
         <div class="stat-card">
 
             <div class="stat-label">
-                Items in stock
+                Low-stock items
             </div>
 
             <div
@@ -1298,6 +1311,14 @@
 
             <button
                 class="filter-button active"
+                data-filter="INCOMING"
+                onclick="filterOrders('INCOMING', this)"
+            >
+                Incoming
+            </button>
+
+            <button
+                class="filter-button"
                 data-filter="ALL"
                 onclick="filterOrders('ALL', this)"
             >
@@ -1347,6 +1368,20 @@
             </div>
         </div>
 
+    </section>
+
+    <!-- CUSTOMER REVIEWS -->
+    <section class="reviews-section">
+        <div class="section-heading">
+            <div>
+                <h2>Customer reviews</h2>
+                <p>What customers are saying about your products.</p>
+            </div>
+            <button class="refresh-button" type="button" onclick="fetchSellerReviews()">↻ Refresh reviews</button>
+        </div>
+        <div id="sellerReviewsList" class="seller-reviews-list">
+            <div class="reviews-empty">Loading customer reviews…</div>
+        </div>
     </section>
 
     <!-- PRODUCT MANAGEMENT -->
@@ -1638,7 +1673,7 @@
     let sellerProducts = [];
     let sellerOrders = [];
     let sellerSales = null;
-    let currentOrderFilter = "ALL";
+    let currentOrderFilter = "INCOMING";
 
 
     /* =========================
@@ -1714,7 +1749,8 @@
         await Promise.all([
             fetchSellerInventory(),
             fetchSellerOrders(),
-            fetchSellerSales()
+            fetchSellerSales(),
+            fetchSellerReviews()
         ]);
 
         updateStats();
@@ -1730,7 +1766,8 @@
         await Promise.all([
             fetchSellerInventory(),
             fetchSellerOrders(),
-            fetchSellerSales()
+            fetchSellerSales(),
+            fetchSellerReviews()
         ]);
 
         updateStats();
@@ -1890,16 +1927,13 @@
                 );
             }
 
-            sellerProducts =
-                await response.json();
-
-            if (
-                !Array.isArray(
-                    sellerProducts
-                )
-            ) {
-                sellerProducts = [];
-            }
+            const products = await response.json();
+            sellerProducts = Array.isArray(products)
+                ? products.map(product => ({
+                    ...product,
+                    stock: Number(product.stockQty ?? product.stock ?? product.stock_qty ?? 0)
+                }))
+                : [];
 
             renderInventory();
             updateStats();
@@ -2155,7 +2189,7 @@
                         .value
                 ),
 
-            stock:
+            stockQty:
                 Number(
                     document
                         .getElementById("pStock")
@@ -2213,9 +2247,9 @@
 
         if (
             Number.isNaN(
-                productData.stock
+                productData.stockQty
             ) ||
-            productData.stock < 0
+            productData.stockQty < 0
         ) {
 
             showToast(
@@ -2366,7 +2400,7 @@
         document.getElementById(
             "pStock"
         ).value =
-            product.stock ?? "";
+            product.stockQty ?? product.stock ?? product.stock_qty ?? "";
 
 
         document.getElementById(
@@ -2569,6 +2603,51 @@
 
 
     /* =========================
+       CUSTOMER REVIEWS
+    ========================= */
+    async function fetchSellerReviews() {
+        const container = document.getElementById("sellerReviewsList");
+        if (!container) return;
+        container.innerHTML = '<div class="reviews-empty">Loading customer reviews…</div>';
+
+        try {
+            const response = await fetch(API_BASE + "/api/v1/reviews/seller");
+            let payload = {};
+            try { payload = await response.json(); } catch (ignore) {}
+            if (!response.ok) {
+                throw new Error(payload.message || "Could not load customer reviews.");
+            }
+
+            const reviews = Array.isArray(payload.reviews) ? payload.reviews : [];
+            if (!reviews.length) {
+                container.innerHTML = '<div class="reviews-empty"><strong>No reviews yet</strong><br>When customers review your products, they’ll appear here.</div>';
+                return;
+            }
+
+            container.innerHTML = reviews.map(review => {
+                const rating = Math.max(0, Math.min(5, Number(review.rating) || 0));
+                const stars = "★".repeat(rating) + "☆".repeat(5 - rating);
+                const date = review.createdAt ? formatDate(review.createdAt) : "Date unavailable";
+                return `
+                    <article class="seller-review-card">
+                        <div class="seller-review-top">
+                            <div>
+                                <div class="seller-review-product">${escapeHtml(review.productName || "Your product")}</div>
+                                <div class="seller-review-meta">By ${escapeHtml(review.reviewerName || "Customer")} · ${escapeHtml(date)}</div>
+                            </div>
+                            <div class="seller-review-stars" aria-label="${rating} out of 5 stars">${stars}</div>
+                        </div>
+                        <div class="seller-review-comment">${escapeHtml(review.comment || "No written comment.")}</div>
+                    </article>
+                `;
+            }).join("");
+        } catch (error) {
+            console.error("Seller reviews error:", error);
+            container.innerHTML = '<div class="reviews-empty">Could not load reviews right now. Please refresh and try again.</div>';
+        }
+    }
+
+    /* =========================
        ORDERS
     ========================= */
 
@@ -2702,21 +2781,15 @@
         let filteredOrders =
             sellerOrders;
 
-
-        if (
-            currentOrderFilter !==
-            "ALL"
-        ) {
-
-            filteredOrders =
-                sellerOrders.filter(
-                    order =>
-                        String(
-                            order.status ||
-                            ""
-                        ).toUpperCase() ===
-                        currentOrderFilter
-                );
+        if (currentOrderFilter === "INCOMING") {
+            filteredOrders = sellerOrders.filter(order => {
+                const status = String(order.status || "").toUpperCase();
+                return status !== "DELIVERED" && status !== "CANCELLED";
+            });
+        } else if (currentOrderFilter !== "ALL") {
+            filteredOrders = sellerOrders.filter(order =>
+                String(order.status || "").toUpperCase() === currentOrderFilter
+            );
         }
 
 
@@ -3417,9 +3490,10 @@
 
 
         if (orderCount) {
-
-            orderCount.textContent =
-                sellerOrders.length;
+            orderCount.textContent = sellerOrders.filter(order => {
+                const status = String(order.status || "").toUpperCase();
+                return status !== "DELIVERED" && status !== "CANCELLED";
+            }).length;
         }
 
 
@@ -3430,25 +3504,13 @@
         }
 
 
-        const totalStock =
-            sellerProducts.reduce(
-                (
-                    total,
-                    product
-                ) =>
-                    total +
-                    Number(
-                        product.stock ||
-                        0
-                    ),
-                0
-            );
-
+        const lowStockItems = sellerProducts.filter(product => {
+            const quantity = Number(product.stock ?? product.stockQty ?? product.stock_qty ?? 0);
+            return quantity > 0 && quantity <= 5;
+        }).length;
 
         if (stockCount) {
-
-            stockCount.textContent =
-                totalStock;
+            stockCount.textContent = lowStockItems;
         }
     }
 

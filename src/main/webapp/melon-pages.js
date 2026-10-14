@@ -2,7 +2,7 @@
 const MM_BASE = window.location.protocol === 'file:' ? 'http://localhost:8080/melonmart' : window.location.origin + '/melonmart';
 function mmEsc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 function mmFirst(v){return String(v||'there').trim().split(/\s+/)[0]||'there'}
-function mmLocation(){return localStorage.getItem('melonmart_location')||'Hostel 4 · Main Campus'}
+function mmLocation(){return 'Add delivery address'}
 async function mmUser(){try{const r=await fetch(MM_BASE+'/api/auth/me');if(!r.ok)return null;const d=await r.json();return d.user||d}catch(e){return null}}
 function mmHeader(active){
  const root=document.getElementById('siteHeader'); if(!root)return;
@@ -11,7 +11,19 @@ function mmHeader(active){
  const search=document.getElementById('mmSearch'); search.addEventListener('keydown',e=>{if(e.key==='Enter'&&search.value.trim())location.href='index.html?search='+encodeURIComponent(search.value.trim())});
  const btn=document.getElementById('mmAccountBtn'); btn.addEventListener('click',e=>{e.stopPropagation();const d=document.getElementById('mmAccountDrop');d.classList.toggle('open')});
  document.addEventListener('click',e=>{const d=document.getElementById('mmAccountDrop');if(d&&!e.target.closest('.account-wrap'))d.classList.remove('open')},{once:false});
- mmUser().then(user=>mmRenderAccount(user));
+ mmUser().then(async user=>{
+    mmRenderAccount(user);
+    const locationNode=document.getElementById('mmCurrentLocation');
+    if(!locationNode)return;
+    if(!user){locationNode.textContent='Add delivery address';return;}
+    try{
+      const response=await fetch(MM_BASE+'/api/addresses',{headers:{'Accept':'application/json'}});
+      if(!response.ok){locationNode.textContent='Add delivery address';return;}
+      const addresses=await response.json();
+      const selected=Array.isArray(addresses)?addresses.find(a=>a.isDefault)||addresses[0]:null;
+      locationNode.textContent=selected?(selected.label||selected.address||'Saved address'):'Add delivery address';
+    }catch(_){locationNode.textContent='Add delivery address';}
+  });
 }
 function mmRenderAccount(user){const label=document.getElementById('mmAccountLabel'),drop=document.getElementById('mmAccountDrop');if(!label||!drop)return;if(!user){label.textContent='account';drop.innerHTML=`<a class="account-drop-link" href="login.html"><span class="ico">♙</span><span>Sign in / create account</span></a>`;return}const name=user.name||user.username||'there',role=String(user.role||'BUYER').toUpperCase();label.textContent='Hi, '+mmFirst(name);let extra='';if(role==='SELLER')extra='<a class="account-drop-link" href="seller.html"><span class="ico">🏪</span><span>Seller Dashboard</span></a>';if(role==='ADMIN')extra='<a class="account-drop-link" href="admin.html"><span class="ico">🛡️</span><span>Admin Dashboard</span></a>';drop.innerHTML=`<div class="account-drop-profile"><div class="account-avatar">${mmEsc(mmFirst(name).charAt(0).toUpperCase())}</div><div><strong>Hi, ${mmEsc(mmFirst(name))}</strong><small>${mmEsc(user.email||'')} · ${mmEsc(role)}</small></div></div><a class="account-drop-link" href="account.html"><span class="ico">♙</span><span>My Account</span></a><a class="account-drop-link" href="orders.html"><span class="ico">📦</span><span>My Orders</span></a><a class="account-drop-link" href="wishlist.html"><span class="ico">♡</span><span>Wishlist</span></a><a class="account-drop-link" href="location.html"><span class="ico">📍</span><span>Delivery Addresses</span></a><a class="account-drop-link" href="reviews.html"><span class="ico">★</span><span>My Reviews</span></a><a class="account-drop-link" href="cart.html"><span class="ico">🛒</span><span>My Cart</span></a>${extra}<a class="account-drop-link" href="help.html"><span class="ico">?</span><span>Help & Support</span></a><div class="account-drop-divider"></div><button class="account-drop-link" onclick="mmLogout()"><span class="ico">↪</span><span>Log out</span></button>`}
 async function mmLogout(){try{await fetch(MM_BASE+'/api/auth/logout',{method:'POST'})}finally{location.href='index.html'}}
