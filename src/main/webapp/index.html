@@ -2151,6 +2151,25 @@ html, body { max-width:100%; overflow-x:clip; }
   }
   html, body { max-width: 100%; overflow-x: clip; }
 }
+
+/* Fix the account dropdown shown in the mobile header (not the side drawer). */
+@media (max-width: 700px) {
+  .account-wrap { position: static !important; }
+  .account-dropdown {
+    position: fixed !important;
+    top: clamp(170px, 27vh, 270px) !important;
+    left: 8px !important;
+    right: 8px !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: calc(100dvh - clamp(170px, 27vh, 270px) - 90px) !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    box-sizing: border-box !important;
+    z-index: 10000 !important;
+  }
+  .account-dropdown * { max-width: 100%; box-sizing: border-box; overflow-wrap: anywhere; }
+}
 </style>
 
 </head>
