@@ -5,14 +5,18 @@ Multi-seller grocery marketplace for Anna University R2025 Semester 3.
 ## Stack
 JDK 17 · Tomcat 9 · Servlet 4 (`javax.servlet`) · Maven · H2 · HikariCP · Gson · jBCrypt · vanilla JS.
 
-## Demo accounts
+## Account access (demo and production)
 
-> These well-known credentials are for local/isolated demos only. Do not expose them on a public deployment. The Docker image disables demo seeding by default; see [deployment security notes](docs/DEPLOYMENT.md#demo-credentials-and-first-administrator).
-- Admin: `admin@melonmart.com` / `admin123`
-- Buyer: `buyer@melonmart.com` / `buyer123`
-- Seller: `seller@melonmart.com` / `seller123`
+| Role | Demo email / username | Password |
+|---|---|---|
+| Admin | `admin@melonmart.com` (local demo only) | **Not published** |
+| Buyer | `buyer@melonmart.com` (local demo only) | **Not published** |
+| Seller | `seller@melonmart.com` (local demo only) | **Not published** |
+| Other registered accounts | Use the email used at registration | Use the password chosen for that account |
 
-Passwords are stored as bcrypt hashes in the database.
+**Important:** These demo accounts may not exist in the live Railway database; demo seeding is disabled by default for deployments. Do not assume demo credentials work in production. Use the existing account's own password, or securely reset/re-register an account if necessary.
+
+Passwords are intentionally never stored in this public README or source control. The database stores bcrypt hashes, which cannot be used as a recoverable plain-text password. Keep real production credentials in a private password manager or secret store. Never reset the production database to regain access.
 
 ## Run
 1. **Protect your existing database first.** Back up `melonmartdb.mv.db` before changing database settings. On Windows, the historical Tomcat database path is preserved. On non-Windows hosts, configure `MELONMART_DB_URL` to a writable path; use persistent storage in deployments so data survives restarts.
